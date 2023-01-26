@@ -1,7 +1,7 @@
 package org.academics;
 
 import java.security.*;
-public class utils {
+public class Utils {
     public static int generateOTP() {
         //generate a random 6-digit number
         return (int)(Math.random() * 900000) + 100000;

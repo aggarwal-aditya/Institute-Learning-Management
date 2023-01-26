@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Add recursive style menus">
+    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Changes in Login Method">
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/init.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/mailManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/mailManagement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Utils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +100,7 @@
       <workItem from="1674702986508" duration="3518000" />
       <workItem from="1674706534370" duration="2655000" />
       <workItem from="1674739508683" duration="2546000" />
-      <workItem from="1674744168116" duration="6467000" />
+      <workItem from="1674744168116" duration="9875000" />
     </task>
     <task id="LOCAL-00001" summary="Fix DB Configuration">
       <created>1674704914591</created>
@@ -120,7 +123,14 @@
       <option name="project" value="LOCAL" />
       <updated>1674749148992</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Changes in Login Method">
+      <created>1674750895066</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1674750895066</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -141,7 +151,8 @@
     <MESSAGE value="Fix DB Configuration" />
     <MESSAGE value="Add Database Integration Class" />
     <MESSAGE value="Add recursive style menus" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add recursive style menus" />
+    <MESSAGE value="Changes in Login Method" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changes in Login Method" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

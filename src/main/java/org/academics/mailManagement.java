@@ -49,9 +49,11 @@ public class MailManagement {
             transport.connect("smtp-mail.outlook.com", fromEmail, password);
             transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
             transport.close();
-            System.out.println("Sent message successfully....");
+            System.out.println("Mail sent successfully!");
         } catch (MessagingException mex) {
-            mex.printStackTrace();
+//            mex.printStackTrace();
+            //reuturn error to calling try catch block
+            throw new RuntimeException(mex);
         }
     }
 }

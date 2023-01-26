@@ -24,14 +24,46 @@ class Main {
             userType = scanner.nextInt();
         }
         User user = new User();
+        String username;
         switch (userType) {
             case 1:
+                try {
+                    username = user.login();
+                    System.out.println("Welcome " + username);
+                }catch (Exception e) {
+                    System.out.println("Unable to login at the moment. Please try again later.");
+                    mainMenu();
+                }
+                studentMenu();
+                break;
             case 2:
+                try {
+                    username = user.login();
+                    System.out.println("Welcome " + username);
+                }catch (Exception e) {
+                    System.out.println("Unable to login at the moment. Please try again later.");
+                    mainMenu();
+                }
+                teacherMenu();
+                break;
             case 3:
-                user.login();
+                try {
+                    username = user.login();
+                    System.out.println("Welcome " + username);
+                }catch (Exception e) {
+                    System.out.println("Unable to login at the moment. Please try again later.");
+                    mainMenu();
+                }
+                adminMenu();
                 break;
             case 4:
-                user.resetPassword();
+                try {
+                    user.resetPassword();
+                    System.out.println("Password reset successful. Please login again.");
+                }catch (Exception e) {
+                    System.out.println("Unable to reset password at the moment. Please try again later.");
+                    mainMenu();
+                }
                 mainMenu();
                 break;
             case 5:

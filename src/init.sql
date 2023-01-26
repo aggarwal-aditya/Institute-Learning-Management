@@ -2,6 +2,13 @@ DROP SCHEMA PUBLIC CASCADE;
 CREATE SCHEMA PUBLIC;
 
 
+
+CREATE TABLE users
+(
+    email_id VARCHAR(255) PRIMARY KEY,
+    password VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE instructors
 (
     instructor_id   INTEGER PRIMARY KEY,
@@ -10,7 +17,7 @@ CREATE TABLE instructors
     email_id        VARCHAR(255) NOT NULL,
     dept            VARCHAR(127),
     date_of_joining DATE         NOT NULL,
-    password        VARCHAR(255) NOT NULL
+    foreign key (email_id) references users (email_id)
 );
 
 CREATE TABLE students
@@ -21,7 +28,7 @@ CREATE TABLE students
     email_id     VARCHAR(255) NOT NULL,
     dept         VARCHAR(127),
     batch        DATE         NOT NULL,
-    password     VARCHAR(255) NOT NULL
+    foreign key (email_id) references users (email_id)
 );
 
 
