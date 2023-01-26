@@ -10,7 +10,10 @@ repositories {
 }
 
 dependencies {
+    //Add java mail dependency
+    implementation 'com.sun.mail:javax.mail:1.6.2'
     implementation 'org.postgresql:postgresql:42.2.27'
+    implementation 'io.github.cdimascio:dotenv-java:2.3.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
