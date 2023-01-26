@@ -77,7 +77,9 @@ BEGIN
     -- check if the student is already enrolled in the course
     IF EXISTS(SELECT 1
               FROM course_enrollments
-              WHERE course_code = p_course_code AND session = p_session AND student_id = p_student_id) THEN
+              WHERE course_code = p_course_code
+                AND session = p_session
+                AND student_id = p_student_id) THEN
         RAISE EXCEPTION 'The student is already enrolled in the course.';
     END IF;
 
@@ -102,7 +104,9 @@ BEGIN
     -- check if the student is not enrolled in the course
     IF NOT EXISTS(SELECT 1
                   FROM course_enrollments
-                  WHERE course_code = p_course_code AND session = p_session AND student_id = p_student_id) THEN
+                  WHERE course_code = p_course_code
+                    AND session = p_session
+                    AND student_id = p_student_id) THEN
         RAISE EXCEPTION 'The student is not enrolled in the course.';
     END IF;
 
@@ -158,7 +162,9 @@ BEGIN
 
     IF EXISTS(SELECT 1
               FROM course_offerings
-              WHERE course_code = p_course_code AND session = p_session AND instructor_id = p_instructor_id) THEN
+              WHERE course_code = p_course_code
+                AND session = p_session
+                AND instructor_id = p_instructor_id) THEN
         RAISE EXCEPTION 'The course is already offered by the instructor in the same session.';
     END IF;
 
@@ -182,7 +188,9 @@ BEGIN
     -- check if the course is not offered by the instructor in the same session
     IF NOT EXISTS(SELECT 1
                   FROM course_offerings
-                  WHERE course_code = p_course_code AND session = p_session AND instructor_id = p_instructor_id) THEN
+                  WHERE course_code = p_course_code
+                    AND session = p_session
+                    AND instructor_id = p_instructor_id) THEN
         RAISE EXCEPTION 'The course is not offered by the instructor in the same session.';
     END IF;
 
@@ -210,7 +218,7 @@ BEGIN
     earned_credits := 0;
 
     -- calculate total credits and earned credits
-    FOR course_enrollment IN (SELECT course_code, session, grade, credit_str
+    FOR course_enrollment IN (SELECT course_enrollments.course_code, session, grade, credit_str
                               FROM course_enrollments
                                        JOIN course_catalog
                                             ON course_enrollments.course_code = course_catalog.course_code

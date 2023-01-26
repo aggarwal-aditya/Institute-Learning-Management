@@ -1,4 +1,4 @@
-package org.example;
+package org.academics;
 
 public class Main {
     public static void main(String[] args) {
