@@ -28,11 +28,7 @@ class Main {
             case 1:
             case 2:
             case 3:
-                System.out.println("Enter your username:");
-                String username = scanner.next();
-                System.out.println("Enter your password:");
-                String password = scanner.next();
-                user.login(username, password);
+                user.login();
                 break;
             case 4:
                 user.resetPassword();

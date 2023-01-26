@@ -6,8 +6,22 @@ import java.util.Scanner;
 public class User {
     Scanner scanner = new Scanner(System.in);
 
-    public void login(String username, String password) {
-        //TODO: Implement login
+    public void login() {
+        JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
+        Connection conn = jdbc.getConnection();
+        System.out.println("Enter your username(email):");
+        String username = scanner.next();
+        System.out.println("Enter your password:");
+        String password = scanner.next();
+        //MD5 hash the password
+        String hashedPassword;
+        try {
+            hashedPassword = utils.getMD5Hash(password);
+        } catch (Exception e) {
+            System.out.println("Unable to login at the moment. Please try again later.");
+            return;
+        }
+        //TODO Validate details in PostgreSQL
     }
 
     public void resetPassword() {
@@ -19,16 +33,26 @@ public class User {
         String[] toEmails = {username};
         String subject = "Reset Password";
         String message = "Your OTP to reset your ILM password is: " + otp;
-        mailManagement.sendMail(subject, message, toEmails);
-        System.out.println("Enter the OTP sent to your email:");
+        try {
+            mailManagement.sendMail(subject, message, toEmails);
+        } catch (Exception e) {
+            System.out.println("Unable to reset password at the moment. Please try again later.");
+            return;
+        }
+        System.out.println("Enter the OTP sent on your email to reset your password :");
         int enteredOTP = scanner.nextInt();
         if (otp == enteredOTP) {
             System.out.println("Enter your new password:");
             String newPassword = scanner.next();
-            changePassword(username, newPassword);
+            try {
+                changePassword(username, newPassword);
+            } catch (Exception e) {
+                System.out.println("Unable to reset password at the moment. Please try again later.");
+                return;
+            }
         }
         else {
-            System.out.println("Invalid OTP");
+            System.out.println("Invalid OTP. Redirecting to Main Menu");
         }
     }
 
