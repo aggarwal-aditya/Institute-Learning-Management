@@ -11,41 +11,68 @@ public class User {
     JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
     Connection conn = jdbc.getConnection();
     public String userRole;
-    public String username;
+    public String email_id;
 
     public User() {
         this.userRole = null;
-        this.username = null;
+        this.email_id = null;
     }
 
-    public void setUserDetails(String userRole, String username) {
+    public void setUserDetails(String userRole, String email_id) {
         this.userRole = userRole;
-        this.username = username;
+        this.email_id = email_id;
     }
 
-    public String login() {
+    public void login() {
         System.out.println("Enter your username(email):");
-        String username = scanner.next();
+        String email_id = scanner.next();
         System.out.println("Enter your password:");
         String password = scanner.next();
         //MD5 hash the password
-        String hashedPassword;
+        String hashedPassword=password;
+//        try {
+//            hashedPassword = Utils.getMD5Hash(password);
+//        } catch (Exception e) {
+////            System.out.println("Unable to login at the moment. Please try again later.");
+//            throw new RuntimeException(e);
+//        }
+        PreparedStatement preparedStatement = null;
         try {
-            hashedPassword = Utils.getMD5Hash(password);
+            preparedStatement = conn.prepareStatement("SELECT * FROM users WHERE email_id = ? AND password = ?");
+            preparedStatement.setString(1, email_id);
+            preparedStatement.setString(2, hashedPassword);
+            if (preparedStatement.executeQuery().next()) {
+                preparedStatement = conn.prepareStatement("SELECT role FROM users WHERE email_id = ?");
+                preparedStatement.setString(1, email_id);
+                String userRole = preparedStatement.executeQuery().getString("role");
+                setUserDetails(userRole, email_id);
+            }
+            else {
+                return;
+            }
         } catch (Exception e) {
-//            System.out.println("Unable to login at the moment. Please try again later.");
             throw new RuntimeException(e);
         }
-        return username;
-        //TODO Validate details in PostgreSQL
     }
 
     public void resetPassword() {
         System.out.println("Enter your username(email):");
-        String username = scanner.next();
+        String email_id = scanner.next();
+        //Check if the username exists
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = conn.prepareStatement("SELECT * FROM users WHERE email_id = ?");
+            preparedStatement.setString(1, email_id);
+            if (!preparedStatement.executeQuery().next()) {
+                System.out.println("Invalid username. Redirecting to Main Menu");
+                return;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         MailManagement mailManagement = new MailManagement();
         int otp = Utils.generateOTP();
-        String[] toEmails = {username};
+        String[] toEmails = {email_id};
         String subject = "Reset Password";
         String message = "Your OTP to reset your ILM password is: " + otp;
         try {
@@ -60,7 +87,7 @@ public class User {
             System.out.println("Enter your new password:");
             String newPassword = scanner.next();
             try {
-                changePassword(username, newPassword);
+                changePassword(email_id, newPassword);
             } catch (Exception e) {
 //                System.out.println("Unable to reset password at the moment. Please try again later.");
                 throw new RuntimeException(e);
@@ -71,12 +98,12 @@ public class User {
         }
     }
 
-    public void changePassword(String username, String newPassword) throws SQLException {
+    public void changePassword(String email_id, String newPassword) throws SQLException {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = conn.prepareStatement("UPDATE users SET password = ? WHERE email_id = ?");
             preparedStatement.setString(1, newPassword);
-            preparedStatement.setString(2, username);
+            preparedStatement.setString(2, email_id);
             preparedStatement.executeUpdate();
             preparedStatement.close();
         } catch (Exception e) {

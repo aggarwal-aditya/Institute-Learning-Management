@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 
 class Main {
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void mainMenu() {
 
@@ -24,36 +24,17 @@ class Main {
             userType = scanner.nextInt();
         }
         User user = new User();
-        String username;
         switch (userType) {
             case 1:
-                try {
-                    username = user.login();
-                    System.out.println("Welcome " + username);
-                }catch (Exception e) {
-                    System.out.println("Unable to login at the moment. Please try again later.");
-                    mainMenu();
-                }
+                if (try_login(user)) break;
                 studentMenu();
                 break;
             case 2:
-                try {
-                    username = user.login();
-                    System.out.println("Welcome " + username);
-                }catch (Exception e) {
-                    System.out.println("Unable to login at the moment. Please try again later.");
-                    mainMenu();
-                }
+                if (try_login(user)) break;
                 teacherMenu();
                 break;
             case 3:
-                try {
-                    username = user.login();
-                    System.out.println("Welcome " + username);
-                }catch (Exception e) {
-                    System.out.println("Unable to login at the moment. Please try again later.");
-                    mainMenu();
-                }
+                if (try_login(user)) break;
                 adminMenu();
                 break;
             case 4:
@@ -74,6 +55,25 @@ class Main {
                 break;
         }
     }
+
+    private static boolean try_login(User user) {
+        try{
+            user.login();
+            if(user.email_id != null) {
+                System.out.println("Welcome " + user.email_id);
+            }
+            else{
+                System.out.println("Invalid username or password. Returning to main menu.");
+                mainMenu();
+                return true;
+            }
+        }catch (Exception e) {
+            System.out.println("Unable to login at the moment. Please try again later.");
+            mainMenu();
+        }
+        return false;
+    }
+
     public static void studentMenu(){
 
     }

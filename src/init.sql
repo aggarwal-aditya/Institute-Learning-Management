@@ -6,7 +6,8 @@ CREATE SCHEMA PUBLIC;
 CREATE TABLE users
 (
     email_id VARCHAR(255) PRIMARY KEY,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    role     VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE instructors
@@ -19,6 +20,7 @@ CREATE TABLE instructors
     date_of_joining DATE         NOT NULL,
     foreign key (email_id) references users (email_id)
 );
+create unique index instructor_unique_email_idx on instructors (email_id);
 
 CREATE TABLE students
 (
@@ -30,6 +32,7 @@ CREATE TABLE students
     batch        DATE         NOT NULL,
     foreign key (email_id) references users (email_id)
 );
+create unique index student_unique_email_idx on students (email_id);
 
 
 CREATE TABLE course_catalog
@@ -56,7 +59,7 @@ CREATE TABLE course_offerings
 
 CREATE TABLE course_enrollments
 (
-    enrollment_id INTEGER PRIMARY KEY,
+    enrollment_id VARCHAR(255) PRIMARY KEY,
     course_code   VARCHAR(6) NOT NULL,
     session       VARCHAR(8) NOT NULL,
     student_id    INTEGER    NOT NULL,
