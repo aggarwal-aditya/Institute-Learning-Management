@@ -2,7 +2,9 @@ package org.academics;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class User {
@@ -28,29 +30,28 @@ public class User {
         String email_id = scanner.next();
         System.out.println("Enter your password:");
         String password = scanner.next();
-        //MD5 hash the password
-        String hashedPassword=password;
-//        try {
-//            hashedPassword = Utils.getMD5Hash(password);
-//        } catch (Exception e) {
-////            System.out.println("Unable to login at the moment. Please try again later.");
-//            throw new RuntimeException(e);
-//        }
+//        String password= Arrays.toString(System.console().readPassword());
         PreparedStatement preparedStatement = null;
+        PreparedStatement statementRole=null;
         try {
             preparedStatement = conn.prepareStatement("SELECT * FROM users WHERE email_id = ? AND password = ?");
             preparedStatement.setString(1, email_id);
-            preparedStatement.setString(2, hashedPassword);
+            preparedStatement.setString(2, password);
             if (preparedStatement.executeQuery().next()) {
-                preparedStatement = conn.prepareStatement("SELECT role FROM users WHERE email_id = ?");
-                preparedStatement.setString(1, email_id);
-                String userRole = preparedStatement.executeQuery().getString("role");
+                statementRole = conn.prepareStatement("SELECT role FROM users WHERE email_id = ?");
+                statementRole.setString(1, email_id);
+                ResultSet resultSet=statementRole.executeQuery();
+                while (resultSet.next()){
+                    userRole=resultSet.getString(1);
+                }
                 setUserDetails(userRole, email_id);
             }
             else {
                 return;
             }
         } catch (Exception e) {
+            //Print exception stack trace
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -111,6 +112,10 @@ public class User {
             preparedStatement.close();
             throw new RuntimeException(e);
         }
+
+    }
+
+    public void viewProfile(){
 
     }
 }

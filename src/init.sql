@@ -24,7 +24,7 @@ create unique index instructor_unique_email_idx on instructors (email_id);
 
 CREATE TABLE students
 (
-    student_id   INTEGER PRIMARY KEY,
+    student_id   VARCHAR(255) PRIMARY KEY,
     name         VARCHAR(255) NOT NULL,
     phone_number VARCHAR(20)  NOT NULL,
     email_id     VARCHAR(255) NOT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE course_enrollments
     enrollment_id VARCHAR(255) PRIMARY KEY,
     course_code   VARCHAR(6) NOT NULL,
     session       VARCHAR(8) NOT NULL,
-    student_id    INTEGER    NOT NULL,
+    student_id    VARCHAR(255)    NOT NULL,
     grade         VARCHAR(3) DEFAULT NULL,
     foreign key (course_code, session) references course_offerings (course_code, session),
     foreign key (student_id) references students (student_id)
@@ -75,7 +75,7 @@ CREATE TABLE grade_mapping
 );
 
 
-CREATE OR REPLACE FUNCTION enroll_student(p_course_code VARCHAR(6), p_session VARCHAR(8), p_student_id INTEGER)
+CREATE OR REPLACE FUNCTION enroll_student(p_course_code VARCHAR(6), p_session VARCHAR(8), p_student_id VARCHAR(255))
     RETURNS VOID AS
 $$
 BEGIN
@@ -107,7 +107,7 @@ END;
 $$
     LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION deregister_student(p_course_code VARCHAR(6), p_session VARCHAR(8), p_student_id INTEGER)
+CREATE OR REPLACE FUNCTION deregister_student(p_course_code VARCHAR(6), p_session VARCHAR(8), p_student_id VARCHAR(255))
     RETURNS VOID AS
 $$
 BEGIN
@@ -136,7 +136,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION add_grades(p_course_code VARCHAR(6), p_session VARCHAR(8), p_student_ids INTEGER[],
+CREATE OR REPLACE FUNCTION add_grades(p_course_code VARCHAR(6), p_session VARCHAR(8), p_student_ids VARCHAR(255)[],
                                       p_grades VARCHAR(3)[])
     RETURNS VOID AS
 $$
@@ -215,7 +215,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE FUNCTION calculate_cgpa(p_student_id INTEGER)
+CREATE OR REPLACE FUNCTION calculate_cgpa(p_student_id VARCHAR(255))
     RETURNS NUMERIC AS
 $$
 DECLARE
@@ -253,7 +253,20 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE FUNCTION generate_transcript(p_student_id INTEGER, p_session VARCHAR(8))
+CREATE OR REPLACE FUNCTION student_history(p_student_id VARCHAR(255))
+    RETURNS TABLE (course_code VARCHAR(6), course_name VARCHAR(255), grade VARCHAR(3))
+AS $$
+BEGIN
+    RETURN QUERY
+        SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.grade
+        FROM course_catalog
+                 JOIN course_enrollments ON course_catalog.course_code = course_enrollments.course_code
+        WHERE course_enrollments.student_id = p_student_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION generate_transcript(p_student_id VARCHAR(255), p_session VARCHAR(8))
     RETURNS TABLE
             (
                 course_code    VARCHAR(6),

@@ -57,6 +57,4 @@ public class MailManagement {
         }
     }
 }
-//MailManagement mailManagement = new MailManagement("sender@gmail.com", "password");
-//String[] toEmails = {"receiver1@gmail.com", "receiver2@gmail.com"};
-//mailManagement.sendMail("Hello World", toEmails);
+
