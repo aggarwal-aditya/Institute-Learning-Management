@@ -23,15 +23,23 @@ class Main {
         }
         User user = new User();
         switch (userType) {
-            case 1:
+            case 1 -> {
                 if (try_login(user)) break;
                 switch (user.userRole) {
-                    case "student" -> studentMenu(user);
-                    case "instructor" -> teacherMenu(user);
-                    case "admin" -> adminMenu();
+                    case "student" -> {
+                        Student student = new Student(user);
+                        studentMenu(student);
+                    }
+                    case "instructor" -> {
+                        Instructor instructor = new Instructor(user);
+                        instructorMenu(instructor);
+                    }
+                    case "admin" -> {
+                        adminMenu();
+                    }
                 }
-                break;
-            case 2:
+            }
+            case 2 -> {
                 try {
                     user.resetPassword();
                     System.out.println("Password reset successful. Please login again.");
@@ -40,13 +48,12 @@ class Main {
                     mainMenu();
                 }
                 mainMenu();
-                break;
-            case 3:
+            }
+            case 3 -> {
                 System.out.println("Thank you for using ILM");
                 return;
-            default:
-                System.out.println("Invalid choice");
-                break;
+            }
+            default -> System.out.println("Invalid choice");
         }
     }
 
@@ -67,7 +74,7 @@ class Main {
         return false;
     }
 
-    public static void studentMenu(User user) {
+    public static void studentMenu(Student student) {
         System.out.println("1. Register for a course");
         System.out.println("2. Drop a course");
         System.out.println("3. View your courses");
@@ -82,7 +89,6 @@ class Main {
             System.out.println("Enter your choice:");
             choice = scanner.nextInt();
         }
-        Student student = new Student(user);
         switch (choice) {
             case 1:
                 student.registerCourse();
@@ -97,19 +103,21 @@ class Main {
                 student.viewGrades();
                 try {
                     student.viewGrades();
-                }catch (Exception e) {
+                    studentMenu(student);
+                } catch (Exception e) {
                     System.out.println("Unable to fetch grades at the moment. Please try again later.");
                 }
                 break;
             case 5:
                 try {
                     student.computeGPA();
+                    studentMenu(student);
                 } catch (Exception e) {
                     System.out.println("Unable to compute GPA at the moment. Please try again later.");
                 }
                 break;
             case 6:
-                user.viewProfile();
+//                Student.user.viewProfile();
                 break;
             case 7:
                 mainMenu();
@@ -120,7 +128,7 @@ class Main {
         }
     }
 
-    public static void teacherMenu(User user) {
+    public static void instructorMenu(Instructor instructor) {
         System.out.println("1. View your courses");
         System.out.println("2. Float a new course");
         System.out.println("3. Delist a course");
@@ -135,46 +143,45 @@ class Main {
             System.out.println("Enter your choice:");
             choice = scanner.nextInt();
         }
-        Teacher teacher = new Teacher(user);
-        switch (choice){
+        switch (choice) {
             case 1:
                 try {
-                    teacher.viewCourses();
-                    teacherMenu(user);
+                    instructor.viewCourses();
+                    instructorMenu(instructor);
                 } catch (Exception e) {
                     System.out.println("Unable to fetch courses at the moment. Please try again later.");
                 }
                 break;
             case 2:
                 try {
-                    teacher.floatCourse();
+                    instructor.floatCourse();
                 } catch (Exception e) {
                     System.out.println("Unable to float course at the moment. Please try again later.");
                 }
                 break;
             case 3:
                 try {
-                    teacher.delistCourse();
+                    instructor.delistCourse();
                 } catch (Exception e) {
                     System.out.println("Unable to delist course at the moment. Please try again later.");
                 }
                 break;
             case 4:
                 try {
-                    teacher.uploadGrades();
+                    instructor.uploadGrades();
                 } catch (Exception e) {
                     System.out.println("Unable to upload grades at the moment. Please try again later.");
                 }
                 break;
             case 5:
                 try {
-                    teacher.viewStudentGrades();
+                    instructor.viewStudentGrades();
                 } catch (Exception e) {
                     System.out.println("Unable to fetch student grades at the moment. Please try again later.");
                 }
                 break;
             case 6:
-                user.viewProfile();
+//                user.viewProfile();
                 break;
             case 7:
                 mainMenu();

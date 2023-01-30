@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Progress on Menus">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/Teacher.java" afterDir="false" />
+    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Work on Student &amp; Teacher Menu Choices">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/init.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Teacher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Instructor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Utils.java" afterDir="false" />
     </list>
@@ -93,7 +92,7 @@
   }
 }</component>
   <component name="RunManager">
-    <configuration name="org.academics.Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.academics.Main" />
       <module name="ilm.main" />
       <extension name="coverage">
@@ -131,7 +130,8 @@
       <workItem from="1674841001238" duration="163000" />
       <workItem from="1675003231681" duration="7332000" />
       <workItem from="1675019509445" duration="1839000" />
-      <workItem from="1675063093093" duration="4582000" />
+      <workItem from="1675063093093" duration="5772000" />
+      <workItem from="1675096980503" duration="997000" />
     </task>
     <task id="LOCAL-00001" summary="Fix DB Configuration">
       <created>1674704914591</created>
@@ -175,7 +175,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675011165984</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Work on Student &amp; Teacher Menu Choices">
+      <created>1675068783254</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1675068783254</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -199,7 +206,8 @@
     <MESSAGE value="Changes in Login Method" />
     <MESSAGE value="Fix error Handling" />
     <MESSAGE value="Progress on Menus" />
-    <option name="LAST_COMMIT_MESSAGE" value="Progress on Menus" />
+    <MESSAGE value="Work on Student &amp; Teacher Menu Choices" />
+    <option name="LAST_COMMIT_MESSAGE" value="Work on Student &amp; Teacher Menu Choices" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
