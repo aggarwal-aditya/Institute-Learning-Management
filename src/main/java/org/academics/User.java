@@ -31,13 +31,13 @@ public class User {
         System.out.println("Enter your password:");
         String password = scanner.next();
 //        String password= Arrays.toString(System.console().readPassword());
-        PreparedStatement preparedStatement = null;
+        PreparedStatement userDetails = null;
         PreparedStatement statementRole=null;
         try {
-            preparedStatement = conn.prepareStatement("SELECT * FROM users WHERE email_id = ? AND password = ?");
-            preparedStatement.setString(1, email_id);
-            preparedStatement.setString(2, password);
-            if (preparedStatement.executeQuery().next()) {
+            userDetails = conn.prepareStatement("SELECT * FROM users WHERE email_id = ? AND password = ?");
+            userDetails.setString(1, email_id);
+            userDetails.setString(2, password);
+            if (userDetails.executeQuery().next()) {
                 statementRole = conn.prepareStatement("SELECT role FROM users WHERE email_id = ?");
                 statementRole.setString(1, email_id);
                 ResultSet resultSet=statementRole.executeQuery();
@@ -60,11 +60,11 @@ public class User {
         System.out.println("Enter your username(email):");
         String email_id = scanner.next();
         //Check if the username exists
-        PreparedStatement preparedStatement = null;
+        PreparedStatement userDetails = null;
         try {
-            preparedStatement = conn.prepareStatement("SELECT * FROM users WHERE email_id = ?");
-            preparedStatement.setString(1, email_id);
-            if (!preparedStatement.executeQuery().next()) {
+            userDetails = conn.prepareStatement("SELECT * FROM users WHERE email_id = ?");
+            userDetails.setString(1, email_id);
+            if (!userDetails.executeQuery().next()) {
                 System.out.println("Invalid username. Redirecting to Main Menu");
                 return;
             }
@@ -100,22 +100,40 @@ public class User {
     }
 
     public void changePassword(String email_id, String newPassword) throws SQLException {
-        PreparedStatement preparedStatement = null;
+        PreparedStatement userDetails = null;
         try {
-            preparedStatement = conn.prepareStatement("UPDATE users SET password = ? WHERE email_id = ?");
-            preparedStatement.setString(1, newPassword);
-            preparedStatement.setString(2, email_id);
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
+            userDetails = conn.prepareStatement("UPDATE users SET password = ? WHERE email_id = ?");
+            userDetails.setString(1, newPassword);
+            userDetails.setString(2, email_id);
+            userDetails.executeUpdate();
+            userDetails.close();
         } catch (Exception e) {
-            assert preparedStatement != null;
-            preparedStatement.close();
+            assert userDetails != null;
+            userDetails.close();
             throw new RuntimeException(e);
         }
 
     }
 
     public void viewProfile(){
+        System.out.printf("Hi %s !\n", this.email_id);
+        PreparedStatement userDetails = null;
+        try {
+            if(this.userRole.equals("student")){
+                userDetails=conn.prepareStatement("SELECT * FROM students WHERE email_id = ?");
+            }
+            else if(this.userRole.equals("instructor")){
+                userDetails=conn.prepareStatement("SELECT * FROM instructors WHERE email_id = ?");
+            }
+            assert userDetails != null;
+            userDetails.setString(1, this.email_id);
+            ResultSet resultSet=userDetails.executeQuery();
+            //    TODO
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
 
     }
 }

@@ -48,11 +48,11 @@ CREATE TABLE course_catalog
 CREATE TABLE course_offerings
 (
     course_code    VARCHAR(6),
-    session        VARCHAR(8),
+    semester        VARCHAR(8),
     instructor_id  INTEGER NOT NULL,
     qualify        NUMERIC default 0,
     enrollment_num INTEGER default 0,
-    primary key (course_code, session),
+    primary key (course_code, semester),
     foreign key (course_code) references course_catalog (course_code),
     foreign key (instructor_id) references instructors (instructor_id)
 );
@@ -60,11 +60,11 @@ CREATE TABLE course_offerings
 CREATE TABLE course_enrollments
 (
     enrollment_id VARCHAR(255) PRIMARY KEY,
-    course_code   VARCHAR(6) NOT NULL,
-    session       VARCHAR(8) NOT NULL,
-    student_id    VARCHAR(255)    NOT NULL,
+    course_code   VARCHAR(6)   NOT NULL,
+    semester       VARCHAR(8)   NOT NULL,
+    student_id    VARCHAR(255) NOT NULL,
     grade         VARCHAR(3) DEFAULT NULL,
-    foreign key (course_code, session) references course_offerings (course_code, session),
+    foreign key (course_code, semester) references course_offerings (course_code, semester),
     foreign key (student_id) references students (student_id)
 );
 
@@ -75,39 +75,39 @@ CREATE TABLE grade_mapping
 );
 
 
-CREATE OR REPLACE FUNCTION enroll_student(p_course_code VARCHAR(6), p_session VARCHAR(8), p_student_id VARCHAR(255))
+CREATE OR REPLACE FUNCTION enroll_student(p_course_code VARCHAR(6), p_semester VARCHAR(8), p_student_id VARCHAR(255))
     RETURNS VOID AS
 $$
 BEGIN
-    -- check if the course is available for the given session
-    IF NOT EXISTS(SELECT 1 FROM course_offerings WHERE course_code = p_course_code AND session = p_session) THEN
-        RAISE EXCEPTION 'The course is not available for the given session.';
+    -- check if the course is available for the given semester
+    IF NOT EXISTS(SELECT 1 FROM course_offerings WHERE course_code = p_course_code AND semester = p_semester) THEN
+        RAISE EXCEPTION 'The course is not available for the given semester.';
     END IF;
 
     -- check if the student is already enrolled in the course
     IF EXISTS(SELECT 1
               FROM course_enrollments
               WHERE course_code = p_course_code
-                AND session = p_session
+                AND semester = p_semester
                 AND student_id = p_student_id) THEN
         RAISE EXCEPTION 'The student is already enrolled in the course.';
     END IF;
 
     -- insert the enrollment into the course_enrollments table
-    INSERT INTO course_enrollments (course_code, session, student_id)
-    VALUES (p_course_code, p_session, p_student_id);
+    INSERT INTO course_enrollments (course_code, semester, student_id)
+    VALUES (p_course_code, p_semester, p_student_id);
 
     -- increment the enrollment_num of the course 
     UPDATE course_offerings
     SET enrollment_num = enrollment_num + 1
     WHERE course_code = p_course_code
-      AND session = p_session;
+      AND semester = p_semester;
 
 END;
 $$
     LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION deregister_student(p_course_code VARCHAR(6), p_session VARCHAR(8), p_student_id VARCHAR(255))
+CREATE OR REPLACE FUNCTION deregister_student(p_course_code VARCHAR(6), p_semester VARCHAR(8), p_student_id VARCHAR(255))
     RETURNS VOID AS
 $$
 BEGIN
@@ -115,7 +115,7 @@ BEGIN
     IF NOT EXISTS(SELECT 1
                   FROM course_enrollments
                   WHERE course_code = p_course_code
-                    AND session = p_session
+                    AND semester = p_semester
                     AND student_id = p_student_id) THEN
         RAISE EXCEPTION 'The student is not enrolled in the course.';
     END IF;
@@ -124,19 +124,19 @@ BEGIN
     DELETE
     FROM course_enrollments
     WHERE course_code = p_course_code
-      AND session = p_session
+      AND semester = p_semester
       AND student_id = p_student_id;
 
     -- decrement the enrollment_num of the course
     UPDATE course_offerings
     SET enrollment_num = enrollment_num - 1
     WHERE course_code = p_course_code
-      AND session = p_session;
+      AND semester = p_semester;
 
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION add_grades(p_course_code VARCHAR(6), p_session VARCHAR(8), p_student_ids VARCHAR(255)[],
+CREATE OR REPLACE FUNCTION add_grades(p_course_code VARCHAR(6), p_semester VARCHAR(8), p_student_ids VARCHAR(255)[],
                                       p_grades VARCHAR(3)[])
     RETURNS VOID AS
 $$
@@ -147,7 +147,7 @@ BEGIN
             IF NOT EXISTS(SELECT 1
                           FROM course_enrollments
                           WHERE course_code = p_course_code
-                            AND session = p_session
+                            AND semester = p_semester
                             AND student_id = p_student_ids[i]) THEN
                 RAISE EXCEPTION 'The student is not enrolled in the course.';
             END IF;
@@ -156,7 +156,7 @@ BEGIN
             UPDATE course_enrollments
             SET grade = p_grades[i]
             WHERE course_code = p_course_code
-              AND session = p_session
+              AND semester = p_semester
               AND student_id = p_student_ids[i];
         END LOOP;
 END;
@@ -164,7 +164,7 @@ $$ LANGUAGE plpgsql;
 
 
 
-CREATE OR REPLACE FUNCTION offer_course(p_course_code VARCHAR(6), p_session VARCHAR(8), p_instructor_id INTEGER,
+CREATE OR REPLACE FUNCTION offer_course(p_course_code VARCHAR(6), p_semester VARCHAR(8), p_instructor_id INTEGER,
                                         p_qualify NUMERIC DEFAULT NULL)
     RETURNS VOID AS
 $$
@@ -173,46 +173,68 @@ BEGIN
     IF EXISTS(SELECT 1
               FROM course_offerings
               WHERE course_code = p_course_code
-                AND session = p_session
+                AND semester = p_semester
                 AND instructor_id = p_instructor_id) THEN
-        RAISE EXCEPTION 'The course is already offered by the instructor in the same session.';
+        RAISE EXCEPTION 'The course is already offered by the instructor in the same semester.';
     END IF;
 
-    -- check if the course is already offered by another instructor in the same session
-    IF EXISTS(SELECT 1 FROM course_offerings WHERE course_code = p_course_code AND session = p_session) THEN
-        RAISE EXCEPTION 'The course is already offered by another instructor in the same session.';
+    -- check if the course is already offered by another instructor in the same semester
+    IF EXISTS(SELECT 1 FROM course_offerings WHERE course_code = p_course_code AND semester = p_semester) THEN
+        RAISE EXCEPTION 'The course is already offered by another instructor in the same semester.';
     END IF;
 
     -- insert the course offering into the course_offerings table
-    INSERT INTO course_offerings (course_code, session, instructor_id, qualify)
-    VALUES (p_course_code, p_session, p_instructor_id, COALESCE(p_qualify, 0));
+    INSERT INTO course_offerings (course_code, semester, instructor_id, qualify)
+    VALUES (p_course_code, p_semester, p_instructor_id, COALESCE(p_qualify, 0));
 
 END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE FUNCTION deregister_course(p_course_code VARCHAR(6), p_session VARCHAR(8), p_instructor_id INTEGER)
+CREATE OR REPLACE FUNCTION delist_course(p_course_code VARCHAR(6), p_semester VARCHAR(8), p_instructor_id INTEGER)
     RETURNS VOID AS
 $$
 BEGIN
-    -- check if the course is not offered by the instructor in the same session
+    -- check if the course is not offered by the instructor in the same semester
     IF NOT EXISTS(SELECT 1
                   FROM course_offerings
                   WHERE course_code = p_course_code
-                    AND session = p_session
+                    AND semester = p_semester
                     AND instructor_id = p_instructor_id) THEN
-        RAISE EXCEPTION 'The course is not offered by the instructor in the same session.';
+        RAISE EXCEPTION 'The course is not offered by the instructor in the same semester.';
     END IF;
 
     -- deregister the course offering from the course_offerings table
     DELETE
     FROM course_offerings
     WHERE course_code = p_course_code
-      AND session = p_session
+      AND semester = p_semester
       AND instructor_id = p_instructor_id;
 
 END;
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION get_instructor_courses(p_instructor_id INTEGER)
+    RETURNS TABLE
+            (
+                course_code    VARCHAR(6),
+                course_name    VARCHAR(100),
+                semester        VARCHAR(8),
+                qualify        NUMERIC,
+                enrollment_num INTEGER
+            )
+AS
+$$
+BEGIN
+    RETURN QUERY
+        SELECT course_offerings.course_code, course_catalog.course_name, course_offerings.semester, course_offerings.qualify, course_offerings.enrollment_num
+        FROM course_offerings
+                 JOIN course_catalog ON course_offerings.course_code = course_catalog.course_code
+        WHERE instructor_id = p_instructor_id;
+END;
+$$ LANGUAGE plpgsql;
+
 
 
 CREATE OR REPLACE FUNCTION calculate_cgpa(p_student_id VARCHAR(255))
@@ -228,7 +250,7 @@ BEGIN
     earned_credits := 0;
 
     -- calculate total credits and earned credits
-    FOR course_enrollment IN (SELECT course_enrollments.course_code, session, grade, credit_str
+    FOR course_enrollment IN (SELECT course_enrollments.course_code, semester, grade, credit_str
                               FROM course_enrollments
                                        JOIN course_catalog
                                             ON course_enrollments.course_code = course_catalog.course_code
@@ -254,8 +276,14 @@ $$ LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION student_history(p_student_id VARCHAR(255))
-    RETURNS TABLE (course_code VARCHAR(6), course_name VARCHAR(255), grade VARCHAR(3))
-AS $$
+    RETURNS TABLE
+            (
+                course_code VARCHAR(6),
+                course_name VARCHAR(255),
+                grade       VARCHAR(3)
+            )
+AS
+$$
 BEGIN
     RETURN QUERY
         SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.grade
@@ -266,7 +294,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE FUNCTION generate_transcript(p_student_id VARCHAR(255), p_session VARCHAR(8))
+CREATE OR REPLACE FUNCTION generate_transcript(p_student_id VARCHAR(255), p_semester VARCHAR(8))
     RETURNS TABLE
             (
                 course_code    VARCHAR(6),
@@ -289,12 +317,12 @@ BEGIN
                          JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
                          JOIN grade_mapping ON course_enrollments.grade = grade_mapping.grade
                 WHERE course_enrollments.student_id = p_student_id
-                  AND course_enrollments.session = p_session),
+                  AND course_enrollments.semester = p_semester),
                calculate_cgpa(p_student_id)
         FROM course_enrollments
                  JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
         WHERE course_enrollments.student_id = p_student_id
-          AND course_enrollments.session = p_session;
+          AND course_enrollments.semester = p_semester;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -345,8 +373,8 @@ BEGIN
           FROM course_enrollments
                    JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
           WHERE student_id = NEW.student_id
-            AND session < NEW.session
-          ORDER BY session DESC
+            AND semester < NEW.semester
+          ORDER BY semester DESC
           LIMIT 2) as previous_semesters;
     IF credit_limit IS NOT NULL THEN
         SELECT COUNT(*)
@@ -355,8 +383,8 @@ BEGIN
               FROM course_enrollments
                        JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
               WHERE student_id = NEW.student_id
-                AND session < NEW.session
-              ORDER BY session DESC
+                AND semester < NEW.semester
+              ORDER BY semester DESC
               LIMIT 2) as previous_semesters;
         IF count < 2 THEN
             credit_limit := 24;
@@ -374,7 +402,7 @@ BEGIN
     FROM course_enrollments
              JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
     WHERE student_id = NEW.student_id
-      AND session = NEW.session;
+      AND semester = NEW.semester;
 
     -- Check if the student will exceed the credit limit
     IF (current_credits + (SELECT credit_str[5] FROM course_catalog WHERE course_code = NEW.course_code)) >
