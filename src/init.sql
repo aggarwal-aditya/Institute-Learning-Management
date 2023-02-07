@@ -12,10 +12,10 @@ CREATE TABLE users
 
 CREATE TABLE instructors
 (
-    instructor_id   INTEGER PRIMARY KEY,
+    instructor_id   SERIAL4 PRIMARY KEY,
+    email_id        VARCHAR(255) NOT NULL,
     name            VARCHAR(255) NOT NULL,
     phone_number    VARCHAR(20)  NOT NULL,
-    email_id        VARCHAR(255) NOT NULL,
     dept            VARCHAR(127),
     date_of_joining DATE         NOT NULL,
     foreign key (email_id) references users (email_id)
@@ -25,14 +25,24 @@ create unique index instructor_unique_email_idx on instructors (email_id);
 CREATE TABLE students
 (
     student_id   VARCHAR(255) PRIMARY KEY,
+    email_id     VARCHAR(255) NOT NULL,
     name         VARCHAR(255) NOT NULL,
     phone_number VARCHAR(20)  NOT NULL,
-    email_id     VARCHAR(255) NOT NULL,
     dept         VARCHAR(127),
-    batch        DATE         NOT NULL,
+    batch        INTEGER         NOT NULL,
     foreign key (email_id) references users (email_id)
 );
 create unique index student_unique_email_idx on students (email_id);
+
+CREATE TABLE semester
+(
+    year            INTEGER NOT NULL,
+    semester_number INTEGER NOT NULL,
+    start_date      DATE    NOT NULL,
+    end_date        DATE    NOT NULL,
+    PRIMARY KEY (year, semester_number)
+);
+
 
 
 CREATE TABLE course_catalog
@@ -45,10 +55,11 @@ CREATE TABLE course_catalog
 );
 
 
+
 CREATE TABLE course_offerings
 (
     course_code    VARCHAR(6),
-    semester        VARCHAR(8),
+    semester       VARCHAR(8),
     instructor_id  INTEGER NOT NULL,
     qualify        NUMERIC default 0,
     enrollment_num INTEGER default 0,
@@ -61,7 +72,7 @@ CREATE TABLE course_enrollments
 (
     enrollment_id VARCHAR(255) PRIMARY KEY,
     course_code   VARCHAR(6)   NOT NULL,
-    semester       VARCHAR(8)   NOT NULL,
+    semester      VARCHAR(8)   NOT NULL,
     student_id    VARCHAR(255) NOT NULL,
     grade         VARCHAR(3) DEFAULT NULL,
     foreign key (course_code, semester) references course_offerings (course_code, semester),
@@ -107,7 +118,8 @@ END;
 $$
     LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION deregister_student(p_course_code VARCHAR(6), p_semester VARCHAR(8), p_student_id VARCHAR(255))
+CREATE OR REPLACE FUNCTION deregister_student(p_course_code VARCHAR(6), p_semester VARCHAR(8),
+                                              p_student_id VARCHAR(255))
     RETURNS VOID AS
 $$
 BEGIN
@@ -215,12 +227,35 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+
+CREATE OR REPLACE FUNCTION get_available_courses(p_session_id VARCHAR(80))
+    RETURNS TABLE
+            (
+                course_code     VARCHAR(6),
+                course_name     VARCHAR(100),
+                instructor_name VARCHAR(255)
+            )
+AS
+$$
+BEGIN
+    RETURN QUERY
+        SELECT course_offerings.course_code,
+               course_catalog.course_name,
+               instructors.name
+        FROM course_offerings
+                 JOIN course_catalog ON course_offerings.course_code = course_catalog.course_code
+                 JOIN instructors ON course_offerings.instructor_id = instructors.instructor_id
+        WHERE course_offerings.semester = p_session_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
 CREATE OR REPLACE FUNCTION get_instructor_courses(p_instructor_id INTEGER)
     RETURNS TABLE
             (
                 course_code    VARCHAR(6),
                 course_name    VARCHAR(100),
-                semester        VARCHAR(8),
+                semester       VARCHAR(8),
                 qualify        NUMERIC,
                 enrollment_num INTEGER
             )
@@ -228,7 +263,11 @@ AS
 $$
 BEGIN
     RETURN QUERY
-        SELECT course_offerings.course_code, course_catalog.course_name, course_offerings.semester, course_offerings.qualify, course_offerings.enrollment_num
+        SELECT course_offerings.course_code,
+               course_catalog.course_name,
+               course_offerings.semester,
+               course_offerings.qualify,
+               course_offerings.enrollment_num
         FROM course_offerings
                  JOIN course_catalog ON course_offerings.course_code = course_catalog.course_code
         WHERE instructor_id = p_instructor_id;
@@ -269,7 +308,7 @@ BEGIN
     IF total_credits = 0 THEN
         RETURN 0;
     ELSE
-        RETURN earned_credits / total_credits;
+        RETURN earned_credits*(1.0) / (total_credits*1.0);
     END IF;
 END;
 $$ LANGUAGE plpgsql;

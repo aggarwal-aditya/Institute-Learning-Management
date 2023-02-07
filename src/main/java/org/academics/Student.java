@@ -48,9 +48,44 @@ public class Student {
     }
 
     public void registerCourse() {
-        //TODO
-    }
+        String session = Utils.getCurrentSession();
+        System.out.println(session);
+        System.out.println("The Following Courses are available for registration in " + session + " session");
+        try {
+            CallableStatement getAvailableCourses = conn.prepareCall("{? = call get_available_courses(?)}");
+            if(session==null){
+                System.out.println("No courses available for registration");
+                return;
+            }
+            getAvailableCourses.registerOutParameter(1, Types.OTHER);
+            getAvailableCourses.setString(2, session);
+            getAvailableCourses.execute();
+//            ResultSet resultSet = (ResultSet) getAvailableCourses.getObject(1);
+//            System.out.println("Course Code Course Name Instructor");
+//            while (resultSet.next()) {
+//                String course_code = resultSet.getString("course_code");
+//                String course_name = resultSet.getString("course_name");
+//                String instructor = resultSet.getString("instructor");
+//                System.out.println(course_code + " " + course_name + " " + instructor);
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Hi");
+        }
+//        System.out.println("Enter the course code of the course you want to register for:");
+//        String course_code = scanner.next();
+//        try {
+//            CallableStatement registerCourse = conn.prepareCall("{call enroll_student(?, ?, ?)}");
+//            registerCourse.setString(1, course_code);
+//            registerCourse.setString(2, session);
+//            registerCourse.setString(3, user.email_id   .substring(0,user.email_id.indexOf("@")).toUpperCase());
+//            registerCourse.execute();
+//            System.out.println("Course Registered Successfully");
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
 
+    }
     public void dropCourse() {
         //TODO
     }
@@ -60,10 +95,11 @@ public class Student {
 
             CallableStatement calculateCGPA = conn.prepareCall("{? = call calculate_cgpa(?)}");
             calculateCGPA.registerOutParameter(1, Types.NUMERIC);
-            calculateCGPA.setString(2, user.email_id   .substring(0,user.email_id.indexOf("@")).toUpperCase());
+            calculateCGPA.setString(2, user.email_id.substring(0,user.email_id.indexOf("@")).toUpperCase());
             calculateCGPA.execute();
             System.out.println("Your CGPA is: " + calculateCGPA.getDouble(1));
         }catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
 

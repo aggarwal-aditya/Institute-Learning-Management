@@ -91,7 +91,14 @@ class Main {
         }
         switch (choice) {
             case 1:
-                student.registerCourse();
+                try {
+                    student.registerCourse();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    studentMenu(student);
+                }
+                studentMenu(student);
                 break;
             case 2:
                 student.dropCourse();
