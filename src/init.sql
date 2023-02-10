@@ -51,7 +51,7 @@ CREATE TABLE course_catalog
     course_name  VARCHAR(255)  NOT NULL,
     credit_str   NUMERIC array NOT NULL,
     dept         VARCHAR(127),
-    prerequisite VARCHAR(6) array DEFAULT NULL
+    prerequisite VARCHAR(6)[][] DEFAULT NULL
 );
 
 
@@ -70,11 +70,11 @@ CREATE TABLE course_offerings
 
 CREATE TABLE course_enrollments
 (
-    enrollment_id VARCHAR(255) PRIMARY KEY,
+    enrollment_id SERIAL4 PRIMARY KEY,
     course_code   VARCHAR(6)   NOT NULL,
     semester      VARCHAR(8)   NOT NULL,
     student_id    VARCHAR(255) NOT NULL,
-    grade         VARCHAR(3) DEFAULT NULL,
+    grade         VARCHAR(3) DEFAULT 'NA',
     foreign key (course_code, semester) references course_offerings (course_code, semester),
     foreign key (student_id) references students (student_id)
 );
@@ -91,9 +91,9 @@ CREATE OR REPLACE FUNCTION enroll_student(p_course_code VARCHAR(6), p_semester V
 $$
 BEGIN
     -- check if the course is available for the given semester
-    IF NOT EXISTS(SELECT 1 FROM course_offerings WHERE course_code = p_course_code AND semester = p_semester) THEN
-        RAISE EXCEPTION 'The course is not available for the given semester.';
-    END IF;
+    -- IF NOT EXISTS(SELECT 1 FROM course_offerings WHERE course_code = p_course_code AND semester = p_semester) THEN
+    --     RAISE EXCEPTION 'The course is not available for the given semester.';
+    -- END IF;
 
     -- check if the student is already enrolled in the course
     IF EXISTS(SELECT 1
@@ -102,6 +102,14 @@ BEGIN
                 AND semester = p_semester
                 AND student_id = p_student_id) THEN
         RAISE EXCEPTION 'The student is already enrolled in the course.';
+    END IF;
+
+    IF EXISTS(SELECT 1
+              FROM course_enrollments
+              WHERE course_code = p_course_code
+                AND grade!='F'
+                AND student_id = p_student_id) THEN
+        RAISE EXCEPTION 'The student has already completed the course earlier.';
     END IF;
 
     -- insert the enrollment into the course_enrollments table
@@ -228,26 +236,26 @@ $$ LANGUAGE plpgsql;
 
 
 
-CREATE OR REPLACE FUNCTION get_available_courses(p_session_id VARCHAR(80))
-    RETURNS TABLE
-            (
-                course_code     VARCHAR(6),
-                course_name     VARCHAR(100),
-                instructor_name VARCHAR(255)
-            )
-AS
-$$
-BEGIN
-    RETURN QUERY
-        SELECT course_offerings.course_code,
-               course_catalog.course_name,
-               instructors.name
-        FROM course_offerings
-                 JOIN course_catalog ON course_offerings.course_code = course_catalog.course_code
-                 JOIN instructors ON course_offerings.instructor_id = instructors.instructor_id
-        WHERE course_offerings.semester = p_session_id;
-END;
-$$ LANGUAGE plpgsql;
+-- CREATE OR REPLACE FUNCTION get_available_courses(p_session_id VARCHAR(80))
+--     RETURNS TABLE
+--             (
+--                 course_code     VARCHAR(6),
+--                 course_name     VARCHAR(100),
+--                 instructor_name VARCHAR(255)
+--             )
+-- AS
+-- $$
+-- BEGIN
+--     RETURN QUERY
+--         SELECT course_offerings.course_code,
+--                course_catalog.course_name,
+--                instructors.name
+--         FROM course_offerings
+--                  JOIN course_catalog ON course_offerings.course_code = course_catalog.course_code
+--                  JOIN instructors ON course_offerings.instructor_id = instructors.instructor_id
+--         WHERE course_offerings.semester = p_session_id;
+-- END;
+-- $$ LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION get_instructor_courses(p_instructor_id INTEGER)
@@ -367,97 +375,97 @@ $$ LANGUAGE plpgsql;
 
 
 
-CREATE OR REPLACE FUNCTION check_prerequisites()
-    RETURNS TRIGGER AS
-$$
-DECLARE
-    prerequisite RECORD;
-BEGIN
-    -- Get the prerequisites for the course being enrolled in
-    FOR prerequisite IN (SELECT prerequisite FROM course_catalog WHERE course_code = NEW.course_code)
-        LOOP
-            -- Check if the student has completed the prerequisite course and obtained a grade other than E or F
-            IF NOT EXISTS(SELECT 1
-                          FROM course_enrollments
-                          WHERE student_id = NEW.student_id
-                            AND course_code = prerequisite.prerequisite
-                            AND grade NOT IN ('E', 'F')) THEN
-                RAISE EXCEPTION 'Student has not cleared the prerequisite course(s)';
-            END IF;
-        END LOOP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER prerequisites_check
-    BEFORE INSERT
-    ON course_enrollments
-    FOR EACH ROW
-EXECUTE FUNCTION check_prerequisites();
-
-
-
-CREATE OR REPLACE FUNCTION check_credit_limit()
-    RETURNS TRIGGER AS
-$$
-DECLARE
-    credit_limit    NUMERIC;
-    count           INTEGER;
-    current_credits NUMERIC;
-BEGIN
-    -- Get the credit limit for the student based on previous semesters
-    SELECT SUM(credits)
-    INTO credit_limit
-    FROM (SELECT SUM(credit_str[5]) as credits
-          FROM course_enrollments
-                   JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
-          WHERE student_id = NEW.student_id
-            AND semester < NEW.semester
-          ORDER BY semester DESC
-          LIMIT 2) as previous_semesters;
-    IF credit_limit IS NOT NULL THEN
-        SELECT COUNT(*)
-        INTO count
-        FROM (SELECT SUM(credit_str[5]) as credits
-              FROM course_enrollments
-                       JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
-              WHERE student_id = NEW.student_id
-                AND semester < NEW.semester
-              ORDER BY semester DESC
-              LIMIT 2) as previous_semesters;
-        IF count < 2 THEN
-            credit_limit := 24;
-        ELSE
-            credit_limit := 1.25 * (credit_limit / count);
-        END IF;
-    ELSE
-        credit_limit := 24;
-    END IF;
-
-
-    -- Get the total credits for the current semester
-    SELECT SUM(credit_str[5])
-    INTO current_credits
-    FROM course_enrollments
-             JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
-    WHERE student_id = NEW.student_id
-      AND semester = NEW.semester;
-
-    -- Check if the student will exceed the credit limit
-    IF (current_credits + (SELECT credit_str[5] FROM course_catalog WHERE course_code = NEW.course_code)) >
-       credit_limit THEN
-        RAISE EXCEPTION 'The student will exceed the credit limit for this semester';
-    END IF;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER credit_limit_check
-    BEFORE INSERT
-    ON course_enrollments
-    FOR EACH ROW
-EXECUTE FUNCTION check_credit_limit();
+-- CREATE OR REPLACE FUNCTION check_prerequisites()
+--     RETURNS TRIGGER AS
+-- $$
+-- DECLARE
+--     prerequisite RECORD;
+-- BEGIN
+--     -- Get the prerequisites for the course being enrolled in
+--     FOR prerequisite IN (SELECT prerequisite FROM course_catalog WHERE course_code = NEW.course_code)
+--         LOOP
+--             -- Check if the student has completed the prerequisite course and obtained a grade other than E or F
+--             IF NOT EXISTS(SELECT 1
+--                           FROM course_enrollments
+--                           WHERE student_id = NEW.student_id
+--                             AND course_code = prerequisite.prerequisite
+--                             AND grade NOT IN ('E', 'F')) THEN
+--                 RAISE EXCEPTION 'Student has not cleared the prerequisite course(s)';
+--             END IF;
+--         END LOOP;
+--     RETURN NEW;
+-- END;
+-- $$ LANGUAGE plpgsql;
+--
+-- CREATE TRIGGER prerequisites_check
+--     BEFORE INSERT
+--     ON course_enrollments
+--     FOR EACH ROW
+-- EXECUTE FUNCTION check_prerequisites();
+--
+--
+--
+-- CREATE OR REPLACE FUNCTION check_credit_limit()
+--     RETURNS TRIGGER AS
+-- $$
+-- DECLARE
+--     credit_limit    NUMERIC;
+--     count           INTEGER;
+--     current_credits NUMERIC;
+-- BEGIN
+--     -- Get the credit limit for the student based on previous semesters
+--     SELECT SUM(credits)
+--     INTO credit_limit
+--     FROM (SELECT SUM(credit_str[5]) as credits
+--           FROM course_enrollments
+--                    JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
+--           WHERE student_id = NEW.student_id
+--             AND semester < NEW.semester
+--           ORDER BY semester DESC
+--           LIMIT 2) as previous_semesters;
+--     IF credit_limit IS NOT NULL THEN
+--         SELECT COUNT(*)
+--         INTO count
+--         FROM (SELECT SUM(credit_str[5]) as credits
+--               FROM course_enrollments
+--                        JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
+--               WHERE student_id = NEW.student_id
+--                 AND semester < NEW.semester
+--               ORDER BY semester DESC
+--               LIMIT 2) as previous_semesters;
+--         IF count < 2 THEN
+--             credit_limit := 24;
+--         ELSE
+--             credit_limit := 1.25 * (credit_limit / count);
+--         END IF;
+--     ELSE
+--         credit_limit := 24;
+--     END IF;
+--
+--
+--     -- Get the total credits for the current semester
+--     SELECT SUM(credit_str[5])
+--     INTO current_credits
+--     FROM course_enrollments
+--              JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
+--     WHERE student_id = NEW.student_id
+--       AND semester = NEW.semester;
+--
+--     -- Check if the student will exceed the credit limit
+--     IF (current_credits + (SELECT credit_str[5] FROM course_catalog WHERE course_code = NEW.course_code)) >
+--        credit_limit THEN
+--         RAISE EXCEPTION 'The student will exceed the credit limit for this semester';
+--     END IF;
+--
+--     RETURN NEW;
+-- END;
+-- $$ LANGUAGE plpgsql;
+--
+-- CREATE TRIGGER credit_limit_check
+--     BEFORE INSERT
+--     ON course_enrollments
+--     FOR EACH ROW
+-- EXECUTE FUNCTION check_credit_limit();
 
 
 
@@ -480,3 +488,15 @@ VALUES ('E', 2);
 INSERT INTO grade_mapping (grade, value)
 VALUES ('F', 0);
 
+
+INSERT INTO users VALUES ('2020csb1066@iitrpr.ac.in','aditya','student');
+INSERT INTO users VALUES ('mudgal@yopmail.com','aditya','instructor');
+INSERT into instructors (email_id,name,phone_number,dept,date_of_joining) VALUES ('mudgal@yopmail.com','Apurva Mudgal','8989872980','CSE',now());
+INSERT into students VALUES ('2020CSB1066','2020csb1066@iitrpr.ac.in','Aditya Aggarwal','8989872980','CSE','2024');
+INSERT into semester VALUES (2022,2,'2020-02-25','2024-02-25');
+INSERT INTO course_catalog VALUES ('CS201','Data Structures',ARRAY[3,1,2,2,4],'CSE');
+INSERT INTO course_catalog VALUES ('CS202','Algorithms',ARRAY[3,1,2,2,4],'CSE');
+INSERT into course_offerings VALUES ('CS201','2022-2',1);
+INSERT into course_offerings VALUES ('CS202','2022-1',1);
+INSERT INTO course_enrollments (course_code, semester,student_id,grade) values ('CS201','2022-2','2020CSB1066','A');
+INSERT INTO course_enrollments (course_code, semester,student_id,grade) values ('CS202','2022-1','2020CSB1066','D');

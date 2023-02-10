@@ -7,10 +7,16 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
+
 }
 
 dependencies {
-    //Add java mail dependency
+    //add apache string utils
+    implementation files('libs/j-text-utils-0.3.3.jar')
+    implementation "commons-lang:commons-lang:2.6"
     implementation 'com.sun.mail:javax.mail:1.6.2'
     implementation 'org.postgresql:postgresql:42.2.27'
     implementation 'io.github.cdimascio:dotenv-java:2.3.2'

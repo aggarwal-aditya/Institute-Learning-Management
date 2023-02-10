@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_INJECTED_CODE" value="false" />
+    <option name="SCOPE_TYPE" value="3" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Modularization of Menus">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/CurrentDate.java" afterDir="false" />
+    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Modifications due to SRS update">
+      <change afterPath="$PROJECT_DIR$/libs/j-text-utils-0.3.3.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/dao/JDBCPostgreSQLConnection.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/mailserver/MailManagement.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/init.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Instructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Instructor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/JDBCPostgreSQLConnection.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Student.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/mailManagement.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +49,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="package-info" />
         <option value="Class" />
       </list>
     </option>
@@ -60,7 +72,6 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/src/init.sql" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/org/academics/JDBCPostgreSQLConnection.java" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -82,6 +93,7 @@
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
@@ -128,7 +140,13 @@
       <workItem from="1675063093093" duration="5772000" />
       <workItem from="1675096980503" duration="1277000" />
       <workItem from="1675784305019" duration="56000" />
-      <workItem from="1675784388492" duration="9412000" />
+      <workItem from="1675784388492" duration="9576000" />
+      <workItem from="1675824736482" duration="45000" />
+      <workItem from="1675824796483" duration="5483000" />
+      <workItem from="1675831439373" duration="1111000" />
+      <workItem from="1675847116610" duration="466000" />
+      <workItem from="1675866552132" duration="3167000" />
+      <workItem from="1675929280938" duration="18590000" />
     </task>
     <task id="LOCAL-00001" summary="Fix DB Configuration">
       <created>1674704914591</created>
@@ -186,7 +204,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675098233811</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Modifications due to SRS update">
+      <created>1675805375363</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1675805375363</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -212,23 +237,8 @@
     <MESSAGE value="Progress on Menus" />
     <MESSAGE value="Work on Student &amp; Teacher Menu Choices" />
     <MESSAGE value="Modularization of Menus" />
-    <option name="LAST_COMMIT_MESSAGE" value="Modularization of Menus" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/academics/Student.java</url>
-          <line>24</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/academics/Main.java</url>
-          <line>138</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Modifications due to SRS update" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modifications due to SRS update" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

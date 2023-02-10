@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
+import org.academics.mailserver.*;
+import org.academics.dao.*;
+
 
 public class User {
     Scanner scanner = new Scanner(System.in);
@@ -17,6 +20,10 @@ public class User {
     public User() {
         this.userRole = null;
         this.email_id = null;
+    }
+    public User(String userRole, String email_id) {
+        this.userRole = userRole;
+        this.email_id = email_id;
     }
 
     public void setUserDetails(String userRole, String email_id) {
@@ -55,7 +62,7 @@ public class User {
         }
     }
 
-    public void resetPassword() {
+    public boolean resetPassword() {
         System.out.println("Enter your username(email):");
         String email_id = scanner.next();
         //Check if the username exists
@@ -65,7 +72,7 @@ public class User {
             userDetails.setString(1, email_id);
             if (!userDetails.executeQuery().next()) {
                 System.out.println("Invalid username. Redirecting to Main Menu");
-                return;
+                return false;
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -95,7 +102,9 @@ public class User {
         }
         else {
             System.out.println("Invalid OTP. Redirecting to Main Menu");
+            return false;
         }
+        return true;
     }
 
     public void changePassword(String email_id, String newPassword) throws SQLException {
@@ -119,20 +128,95 @@ public class User {
         PreparedStatement userDetails = null;
         try {
             if(this.userRole.equals("student")){
-                userDetails=conn.prepareStatement("SELECT * FROM students WHERE email_id = ?");
+                userDetails=conn.prepareStatement("SELECT student_id,students.name,phone_number,dept,batch FROM students WHERE email_id = ?");
             }
             else if(this.userRole.equals("instructor")){
-                userDetails=conn.prepareStatement("SELECT * FROM instructors WHERE email_id = ?");
+                userDetails=conn.prepareStatement("SELECT instructor_id,instructors.name,phone_number,dept,date_of_joining FROM instructors WHERE email_id = ?");
             }
             assert userDetails != null;
             userDetails.setString(1, this.email_id);
             ResultSet resultSet=userDetails.executeQuery();
-            //    TODO
-
+            while (resultSet.next()){
+                System.out.printf("ID: %s\n",resultSet.getString(1));
+                System.out.printf("Name: %s\n",resultSet.getString(2));
+                System.out.printf("Phone Number: %s\n",resultSet.getString(3));
+                System.out.printf("Department: %s\n",resultSet.getString(4));
+                if(this.userRole.equals("student")){
+                    System.out.printf("Batch: %s\n",resultSet.getString(5));
+                }
+                else if(this.userRole.equals("instructor")){
+                    System.out.printf("Date of Joining: %s\n",resultSet.getString(5));
+                }
+            }
+            userDetails.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        try {
+            System.out.println("Press 1 to Edit your profile");
+            System.out.println("Press 2 to go back to Main Menu");
+            int choice = scanner.nextInt();
+            switch (choice) {
+                case 1:
+                    editProfile();
+                    break;
+                case 2:
+                    break;
+                default:
+                    System.out.println("Invalid choice. Redirecting to Main Menu");
+            }
 
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
 
+    }
+    public void editProfile() {
+        System.out.println("1. Update Phone Number");
+        System.out.println("2. Update Password");
+        System.out.println("3. Go back to Main Menu");
+        int choice = scanner.nextInt();
+        switch (choice) {
+            case 1:
+                System.out.println("Enter your new phone number:");
+                String newPhoneNumber = scanner.next();
+                PreparedStatement userDetails = null;
+                try {
+                    if (this.userRole.equals("student")) {
+                        userDetails = conn.prepareStatement("UPDATE students SET phone_number = ? WHERE email_id = ?");
+                    } else if (this.userRole.equals("instructor")) {
+                        userDetails = conn.prepareStatement("UPDATE instructors SET phone_number = ? WHERE email_id = ?");
+                    }
+                    assert userDetails != null;
+                    userDetails.setString(1, newPhoneNumber);
+                    userDetails.setString(2, this.email_id);
+                    userDetails.executeUpdate();
+                    userDetails.close();
+                    System.out.println("Phone number updated successfully");
+                } catch (Exception e) {
+                    assert userDetails != null;
+                    try {
+                        userDetails.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                    throw new RuntimeException(e);
+                }
+                break;
+            case 2:
+                System.out.println("Enter your new password:");
+                String newPassword = scanner.next();
+                try {
+                    changePassword(this.email_id, newPassword);
+                    System.out.println("Password updated successfully");
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            case 3:
+                break;
+            default:
+                System.out.println("Invalid choice. Redirecting to Main Menu");
+        }
     }
 }

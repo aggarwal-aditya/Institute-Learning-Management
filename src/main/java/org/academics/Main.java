@@ -2,6 +2,7 @@ package org.academics;
 
 import java.sql.Connection;
 import java.util.Scanner;
+import org.academics.dao.*;
 
 
 class Main {
@@ -41,8 +42,8 @@ class Main {
             }
             case 2 -> {
                 try {
-                    user.resetPassword();
-                    System.out.println("Password reset successful. Please login again.");
+                    if(user.resetPassword())
+                        System.out.println("Password reset successful. Please login again.");
                 } catch (Exception e) {
                     System.out.println("Unable to reset password at the moment. Please try again later.");
                     mainMenu();
@@ -96,6 +97,7 @@ class Main {
                 }
                 catch (Exception e) {
                     e.printStackTrace();
+                    System.out.println("Unable to register for course at the moment. Please try again later.");
                     studentMenu(student);
                 }
                 studentMenu(student);
@@ -104,15 +106,22 @@ class Main {
                 student.dropCourse();
                 break;
             case 3:
-                student.viewCourses();
+                try {
+                    student.viewCourses();
+                    studentMenu(student);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Unable to fetch courses at the moment. Please try again later.");
+                    studentMenu(student);
+                }
                 break;
             case 4:
-                student.viewGrades();
                 try {
                     student.viewGrades();
                     studentMenu(student);
                 } catch (Exception e) {
                     System.out.println("Unable to fetch grades at the moment. Please try again later.");
+                    studentMenu(student);
                 }
                 break;
             case 5:
@@ -121,10 +130,20 @@ class Main {
                     studentMenu(student);
                 } catch (Exception e) {
                     System.out.println("Unable to compute GPA at the moment. Please try again later.");
+                    studentMenu(student);
                 }
                 break;
             case 6:
-//                Student.user.viewProfile();
+                try
+                {
+                    student.viewProfile();
+                    studentMenu(student);
+                }
+                catch (Exception e)
+                {
+                    System.out.println("Unable to fetch profile at the moment. Please try again later.");
+                    studentMenu(student);
+                }
                 break;
             case 7:
                 mainMenu();
@@ -176,19 +195,30 @@ class Main {
             case 4:
                 try {
                     instructor.uploadGrades();
+                    instructorMenu(instructor);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("Unable to upload grades at the moment. Please try again later.");
+                    instructorMenu(instructor);
                 }
                 break;
             case 5:
                 try {
                     instructor.viewStudentGrades();
+                    instructorMenu(instructor);
                 } catch (Exception e) {
                     System.out.println("Unable to fetch student grades at the moment. Please try again later.");
+                    instructorMenu(instructor);
                 }
                 break;
             case 6:
-//                user.viewProfile();
+                try {
+                    instructor.viewProfile();
+                    instructorMenu(instructor);
+                } catch (Exception e) {
+                    System.out.println("Unable to fetch profile at the moment. Please try again later.");
+                    instructorMenu(instructor);
+                }
                 break;
             case 7:
                 mainMenu();
