@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
-import org.academics.mailserver.*;
+import org.academics.utility.*;
 import org.academics.dao.*;
 
 
@@ -36,7 +36,6 @@ public class User {
         String email_id = scanner.next();
         System.out.println("Enter your password:");
         String password = scanner.next();
-//        String password= Arrays.toString(System.console().readPassword());
         PreparedStatement userDetails = null;
         PreparedStatement statementRole=null;
         try {

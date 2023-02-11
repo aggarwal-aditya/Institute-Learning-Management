@@ -1,4 +1,4 @@
-package org.academics.mailserver;
+package org.academics.utility;
 
 import io.github.cdimascio.dotenv.Dotenv;
 

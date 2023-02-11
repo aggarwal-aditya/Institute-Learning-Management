@@ -8,20 +8,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Modifications due to SRS update">
-      <change afterPath="$PROJECT_DIR$/libs/j-text-utils-0.3.3.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/dao/JDBCPostgreSQLConnection.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/mailserver/MailManagement.java" afterDir="false" />
+    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Package Segregation &amp; Menu Options Progress">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/init.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Instructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Instructor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/JDBCPostgreSQLConnection.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Student.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/mailManagement.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/mailserver/MailManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/MailManagement.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +33,9 @@
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand />
@@ -91,8 +90,8 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -103,13 +102,18 @@
     ]
   }
 }</component>
-  <component name="RunManager">
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.academics.utility" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.academics.Main" />
       <module name="ilm.main" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.academics.*" />
+          <option name="PATTERN" value="org.academics.utility.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -117,6 +121,38 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="UserTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;org.academics.UserTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.Main" />
+      <item itemvalue="Gradle.UserTest" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.UserTest" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -146,7 +182,9 @@
       <workItem from="1675831439373" duration="1111000" />
       <workItem from="1675847116610" duration="466000" />
       <workItem from="1675866552132" duration="3167000" />
-      <workItem from="1675929280938" duration="18590000" />
+      <workItem from="1675929280938" duration="22403000" />
+      <workItem from="1676030085777" duration="1484000" />
+      <workItem from="1676106346610" duration="5115000" />
     </task>
     <task id="LOCAL-00001" summary="Fix DB Configuration">
       <created>1674704914591</created>
@@ -211,7 +249,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675805375363</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Package Segregation &amp; Menu Options Progress">
+      <created>1676015874898</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1676015874898</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -238,7 +283,8 @@
     <MESSAGE value="Work on Student &amp; Teacher Menu Choices" />
     <MESSAGE value="Modularization of Menus" />
     <MESSAGE value="Modifications due to SRS update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Modifications due to SRS update" />
+    <MESSAGE value="Package Segregation &amp; Menu Options Progress" />
+    <option name="LAST_COMMIT_MESSAGE" value="Package Segregation &amp; Menu Options Progress" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

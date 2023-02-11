@@ -61,8 +61,9 @@ CREATE TABLE course_offerings
     course_code    VARCHAR(6),
     semester       VARCHAR(8),
     instructor_id  INTEGER NOT NULL,
-    qualify        NUMERIC default 0,
-    enrollment_num INTEGER default 0,
+    qualify        NUMERIC DEFAULT 0,
+    enrollment_count INTEGER default 0,
+    prerequisite   TEXT [] DEFAULT NULL,
     primary key (course_code, semester),
     foreign key (course_code) references course_catalog (course_code),
     foreign key (instructor_id) references instructors (instructor_id)
@@ -118,7 +119,7 @@ BEGIN
 
     -- increment the enrollment_num of the course 
     UPDATE course_offerings
-    SET enrollment_num = enrollment_num + 1
+    SET enrollment_count = enrollment_count + 1
     WHERE course_code = p_course_code
       AND semester = p_semester;
 
@@ -149,7 +150,7 @@ BEGIN
 
     -- decrement the enrollment_num of the course
     UPDATE course_offerings
-    SET enrollment_num = enrollment_num - 1
+    SET enrollment_count = enrollment_count - 1
     WHERE course_code = p_course_code
       AND semester = p_semester;
 
@@ -275,7 +276,7 @@ BEGIN
                course_catalog.course_name,
                course_offerings.semester,
                course_offerings.qualify,
-               course_offerings.enrollment_num
+               course_offerings.enrollment_count
         FROM course_offerings
                  JOIN course_catalog ON course_offerings.course_code = course_catalog.course_code
         WHERE instructor_id = p_instructor_id;
@@ -496,7 +497,7 @@ INSERT into students VALUES ('2020CSB1066','2020csb1066@iitrpr.ac.in','Aditya Ag
 INSERT into semester VALUES (2022,2,'2020-02-25','2024-02-25');
 INSERT INTO course_catalog VALUES ('CS201','Data Structures',ARRAY[3,1,2,2,4],'CSE');
 INSERT INTO course_catalog VALUES ('CS202','Algorithms',ARRAY[3,1,2,2,4],'CSE');
-INSERT into course_offerings VALUES ('CS201','2022-2',1);
-INSERT into course_offerings VALUES ('CS202','2022-1',1);
-INSERT INTO course_enrollments (course_code, semester,student_id,grade) values ('CS201','2022-2','2020CSB1066','A');
-INSERT INTO course_enrollments (course_code, semester,student_id,grade) values ('CS202','2022-1','2020CSB1066','D');
+-- INSERT into course_offerings VALUES ('CS201','2022-2',1);
+-- INSERT into course_offerings VALUES ('CS202','2022-1',1);
+-- INSERT INTO course_enrollments (course_code, semester,student_id,grade) values ('CS201','2022-2','2020CSB1066','A');
+-- INSERT INTO course_enrollments (course_code, semester,student_id,grade) values ('CS202','2022-1','2020CSB1066','D');

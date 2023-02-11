@@ -14,7 +14,6 @@ repositories {
 }
 
 dependencies {
-    //add apache string utils
     implementation files('libs/j-text-utils-0.3.3.jar')
     implementation "commons-lang:commons-lang:2.6"
     implementation 'com.sun.mail:javax.mail:1.6.2'
@@ -22,6 +21,7 @@ dependencies {
     implementation 'io.github.cdimascio:dotenv-java:2.3.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'org.mockito:mockito-core:3.5.13'
 }
 
 test {

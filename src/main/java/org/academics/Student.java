@@ -3,6 +3,7 @@ package org.academics;
 
 import dnl.utils.text.table.TextTable;
 import org.academics.dao.JDBCPostgreSQLConnection;
+import org.academics.utility.Utils;
 
 import java.math.RoundingMode;
 import java.sql.*;

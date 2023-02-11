@@ -181,8 +181,11 @@ class Main {
             case 2:
                 try {
                     instructor.floatCourse();
+                    instructorMenu(instructor);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("Unable to float course at the moment. Please try again later.");
+                    instructorMenu(instructor);
                 }
                 break;
             case 3:
