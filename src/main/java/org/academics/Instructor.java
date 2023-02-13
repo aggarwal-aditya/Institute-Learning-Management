@@ -80,10 +80,6 @@ public class Instructor extends User {
             courseTable.printTable();
             System.out.println("Enter the course code to float the course");
             String course_code = scanner.next();
-//            if (!courses[0].contains(course_code)) {
-//                System.out.println("The course does not exist");
-//                return;
-//            }
             System.out.println("Enter the session (YYYY-Semester)");
             String session = scanner.next();
             PreparedStatement validateCourse = conn.prepareStatement("SELECT instructors.name FROM course_offerings JOIN instructors  on course_offerings.instructor_id = instructors.instructor_id WHERE course_offerings.course_code = ? AND course_offerings.semester = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -105,9 +101,9 @@ public class Instructor extends User {
                 do {
                     System.out.println("Enter the course code of the prerequisite");
                     String code = scanner.next();
-                    System.out.println("Enter the minimum grade requirement for the prerequisite (Enter Pass if no minimum grade requirement)");
+                    System.out.println("Enter the minimum grade requirement for the prerequisite (Enter 'E' if no minimum grade requirement)");
                     String grade = scanner.next();
-                    pre.append(code).append(":").append(grade).append("|");
+                    pre.append(code).append("(").append(grade).append(")").append("|");
                     System.out.println("Are there any alternatives to the prerequisite? (Y/N)");
                     choice = scanner.next();
                     if(Objects.equals(choice, "Y")){
@@ -116,7 +112,7 @@ public class Instructor extends User {
                             code = scanner.next();
                             System.out.println("Enter the minimum grade requirement for the alternative (Enter Pass if no minimum grade requirement)");
                             grade = scanner.next();
-                            pre.append(code).append(":").append(grade).append("|");
+                            pre.append(code).append("(").append(grade).append(")").append("|");
                             System.out.println("Are there any more alternatives to the prerequisite? (Y/N)");
                             choice = scanner.next();
                         }while (Objects.equals(choice, "Y"));

@@ -63,15 +63,94 @@ public class Student extends User {
             if (course_number.equals("0")) {
                 return;
             }
-            if (Integer.parseInt(course_number) > data.size()|| Integer.parseInt(course_number) < 0) {
+            if (Integer.parseInt(course_number) > data.size() || Integer.parseInt(course_number) < 0) {
                 System.out.println("Invalid Course Number");
                 return;
             }
-            CallableStatement enroll_student = conn.prepareCall("{call enroll_student(?,?,?)}");
-            enroll_student.setString(1, (String) courses[Integer.parseInt(course_number) - 1][1]);
-            enroll_student.setString(2, session);
-            enroll_student.setString(3, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
-            enroll_student.execute();
+
+            //Check Pre-requisites in course_catalog
+            PreparedStatement Prerequisites = conn.prepareStatement("SELECT prerequisite from course_catalog WHERE course_code =?;");
+            Prerequisites.setString(1, courses[Integer.parseInt(course_number) - 1][1].toString());
+            ResultSet PrerequisitesResult = Prerequisites.executeQuery();
+//            while (PrerequisitesResult.next()) {
+//                int countPrerequisite = PrerequisitesResult.getMetaData().getColumnCount();
+//                for (int i = 1; i <= countPrerequisite; i++) {
+//                    String row = PrerequisitesResult.getString(i);
+//                    if(row == null){
+//                        continue;
+//                    }
+//                    String[] prerequisites = row.split(",");
+//                    boolean check = false;
+//                    for (String prerequisite : prerequisites) {
+//                        if (prerequisite != null) {
+//                            PreparedStatement checkPrerequisites = conn.prepareStatement("SELECT grade FROM course_enrollments WHERE course_code =? AND student_id =? AND semester<?;");
+//                            checkPrerequisites.setString(1, prerequisite);
+//                            checkPrerequisites.setString(2, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
+//                            checkPrerequisites.setString(3, Utils.getCurrentSession());
+//                            ResultSet checkPrerequisitesResult = checkPrerequisites.executeQuery();
+//                            if (!checkPrerequisitesResult.next()) {
+//                                continue;
+//                            }
+//                            if (checkPrerequisitesResult.getString("grade").equals("F")) {
+//                                continue;
+//                            }
+//                            check = true;
+//                        }
+//                    }
+//                    if (!check) {
+//                        System.out.println("You have not completed the prerequisites for this course");
+//                        return;
+//                    }
+//                }
+//            }
+
+            //check pre-requisites in course_offerings
+
+            PreparedStatement PrerequisitesOfferings = conn.prepareStatement("SELECT prerequisite from course_offerings WHERE course_code =? AND semester=?;");
+            PrerequisitesOfferings.setString(1, courses[Integer.parseInt(course_number) - 1][1].toString());
+            PrerequisitesOfferings.setString(2, Utils.getCurrentSession());
+            ResultSet PrerequisitesOfferingsResult = PrerequisitesOfferings.executeQuery();
+            while (PrerequisitesOfferingsResult.next()) {
+                Array prerequisitesOfferingsResultArray = PrerequisitesOfferingsResult.getArray(1);
+                if (prerequisitesOfferingsResultArray == null) {
+                    continue;
+                }
+                String[] prerequisites = (String[]) prerequisitesOfferingsResultArray.getArray();
+                for (String prerequisite : prerequisites) {
+                    if (prerequisite != null) {
+                        String[] prerequisiteOptions = prerequisite.split("\\|");
+                        boolean check = false;
+                        for (String prerequisiteOption : prerequisiteOptions) {
+                            if(prerequisiteOption.equals("")){
+                                continue;
+                            }
+                            String prerequisiteCode = prerequisiteOption.substring(0, prerequisiteOption.indexOf("("));
+                            String minGrade = prerequisiteOption.substring(prerequisiteOption.indexOf("(") + 1, prerequisiteOption.indexOf(")"));
+                            System.out.println(prerequisiteCode+" "+minGrade);
+                            PreparedStatement checkPrerequisites = conn.prepareStatement("SELECT grade FROM course_enrollments WHERE course_code =? AND student_id =? AND semester<?;");
+                            checkPrerequisites.setString(1, prerequisiteCode);
+                            checkPrerequisites.setString(2, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
+                            checkPrerequisites.setString(3, Utils.getCurrentSession());
+                            ResultSet checkPrerequisitesResult = checkPrerequisites.executeQuery();
+                            if (!checkPrerequisitesResult.next()) {
+                                continue;
+                            }
+                            if (checkPrerequisitesResult.getString("grade").equals("F")) {
+                                continue;
+                            }
+                            if(minGrade.compareTo(checkPrerequisitesResult.getString("grade"))>0){
+                                continue;
+                            }
+                            check = true;
+                            break;
+                        }
+                        if (!check) {
+                            System.out.println("You have not completed the prerequisites for this course");
+                            return;
+                        }
+                    }
+                }
+            }
             System.out.println("You have successfully registered for " + courses[Integer.parseInt(course_number) - 1][2]);
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,7 +167,7 @@ public class Student extends User {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        try{
+        try {
             assert resultSet != null;
             formatOutput(resultSet);
         } catch (Exception e) {

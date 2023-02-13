@@ -44,16 +44,14 @@ CREATE TABLE semester
 );
 
 
-
 CREATE TABLE course_catalog
 (
     course_code  VARCHAR(6) primary key,
     course_name  VARCHAR(255)  NOT NULL,
     credit_str   NUMERIC array NOT NULL,
     dept         VARCHAR(127),
-    prerequisite VARCHAR(6)[][] DEFAULT NULL
+    prerequisite VARCHAR(6)[] DEFAULT NULL
 );
-
 
 
 CREATE TABLE course_offerings
@@ -85,7 +83,6 @@ CREATE TABLE grade_mapping
     grade VARCHAR(3) PRIMARY KEY,
     value NUMERIC NOT NULL
 );
-
 
 CREATE OR REPLACE FUNCTION enroll_student(p_course_code VARCHAR(6), p_semester VARCHAR(8), p_student_id VARCHAR(255))
     RETURNS VOID AS
@@ -405,7 +402,10 @@ $$ LANGUAGE plpgsql;
 -- EXECUTE FUNCTION check_prerequisites();
 --
 --
---
+
+
+
+
 -- CREATE OR REPLACE FUNCTION check_credit_limit()
 --     RETURNS TRIGGER AS
 -- $$
@@ -421,6 +421,7 @@ $$ LANGUAGE plpgsql;
 --           FROM course_enrollments
 --                    JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
 --           WHERE student_id = NEW.student_id
+--           GROUP BY semester
 --             AND semester < NEW.semester
 --           ORDER BY semester DESC
 --           LIMIT 2) as previous_semesters;
