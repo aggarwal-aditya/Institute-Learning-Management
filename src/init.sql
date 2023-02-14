@@ -29,7 +29,7 @@ CREATE TABLE students
     name         VARCHAR(255) NOT NULL,
     phone_number VARCHAR(20)  NOT NULL,
     dept         VARCHAR(127),
-    batch        INTEGER         NOT NULL,
+    batch        INTEGER      NOT NULL,
     foreign key (email_id) references users (email_id)
 );
 create unique index student_unique_email_idx on students (email_id);
@@ -56,12 +56,12 @@ CREATE TABLE course_catalog
 
 CREATE TABLE course_offerings
 (
-    course_code    VARCHAR(6),
-    semester       VARCHAR(8),
-    instructor_id  INTEGER NOT NULL,
-    qualify        NUMERIC DEFAULT 0,
+    course_code      VARCHAR(6),
+    semester         VARCHAR(8),
+    instructor_id    INTEGER NOT NULL,
+    qualify          NUMERIC DEFAULT 0,
     enrollment_count INTEGER default 0,
-    prerequisite   TEXT [] DEFAULT NULL,
+    prerequisite     TEXT[]  DEFAULT NULL,
     primary key (course_code, semester),
     foreign key (course_code) references course_catalog (course_code),
     foreign key (instructor_id) references instructors (instructor_id)
@@ -74,7 +74,7 @@ CREATE TABLE course_enrollments
     semester      VARCHAR(8)   NOT NULL,
     student_id    VARCHAR(255) NOT NULL,
     grade         VARCHAR(3) DEFAULT 'NA',
-    foreign key (course_code, semester) references course_offerings (course_code, semester),
+    foreign key (course_code, semester) references course_offerings (course_code, semester) ON DELETE CASCADE,
     foreign key (student_id) references students (student_id)
 );
 
@@ -83,6 +83,50 @@ CREATE TABLE grade_mapping
     grade VARCHAR(3) PRIMARY KEY,
     value NUMERIC NOT NULL
 );
+
+CREATE TABLE graduation_requirements
+(
+    year        INTEGER NOT NULL,
+    dept        VARCHAR(127) NOT NULL,
+    core_count  NUMERIC NOT NULL,
+    elect_count NUMERIC NOT NULL,
+    PRIMARY KEY (year, dept)
+);
+
+
+-- CREATE TABLE course_category(
+--     course_code VARCHAR(6) NOT NULL,
+--     year INTEGER NOT NULL,
+--     dept VARCHAR (127) NOT NULL,
+--
+-- );
+
+
+CREATE OR REPLACE FUNCTION ug_curriculum(p_core_elective_dept VARCHAR(10)[], p_core_elective_year INTEGER[],
+                                         p_course_code VARCHAR(6), p_semester VARCHAR(8),
+                                         p_is_elective boolean default false)
+    RETURNS VOID AS
+$$
+DECLARE
+    i INTEGER;
+BEGIN
+    EXECUTE FORMAT('CREATE TABLE %I (dept VARCHAR(10), INTEGER, is_elective boolean default false);',
+                   p_course_code || '_' || p_semester);
+    i := 1;
+    WHILE i <= array_length(p_core_elective_dept, 1)
+        LOOP
+            EXECUTE FORMAT('INSERT INTO %I (dept, year, is_elective) VALUES ($1, $2, $3);',
+                           p_course_code || '_' || p_semester)
+                USING p_core_elective_dept[i], p_core_elective_year[i], p_is_elective;
+            i := i + 1;
+        END LOOP;
+END;
+$$
+    LANGUAGE plpgsql;
+
+
+
+
 
 CREATE OR REPLACE FUNCTION enroll_student(p_course_code VARCHAR(6), p_semester VARCHAR(8), p_student_id VARCHAR(255))
     RETURNS VOID AS
@@ -105,7 +149,7 @@ BEGIN
     IF EXISTS(SELECT 1
               FROM course_enrollments
               WHERE course_code = p_course_code
-                AND grade!='F'
+                AND grade != 'F'
                 AND student_id = p_student_id) THEN
         RAISE EXCEPTION 'The student has already completed the course earlier.';
     END IF;
@@ -234,27 +278,6 @@ $$ LANGUAGE plpgsql;
 
 
 
--- CREATE OR REPLACE FUNCTION get_available_courses(p_session_id VARCHAR(80))
---     RETURNS TABLE
---             (
---                 course_code     VARCHAR(6),
---                 course_name     VARCHAR(100),
---                 instructor_name VARCHAR(255)
---             )
--- AS
--- $$
--- BEGIN
---     RETURN QUERY
---         SELECT course_offerings.course_code,
---                course_catalog.course_name,
---                instructors.name
---         FROM course_offerings
---                  JOIN course_catalog ON course_offerings.course_code = course_catalog.course_code
---                  JOIN instructors ON course_offerings.instructor_id = instructors.instructor_id
---         WHERE course_offerings.semester = p_session_id;
--- END;
--- $$ LANGUAGE plpgsql;
-
 
 CREATE OR REPLACE FUNCTION get_instructor_courses(p_instructor_id INTEGER)
     RETURNS TABLE
@@ -314,7 +337,7 @@ BEGIN
     IF total_credits = 0 THEN
         RETURN 0;
     ELSE
-        RETURN earned_credits*(1.0) / (total_credits*1.0);
+        RETURN earned_credits * (1.0) / (total_credits * 1.0);
     END IF;
 END;
 $$ LANGUAGE plpgsql;
@@ -337,6 +360,32 @@ BEGIN
         WHERE course_enrollments.student_id = p_student_id;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION graduation_check(p_student_id VARCHAR(255))
+    RETURNS BOOLEAN AS
+$$
+DECLARE
+    batch INTEGER;
+    dept VARCHAR(4);
+    core_req  NUMERIC;
+    elect_req INTEGER;
+    completed record;
+--     elect_completed record;
+    BEGIN
+    SELECT substring(p_student_id, 1, 11) INTO batch;
+    SELECT substring(p_student_id, 5, 7) INTO dept;
+    SELECT core_count, elect_count INTO core_req, elect_req FROM graduation_requirements WHERE graduation_requirements.dept == dept AND graduation_requirements.year == batch;
+--     EXECUTE FORMAT ('SELECT credit_str[5], ce.course_code, ce.semester FROM course_catalog JOIN course_enrollments ce on course_catalog.course_code = ce.course_code JOIN (SELECT column_name, is_elective FROM information_schema.columns WHERE table_name = %I AND column_name = %L) AS pc ON TRUE WHERE ce.student_id = p_student_id AND ce.grade != %L INTO completed;', ce.course_code||'_');
+
+
+
+
+END;
+$$ LANGUAGE plpgsql;
+
+
 
 
 CREATE OR REPLACE FUNCTION generate_transcript(p_student_id VARCHAR(255), p_semester VARCHAR(8))
@@ -373,6 +422,30 @@ $$ LANGUAGE plpgsql;
 
 
 
+
+CREATE OR REPLACE FUNCTION update_course_enrollment_count() RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'DELETE') THEN
+        UPDATE course_offerings
+        SET enrollment_count = enrollment_count - 1
+        WHERE course_code = OLD.course_code AND semester = OLD.semester;
+    ELSIF (TG_OP = 'INSERT') THEN
+        UPDATE course_offerings
+        SET enrollment_count = enrollment_count + 1
+        WHERE course_code = NEW.course_code AND semester = NEW.semester;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_course_enrollment_trigger
+    AFTER INSERT OR DELETE ON course_enrollments
+    FOR EACH ROW
+EXECUTE FUNCTION update_course_enrollment_count();
+
+
+
+
 -- CREATE OR REPLACE FUNCTION check_prerequisites()
 --     RETURNS TRIGGER AS
 -- $$
@@ -403,6 +476,23 @@ $$ LANGUAGE plpgsql;
 --
 --
 
+
+-- CREATE OR REPLACE FUNCTION update_course_enrollment()
+--     RETURNS TRIGGER AS
+-- $$
+--     BEGIN
+--         DELETE FROM course_enrollments
+--         WHERE course_code = OLD.course_code
+--           AND semester = OLD.semester;
+--         RETURN OLD;
+--     END;
+-- $$ LANGUAGE plpgsql;
+
+-- CREATE TRIGGER delete_course_enrollment
+--     AFTER DELETE
+--     ON course_offerings
+--     FOR EACH ROW
+-- EXECUTE FUNCTION update_course_enrollment();
 
 
 
@@ -470,7 +560,6 @@ $$ LANGUAGE plpgsql;
 -- EXECUTE FUNCTION check_credit_limit();
 
 
-
 INSERT INTO grade_mapping (grade, value)
 VALUES ('A', 10);
 INSERT INTO grade_mapping (grade, value)
@@ -491,14 +580,21 @@ INSERT INTO grade_mapping (grade, value)
 VALUES ('F', 0);
 
 
-INSERT INTO users VALUES ('2020csb1066@iitrpr.ac.in','aditya','student');
-INSERT INTO users VALUES ('mudgal@yopmail.com','aditya','instructor');
-INSERT into instructors (email_id,name,phone_number,dept,date_of_joining) VALUES ('mudgal@yopmail.com','Apurva Mudgal','8989872980','CSE',now());
-INSERT into students VALUES ('2020CSB1066','2020csb1066@iitrpr.ac.in','Aditya Aggarwal','8989872980','CSE','2024');
-INSERT into semester VALUES (2022,2,'2020-02-25','2024-02-25');
-INSERT INTO course_catalog VALUES ('CS201','Data Structures',ARRAY[3,1,2,2,4],'CSE');
-INSERT INTO course_catalog VALUES ('CS202','Algorithms',ARRAY[3,1,2,2,4],'CSE');
--- INSERT into course_offerings VALUES ('CS201','2022-2',1);
--- INSERT into course_offerings VALUES ('CS202','2022-1',1);
+INSERT INTO users
+VALUES ('2020csb1066@iitrpr.ac.in', 'aditya', 'student');
+INSERT INTO users
+VALUES ('mudgal@yopmail.com', 'aditya', 'instructor');
+INSERT into instructors (email_id, name, phone_number, dept, date_of_joining)
+VALUES ('mudgal@yopmail.com', 'Apurva Mudgal', '8989872980', 'CSE', now());
+INSERT into students
+VALUES ('2020CSB1066', '2020csb1066@iitrpr.ac.in', 'Aditya Aggarwal', '8989872980', 'CSE', '2024');
+INSERT into semester
+VALUES (2022, 2, '2020-02-25', '2024-02-25');
+INSERT INTO course_catalog
+VALUES ('CS201', 'Data Structures', ARRAY [3,1,2,2,4], 'CSE');
+INSERT INTO course_catalog
+VALUES ('CS202', 'Algorithms', ARRAY [3,1,2,2,4], 'CSE');
+INSERT into course_offerings VALUES ('CS201','2022-2',1);
+INSERT into course_offerings VALUES ('CS202','2022-1',1);
 -- INSERT INTO course_enrollments (course_code, semester,student_id,grade) values ('CS201','2022-2','2020CSB1066','A');
 -- INSERT INTO course_enrollments (course_code, semester,student_id,grade) values ('CS202','2022-1','2020CSB1066','D');

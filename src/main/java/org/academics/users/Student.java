@@ -1,4 +1,4 @@
-package org.academics;
+package org.academics.users;
 
 
 import dnl.utils.text.table.TextTable;
@@ -72,39 +72,47 @@ public class Student extends User {
             PreparedStatement Prerequisites = conn.prepareStatement("SELECT prerequisite from course_catalog WHERE course_code =?;");
             Prerequisites.setString(1, courses[Integer.parseInt(course_number) - 1][1].toString());
             ResultSet PrerequisitesResult = Prerequisites.executeQuery();
-//            while (PrerequisitesResult.next()) {
-//                int countPrerequisite = PrerequisitesResult.getMetaData().getColumnCount();
-//                for (int i = 1; i <= countPrerequisite; i++) {
-//                    String row = PrerequisitesResult.getString(i);
-//                    if(row == null){
-//                        continue;
-//                    }
-//                    String[] prerequisites = row.split(",");
-//                    boolean check = false;
-//                    for (String prerequisite : prerequisites) {
-//                        if (prerequisite != null) {
-//                            PreparedStatement checkPrerequisites = conn.prepareStatement("SELECT grade FROM course_enrollments WHERE course_code =? AND student_id =? AND semester<?;");
-//                            checkPrerequisites.setString(1, prerequisite);
-//                            checkPrerequisites.setString(2, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
-//                            checkPrerequisites.setString(3, Utils.getCurrentSession());
-//                            ResultSet checkPrerequisitesResult = checkPrerequisites.executeQuery();
-//                            if (!checkPrerequisitesResult.next()) {
-//                                continue;
-//                            }
-//                            if (checkPrerequisitesResult.getString("grade").equals("F")) {
-//                                continue;
-//                            }
-//                            check = true;
-//                        }
-//                    }
-//                    if (!check) {
-//                        System.out.println("You have not completed the prerequisites for this course");
-//                        return;
-//                    }
-//                }
-//            }
-
-            //check pre-requisites in course_offerings
+            while (PrerequisitesResult.next()) {
+                Array prerequisitesResultArray = PrerequisitesResult.getArray(1);
+                if (prerequisitesResultArray == null) {
+                    continue;
+                }
+                String[] prerequisites = (String[]) prerequisitesResultArray.getArray();
+                for (String prerequisite : prerequisites) {
+                    if (prerequisite != null) {
+                        String[] prerequisiteOptions = prerequisite.split("\\|");
+                        boolean check = false;
+                        for (String prerequisiteOption : prerequisiteOptions) {
+                            if(prerequisiteOption.equals("")){
+                                continue;
+                            }
+                            String prerequisiteCode = prerequisiteOption.substring(0, prerequisiteOption.indexOf("("));
+                            String minGrade = prerequisiteOption.substring(prerequisiteOption.indexOf("(") + 1, prerequisiteOption.indexOf(")"));
+                            System.out.println(prerequisiteCode+" "+minGrade);
+                            PreparedStatement checkPrerequisites = conn.prepareStatement("SELECT grade FROM course_enrollments WHERE course_code =? AND student_id =? AND semester<?;");
+                            checkPrerequisites.setString(1, prerequisiteCode);
+                            checkPrerequisites.setString(2, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
+                            checkPrerequisites.setString(3, Utils.getCurrentSession());
+                            ResultSet checkPrerequisitesResult = checkPrerequisites.executeQuery();
+                            if (!checkPrerequisitesResult.next()) {
+                                continue;
+                            }
+                            if (checkPrerequisitesResult.getString("grade").equals("F")) {
+                                continue;
+                            }
+                            if(minGrade.compareTo(checkPrerequisitesResult.getString("grade"))>0){
+                                continue;
+                            }
+                            check = true;
+                            break;
+                        }
+                        if (!check) {
+                            System.out.println("You have not completed the prerequisites for this course");
+                            return;
+                        }
+                    }
+                }
+            }
 
             PreparedStatement PrerequisitesOfferings = conn.prepareStatement("SELECT prerequisite from course_offerings WHERE course_code =? AND semester=?;");
             PrerequisitesOfferings.setString(1, courses[Integer.parseInt(course_number) - 1][1].toString());
@@ -156,6 +164,28 @@ public class Student extends User {
             e.printStackTrace();
         }
     }
+    public void dropCourse() {
+        viewCourses();
+        System.out.println("Enter the course code of the course you want to drop. Press 0 to exit");
+        String course_code = scanner.nextLine();
+        if (course_code.equals("0")) {
+            return;
+        }
+        try {
+            PreparedStatement dropCourse = conn.prepareStatement("DELETE FROM course_enrollments WHERE course_code =? AND student_id =? AND semester=?;");
+            dropCourse.setString(1, course_code);
+            dropCourse.setString(2, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
+            dropCourse.setString(3, Utils.getCurrentSession());
+            dropCourse.executeUpdate();
+            if(dropCourse.getUpdateCount()==0){
+                System.out.println("You are not allowed to drop this course now or you are registered for this course");
+                return;
+            }
+            System.out.println("You have successfully dropped the course");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void viewCourses() {
         ResultSet resultSet = null;
@@ -178,9 +208,10 @@ public class Student extends User {
     public void viewGrades() {
         ResultSet resultSet = null;
         try {
-            PreparedStatement getRegisteredCourses = conn.prepareStatement("SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.grade FROM course_catalog JOIN course_enrollments ON course_catalog.course_code = course_enrollments.course_code WHERE course_enrollments.student_id =? AND course_enrollments.semester<?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+//            PreparedStatement getRegisteredCourses = conn.prepareStatement("SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.grade FROM course_catalog JOIN course_enrollments ON course_catalog.course_code = course_enrollments.course_code WHERE course_enrollments.student_id =? AND course_enrollments.semester<?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            PreparedStatement getRegisteredCourses = conn.prepareStatement("SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.grade FROM course_catalog JOIN course_enrollments ON course_catalog.course_code = course_enrollments.course_code WHERE course_enrollments.student_id =?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             getRegisteredCourses.setString(1, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
-            getRegisteredCourses.setString(2, Utils.getCurrentSession());
+//            getRegisteredCourses.setString(2, Utils.getCurrentSession());
             resultSet = getRegisteredCourses.executeQuery();
         } catch (Exception e) {
             e.printStackTrace();
@@ -193,6 +224,65 @@ public class Student extends User {
         }
     }
 
+    public void computeGPA() {
+        try {
+            CallableStatement calculateCGPA = conn.prepareCall("{? = call calculate_cgpa(?)}");
+            calculateCGPA.registerOutParameter(1, Types.NUMERIC);
+            calculateCGPA.setString(2, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
+            calculateCGPA.execute();
+            System.out.println("Your CGPA is: " + calculateCGPA.getBigDecimal(1).setScale(2, RoundingMode.HALF_UP));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    private boolean checkPrerequisite(ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
+            Array prerequisitesOfferingsResultArray = resultSet.getArray(1);
+            if (prerequisitesOfferingsResultArray == null) {
+                continue;
+            }
+            String[] prerequisites = (String[]) prerequisitesOfferingsResultArray.getArray();
+            for (String prerequisite : prerequisites) {
+                if (prerequisite != null) {
+                    String[] prerequisiteOptions = prerequisite.split("\\|");
+                    boolean check = false;
+                    for (String prerequisiteOption : prerequisiteOptions) {
+                        if(prerequisiteOption.equals("")){
+                            continue;
+                        }
+                        String prerequisiteCode = prerequisiteOption.substring(0, prerequisiteOption.indexOf("("));
+                        String minGrade = prerequisiteOption.substring(prerequisiteOption.indexOf("(") + 1, prerequisiteOption.indexOf(")"));
+                        System.out.println(prerequisiteCode+" "+minGrade);
+                        PreparedStatement checkPrerequisites = conn.prepareStatement("SELECT grade FROM course_enrollments WHERE course_code =? AND student_id =? AND semester<?;");
+                        checkPrerequisites.setString(1, prerequisiteCode);
+                        checkPrerequisites.setString(2, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
+                        checkPrerequisites.setString(3, Utils.getCurrentSession());
+                        ResultSet checkPrerequisitesResult = checkPrerequisites.executeQuery();
+                        if (!checkPrerequisitesResult.next()) {
+                            continue;
+                        }
+                        if (checkPrerequisitesResult.getString("grade").equals("F")) {
+                            continue;
+                        }
+                        if(minGrade.compareTo(checkPrerequisitesResult.getString("grade"))>0){
+                            continue;
+                        }
+                        check = true;
+                        break;
+                    }
+                    if (!check) {
+                        System.out.println("You have not completed the prerequisites for this course");
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
     private void formatOutput(ResultSet resultSet) throws SQLException {
         resultSet.last();
         if (resultSet.getRow() == 0) {
@@ -212,31 +302,6 @@ public class Student extends User {
         Object[][] courses = data.toArray(new Object[0][]);
         TextTable courseTable = new TextTable(columnNames, courses);
         courseTable.printTable();
-    }
-
-    public void dropCourse() {
-        viewCourses();
-        System.out.println("Enter the course code of the course you want to drop. Press 0 to exit");
-        String course_code = scanner.nextLine();
-        if (course_code.equals("0")) {
-            return;
-        }
-
-    }
-
-    public void computeGPA() {
-        try {
-            CallableStatement calculateCGPA = conn.prepareCall("{? = call calculate_cgpa(?)}");
-            calculateCGPA.registerOutParameter(1, Types.NUMERIC);
-            calculateCGPA.setString(2, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
-            calculateCGPA.execute();
-            System.out.println("Your CGPA is: " + calculateCGPA.getBigDecimal(1).setScale(2, RoundingMode.HALF_UP));
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-
-
     }
 
 }

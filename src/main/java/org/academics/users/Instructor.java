@@ -1,13 +1,10 @@
-package org.academics;
+package org.academics.users;
 
 import dnl.utils.text.table.TextTable;
 import org.academics.dao.JDBCPostgreSQLConnection;
 import org.academics.utility.Utils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -50,6 +47,20 @@ public class Instructor extends User {
                 return;
             }
             resultSet.beforeFirst();
+            String[] columnNames = {"Course Code", "Semester", "Qualifying Criteria", "Enrollment Count"};
+            List<Object[]> data = new ArrayList<>();
+            while (resultSet.next()) {
+                Object[] course_detail = new Object[4];
+                course_detail[0] = resultSet.getString(1);
+                course_detail[1] = resultSet.getString(2);
+                course_detail[2] = resultSet.getString(3);
+                course_detail[3] = resultSet.getInt(4);
+                data.add(course_detail);
+            }
+            Object[][] courses = data.toArray(new Object[0][]);
+            TextTable courseTable = new TextTable(columnNames, courses);
+            System.out.println("List of courses floated by you");
+            courseTable.printTable();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -97,7 +108,7 @@ public class Instructor extends User {
             //Make a 2d array of prerequisites
             ArrayList<String> preRequisites = new ArrayList<>();
             StringBuilder pre = new StringBuilder();
-            if(Objects.equals(choice, "Y")){
+            if (Objects.equals(choice, "Y")) {
                 do {
                     System.out.println("Enter the course code of the prerequisite");
                     String code = scanner.next();
@@ -106,8 +117,8 @@ public class Instructor extends User {
                     pre.append(code).append("(").append(grade).append(")").append("|");
                     System.out.println("Are there any alternatives to the prerequisite? (Y/N)");
                     choice = scanner.next();
-                    if(Objects.equals(choice, "Y")){
-                        do{
+                    if (Objects.equals(choice, "Y")) {
+                        do {
                             System.out.println("Enter the course code of the alternative");
                             code = scanner.next();
                             System.out.println("Enter the minimum grade requirement for the alternative (Enter Pass if no minimum grade requirement)");
@@ -115,12 +126,12 @@ public class Instructor extends User {
                             pre.append(code).append("(").append(grade).append(")").append("|");
                             System.out.println("Are there any more alternatives to the prerequisite? (Y/N)");
                             choice = scanner.next();
-                        }while (Objects.equals(choice, "Y"));
+                        } while (Objects.equals(choice, "Y"));
                     }
                     System.out.println("Do you want to add additional prerequisites? (Y/N)");
                     choice = scanner.next();
                     preRequisites.add(String.valueOf(pre));
-                    pre= new StringBuilder();
+                    pre = new StringBuilder();
                 } while (Objects.equals(choice, "Y"));
             }
             PreparedStatement floatCourse = conn.prepareStatement("INSERT INTO course_offerings (course_code, semester, instructor_id, enrollment_count, qualify, prerequisite) VALUES (?, ?, ?, ?, ?, ?)");
@@ -131,42 +142,122 @@ public class Instructor extends User {
             floatCourse.setInt(5, qualify);
             floatCourse.setArray(6, conn.createArrayOf("text", preRequisites.toArray()));
             floatCourse.executeUpdate();
+
+            System.out.println("Program Core & Elective Selection");
+            System.out.println("Enter the departments followed by year for which this course is core (CSE 2019 CSE 2020 EE 2018)");
+            String core = scanner.nextLine();
+            String [] tokens = core.split(" ");
+            ArrayList<String> coreDepList = new ArrayList<>();
+            ArrayList<Integer> coreYearList = new ArrayList<>();
+            for(int i = 0; i < tokens.length; i+=2){
+                coreDepList.add(tokens[i]);
+                coreYearList.add(Integer.parseInt(tokens[i+1]));
+            }
+            try{
+                CallableStatement ug_curriculum = conn.prepareCall("{call ug_curriculum(?, ?, ?,?,?)}");
+                ug_curriculum.setArray(1, conn.createArrayOf("text", coreDepList.toArray()));
+                ug_curriculum.setArray(2, conn.createArrayOf("int", coreYearList.toArray()));
+                ug_curriculum.setString(3, course_code);
+                ug_curriculum.setString(4, session);
+                ug_curriculum.setBoolean(5, false);
+                ug_curriculum.execute();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             System.out.println("Course floated successfully");
         } catch (Exception e) {
             throw new RuntimeException(e);
 
         }
+
     }
 
 
     public void uploadGrades() {
+        System.out.println("Do you want to download the list of students enrolled in the course? (Y/N)? Note that this may overwrite a file in downloads folder for the same course");
+        String choice = scanner.next();
+        if(Objects.equals(choice, "Y")) {
+            System.out.println("Enter the course code");
+            String course_code = scanner.next();
+            System.out.println("Enter the session (YYYY-Semester)");
+            String session = scanner.next();
+            try {
+                if (!validateInstructor(course_code, session)) return;
+                ResultSet resultSet;
+                PreparedStatement getEnrolledStudents = conn.prepareStatement("SELECT course_enrollments.enrollment_id, course_enrollments.student_id, students.name FROM course_enrollments JOIN students on course_enrollments.student_id = students.student_id WHERE course_code = ? AND semester = ? ORDER BY course_enrollments.student_id ASC");
+                getEnrolledStudents.setString(1, course_code);
+                getEnrolledStudents.setString(2, session);
+                resultSet = getEnrolledStudents.executeQuery();
+                String[] extraHeaders = new String[]{"grade"};
+                Utils.exportCSV(resultSet, course_code + "_" + session, extraHeaders);
+                System.out.println("Please Enter the grades for the students in the CSV file");
+                System.out.println("Waiting for you to complete the task. Press any key to continue or press 'q' to quit and upload later");
+                String input = scanner.next();
+                if (Objects.equals(input, "q")) {
+                    return;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
+        System.out.println("Enter the course code");
+        String course_code = scanner.next();
+        System.out.println("Enter the session (YYYY-Semester)");
+        String session = scanner.next();
+        System.out.println("Enter the path to the CSV file");
+        String path = scanner.next();
+
+    }
+
+    public void delistCourse() {
+        viewCourses();
         System.out.println("Enter the course code");
         String course_code = scanner.next();
         System.out.println("Enter the session (YYYY-Semester)");
         String session = scanner.next();
         try {
-            PreparedStatement validateCourse = conn.prepareStatement("SELECT * FROM course_offerings WHERE course_code = ? AND semester = ? AND instructor_id = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            validateCourse.setString(1, course_code);
-            validateCourse.setString(2, session);
-            validateCourse.setInt(3, instructor_id);
-            ResultSet resultSet = validateCourse.executeQuery();
-            if (!resultSet.next()) {
-                System.out.println("You have not floated the course or the course does not exist");
-                return;
-            }
-            PreparedStatement getEnrolledStudents = conn.prepareStatement("SELECT course_enrollments.student_id, students.name FROM course_enrollments JOIN students on course_enrollments.student_id = students.student_id WHERE course_code = ? AND semester = ?");
-            getEnrolledStudents.setString(1, course_code);
-            getEnrolledStudents.setString(2, session);
-            resultSet = getEnrolledStudents.executeQuery();
-            Utils.exportCSV(resultSet);
+            if (!validateInstructor(course_code, session)) return;
+            PreparedStatement delistCourse = conn.prepareStatement("DELETE FROM course_offerings WHERE course_code = ? AND semester = ? AND instructor_id = ?");
+            delistCourse.setString(1, course_code);
+            delistCourse.setString(2, session);
+            delistCourse.setInt(3, instructor_id);
+            delistCourse.executeUpdate();
+            System.out.println("Course delisted successfully");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-
-    public void delistCourse() {
-
+    private boolean validateInstructor(String course_code, String session) throws SQLException {
+        PreparedStatement validateCourse = conn.prepareStatement("SELECT * FROM course_offerings WHERE course_code = ? AND semester = ? AND instructor_id = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        validateCourse.setString(1, course_code);
+        validateCourse.setString(2, session);
+        validateCourse.setInt(3, instructor_id);
+        ResultSet resultSet = validateCourse.executeQuery();
+        if (!resultSet.next()) {
+            System.out.println("You have not floated the course or the course does not exist");
+            return false;
+        }
+        return true;
     }
 
 

@@ -3,6 +3,9 @@ package org.academics;
 import java.sql.Connection;
 import java.util.Scanner;
 import org.academics.dao.*;
+import org.academics.users.Instructor;
+import org.academics.users.Student;
+import org.academics.users.User;
 
 
 class Main {
@@ -78,7 +81,7 @@ class Main {
     public static void studentMenu(Student student) {
         System.out.println("1. Register for a course");
         System.out.println("2. Drop a course");
-        System.out.println("3. View your courses");
+        System.out.println("3. View your registered courses");
         System.out.println("4. View your grades");
         System.out.println("5. Compute your GPA");
         System.out.println("6. View your profile");
@@ -175,6 +178,7 @@ class Main {
                     instructor.viewCourses();
                     instructorMenu(instructor);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("Unable to fetch courses at the moment. Please try again later.");
                 }
                 break;
@@ -191,8 +195,11 @@ class Main {
             case 3:
                 try {
                     instructor.delistCourse();
+                    instructorMenu(instructor);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("Unable to delist course at the moment. Please try again later.");
+                    instructorMenu(instructor);
                 }
                 break;
             case 4:
@@ -210,6 +217,7 @@ class Main {
                     instructor.viewStudentGrades();
                     instructorMenu(instructor);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("Unable to fetch student grades at the moment. Please try again later.");
                     instructorMenu(instructor);
                 }
@@ -219,6 +227,7 @@ class Main {
                     instructor.viewProfile();
                     instructorMenu(instructor);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("Unable to fetch profile at the moment. Please try again later.");
                     instructorMenu(instructor);
                 }

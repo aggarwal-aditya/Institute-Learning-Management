@@ -4,18 +4,16 @@ package org.academics.utility;
 import org.academics.CurrentDate;
 import org.academics.dao.JDBCPostgreSQLConnection;
 
-import javax.swing.*;
-import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.Scanner;
 
 public class Utils {
     static JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
     static Connection conn = jdbc.getConnection();
+
     private Utils() {
         //Private constructor to hide the implicit public one
     }
@@ -44,30 +42,57 @@ public class Utils {
         return null;
     }
 
-    public static void exportCSV(ResultSet resultSet){
+    public static void exportCSV(ResultSet resultSet, String fileName, String [] p_extraColumnHeaders) {
         try {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setSelectedFile(new File("file.csv"));
-            int result = fileChooser.showSaveDialog(null);
-            BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\file.csv"));
-                // Write the data
-                while (resultSet.next()) {
-                    writer.write(resultSet.getString(1) + "," + resultSet.getString(2));
-                    writer.newLine();
+            String os = System.getProperty("os.name").toLowerCase();
+            String username = System.getProperty("user.name");
+            String downloadPath = "";
+            if (os.contains("win")) {
+                downloadPath = "C:\\Users\\" + username + "\\Downloads\\" + fileName + ".csv";
+            } else if (os.contains("mac")) {
+                downloadPath = "/Users/" + username + "/Downloads/" + fileName + ".csv";
+            } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+                downloadPath = "/home/" + username + "/Downloads/" + fileName + ".csv";
+            } else {
+                System.out.println("Enter the path to download the file:");
+                downloadPath = new Scanner(System.in).nextLine();
+            }
+            System.out.println("Downloading file to " + downloadPath);
+            java.io.FileWriter fw = new java.io.FileWriter(downloadPath);
+            java.io.BufferedWriter bw = new java.io.BufferedWriter(fw);
+            java.io.PrintWriter pw = new java.io.PrintWriter(bw);
+            java.sql.ResultSetMetaData rsmd = resultSet.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+            for (int i = 1; i <= columnsNumber; i++) {
+                if (i > 1) pw.print(",");
+                String columnValue = rsmd.getColumnName(i);
+                pw.print(columnValue);
+            }
+            for(String extraHeader : p_extraColumnHeaders){
+                pw.print(",");
+                pw.print(extraHeader);
+            }
+            pw.println();
+            while (resultSet.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1) pw.print(",");
+                    String columnValue = resultSet.getString(i);
+                    pw.print(columnValue);
                 }
-                // Close the writer
-                writer.close();
+                pw.println();
+            }
+            pw.flush();
+            pw.close();
+            bw.close();
+            fw.close();
 
-                System.out.println("Data exported successfully to ");
-            resultSet.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    // read csv files given the path
-//    public static Object readCSV(String path) {
-//        Scann
-//    }
+    public static void importCSV(String fileName, String[] p_ColumnHeaders){
+
+    }
 }

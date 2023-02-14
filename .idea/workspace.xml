@@ -8,11 +8,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Instructor Float Course">
+    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Student Prerequisite Check">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Staff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/init.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Instructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Instructor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Student.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Instructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,8 +49,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="package-info" />
-        <option value="Class" />
         <option value="JUnit5 Test Class" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -105,6 +110,7 @@
       <recent name="" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.academics.users" />
       <recent name="org.academics.utility" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
@@ -189,7 +195,10 @@
       <workItem from="1675929280938" duration="22403000" />
       <workItem from="1676030085777" duration="1484000" />
       <workItem from="1676106346610" duration="10127000" />
-      <workItem from="1676259024661" duration="5889000" />
+      <workItem from="1676259024661" duration="7072000" />
+      <workItem from="1676284272040" duration="3420000" />
+      <workItem from="1676291900829" duration="477000" />
+      <workItem from="1676316080937" duration="10454000" />
     </task>
     <task id="LOCAL-00001" summary="Fix DB Configuration">
       <created>1674704914591</created>
@@ -268,7 +277,14 @@
       <option name="project" value="LOCAL" />
       <updated>1676112729898</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Student Prerequisite Check">
+      <created>1676270565371</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1676270565372</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -297,7 +313,8 @@
     <MESSAGE value="Modifications due to SRS update" />
     <MESSAGE value="Package Segregation &amp; Menu Options Progress" />
     <MESSAGE value="Instructor Float Course" />
-    <option name="LAST_COMMIT_MESSAGE" value="Instructor Float Course" />
+    <MESSAGE value="Student Prerequisite Check" />
+    <option name="LAST_COMMIT_MESSAGE" value="Student Prerequisite Check" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
