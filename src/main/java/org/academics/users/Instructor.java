@@ -6,6 +6,7 @@ import org.academics.dao.JDBCPostgreSQLConnection;
 import org.academics.utility.Utils;
 
 import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class Instructor extends User {
         return 0;
     }
 
-    public void viewCourses() {
+    public boolean viewCourses() {
         try {
             PreparedStatement viewCourses = conn.prepareStatement("SELECT course_offerings.course_code,course_offerings.semester,course_offerings.qualify,course_offerings.enrollment_count FROM course_offerings WHERE instructor_id = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             viewCourses.setInt(1, instructor_id);
@@ -46,7 +47,7 @@ public class Instructor extends User {
             resultSet.last();
             if (resultSet.getRow() == 0) {
                 System.out.println("You have not floated any courses");
-                return;
+                return false;
             }
             resultSet.beforeFirst();
             String[] columnNames = {"Course Code", "Semester", "Qualifying Criteria", "Enrollment Count"};
@@ -63,6 +64,7 @@ public class Instructor extends User {
             TextTable courseTable = new TextTable(columnNames, courses);
             System.out.println("List of courses floated by you");
             courseTable.printTable();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -71,6 +73,7 @@ public class Instructor extends User {
 
     public void floatCourse() {
         try {
+            conn.setAutoCommit(false);
             PreparedStatement getCourseCodes = conn.prepareStatement("SELECT course_catalog.course_code,course_catalog.course_name, prerequisite FROM course_catalog", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ResultSet resultSet = getCourseCodes.executeQuery();
             resultSet.last();
@@ -93,9 +96,20 @@ public class Instructor extends User {
             courseTable.printTable();
             System.out.println("Enter the course code to float the course");
             String course_code = scanner.next();
+            PreparedStatement validateCourse = conn.prepareStatement("SELECT course_code FROM course_catalog WHERE course_code = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            validateCourse.setString(1, course_code);
+            resultSet = validateCourse.executeQuery();
+            if (!resultSet.next()) {
+                System.out.println("The course code entered is invalid");
+                return;
+            }
             System.out.println("Enter the session (YYYY-Semester)");
             String session = scanner.next();
-            PreparedStatement validateCourse = conn.prepareStatement("SELECT instructors.name FROM course_offerings JOIN instructors  on course_offerings.instructor_id = instructors.instructor_id WHERE course_offerings.course_code = ? AND course_offerings.semester = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            if(!Utils.validateEventTime("course_float",session)){
+                System.out.println("Course floatation for the specified semester is not allowed at this time");
+                return;
+            }
+            validateCourse = conn.prepareStatement("SELECT instructors.name FROM course_offerings JOIN instructors  on course_offerings.instructor_id = instructors.instructor_id WHERE course_offerings.course_code = ? AND course_offerings.semester = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             validateCourse.setString(1, course_code);
             validateCourse.setString(2, session);
             resultSet = validateCourse.executeQuery();
@@ -136,6 +150,24 @@ public class Instructor extends User {
                     pre = new StringBuilder();
                 } while (Objects.equals(choice, "Y"));
             }
+
+            System.out.println("Program Core & Elective Selection");
+            List<Integer> departmentIds = new ArrayList<>();
+            List<Integer> batches = new ArrayList<>();
+            List<String> courseTypes = new ArrayList<>();
+            System.out.println("Enter department ID (press -1 to stop entering):");
+            int departmentId = scanner.nextInt();
+            while (departmentId != -1) {
+                System.out.println("Enter batch:");
+                int batch = scanner.nextInt();
+                System.out.println("Enter course type (core, humanities_elective, programme_elective, science_math_elective, open_elective, internship, btech_project):");
+                String courseType = scanner.next();
+                departmentIds.add(departmentId);
+                batches.add(batch);
+                courseTypes.add(courseType);
+                System.out.println("Enter department ID (press -1 to stop entering):");
+                departmentId = scanner.nextInt();
+            }
             PreparedStatement floatCourse = conn.prepareStatement("INSERT INTO course_offerings (course_code, semester, instructor_id, enrollment_count, qualify, prerequisite) VALUES (?, ?, ?, ?, ?, ?)");
             floatCourse.setString(1, course_code);
             floatCourse.setString(2, session);
@@ -145,36 +177,26 @@ public class Instructor extends User {
             floatCourse.setArray(6, conn.createArrayOf("text", preRequisites.toArray()));
             floatCourse.executeUpdate();
 
-
-            System.out.println("Program Core & Elective Selection");
-            System.out.println("Enter the departments followed by year for which this course is core (CSE 2019 CSE 2020 EE 2018)");
-            scanner.nextLine();
-            String core = scanner.nextLine();
-            String [] tokens = core.split(" ");
-            ArrayList<String> coreDepList = new ArrayList<>();
-            ArrayList<Integer> coreYearList = new ArrayList<>();
-            for(int i = 0; i < tokens.length; i+=2){
-                if(i+1 >= tokens.length)
-                    break;
-                coreDepList.add(tokens[i]);
-                coreYearList.add(Integer.parseInt(tokens[i+1]));
+            PreparedStatement updateCourseMapping = conn.prepareStatement("INSERT INTO course_mappings (course_code, semester, department_id, batch, course_type) VALUES (?, ?, ?, ?,?)");
+            for (int i = 0; i < departmentIds.size(); i++) {
+                updateCourseMapping.setString(1, course_code);
+                updateCourseMapping.setString(2, session);
+                updateCourseMapping.setInt(3, departmentIds.get(i));
+                updateCourseMapping.setInt(4, batches.get(i));
+                updateCourseMapping.setString(5, courseTypes.get(i));
+                updateCourseMapping.executeUpdate();
             }
-            try{
-                CallableStatement ug_curriculum = conn.prepareCall("{call ug_curriculum(?,?,?,?,?)}");
-                ug_curriculum.setArray(1, conn.createArrayOf("text", coreDepList.toArray()));
-                ug_curriculum.setArray(2, conn.createArrayOf("int", coreYearList.toArray()));
-                ug_curriculum.setString(3, course_code);
-                ug_curriculum.setString(4, session);
-                ug_curriculum.setBoolean(5, false);
-//                ug_curriculum.execute();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
+            conn.commit();
             System.out.println("Course floated successfully");
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
+        }finally {
+            try {
+                conn.setAutoCommit(true);
+            }catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -212,6 +234,10 @@ public class Instructor extends User {
         String course_code = scanner.next();
         System.out.println("Enter the session (YYYY-Semester)");
         String session = scanner.next();
+        if(!Utils.validateEventTime("grades_submission", session)){
+            System.out.println("Grades submission is not allowed at this time");
+            return;
+        }
         System.out.println("Enter the path to the CSV file");
         String path = scanner.next();
 try {
@@ -233,7 +259,7 @@ try {
     }
 
     public void delistCourse() {
-        viewCourses();
+        if(!viewCourses())return;
         System.out.println("Enter the course code");
         String course_code = scanner.next();
         System.out.println("Enter the session (YYYY-Semester)");
@@ -265,11 +291,11 @@ try {
     }
 
 
-    public void viewStudentGrades() {
+    public void viewStudentGrades() throws IOException {
         System.out.println("1. Select a course to view grades");
         System.out.println("2. Search a student to view grades");
         System.out.println("3. Go back to main menu");
-        int choice = scanner.nextInt();
+        int choice = Utils.getUserChoice(3);
         switch (choice) {
             case 1: {
                 System.out.println("Enter the course code");

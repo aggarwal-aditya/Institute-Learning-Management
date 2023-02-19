@@ -154,7 +154,7 @@ public class User {
         try {
             System.out.println("Press 1 to Edit your profile");
             System.out.println("Press 2 to go back to Main Menu");
-            int choice = scanner.nextInt();
+            int choice = Utils.getUserChoice(2);
             switch (choice) {
                 case 1:
                     editProfile();
@@ -174,7 +174,7 @@ public class User {
         System.out.println("1. Update Phone Number");
         System.out.println("2. Update Password");
         System.out.println("3. Go back to Main Menu");
-        int choice = scanner.nextInt();
+        int choice = Utils.getUserChoice(3);
         switch (choice) {
             case 1:
                 System.out.println("Enter your new phone number:");

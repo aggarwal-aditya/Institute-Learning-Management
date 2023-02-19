@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class Utils {
     static JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
     static Connection conn = jdbc.getConnection();
+    static Scanner scanner = new Scanner(System.in);
 
     private Utils() {
         //Private constructor to hide the implicit public one
@@ -21,6 +22,26 @@ public class Utils {
     public static int generateOTP() {
         //generate a random 6-digit number
         return (int) (Math.random() * 900000) + 100000;
+    }
+
+    public static int getUserChoice(int maxChoice){
+        while (!scanner.hasNextInt()) {
+            System.out.println("Invalid choice");
+            System.out.println("Enter your choice:");
+            scanner.next();
+        }
+        int choice = scanner.nextInt();
+        while (choice < 1 || choice > maxChoice) {
+            System.out.println("Invalid choice");
+            System.out.println("Enter your choice:");
+            while (!scanner.hasNextInt()) {
+                System.out.println("Invalid choice");
+                System.out.println("Enter your choice:");
+                scanner.next();
+            }
+            choice = scanner.nextInt();
+        }
+        return choice;
     }
 
     public static String getCurrentSession() {
@@ -41,13 +62,12 @@ public class Utils {
         }
         return null;
     }
-    public static boolean verifyEventTime(String query){
+    public static boolean validateEventTime(String query,String session){
         Date currentDate = CurrentDate.getInstance().getCurrentDate();
         try{
-            String session = getCurrentSession();
-            assert session != null;
             int year = Integer.parseInt(session.substring(0,4));
             int semester = Integer.parseInt(session.substring(5));
+            query=" "+query;
             PreparedStatement statement = conn.prepareStatement("SELECT"+query+"_start_date, "+query+"_end_date FROM semester WHERE year = ? AND semester_number = ?");
             statement.setInt(1, year);
             statement.setInt(2, semester);

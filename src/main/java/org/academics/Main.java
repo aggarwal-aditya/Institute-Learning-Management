@@ -6,6 +6,7 @@ import org.academics.dao.*;
 import org.academics.users.Instructor;
 import org.academics.users.Student;
 import org.academics.users.User;
+import org.academics.utility.Utils;
 
 
 class Main {
@@ -19,14 +20,9 @@ class Main {
         System.out.println("2. Reset Your Password (Use this only if you have forgotten your password)");
         System.out.println("3. Exit");
         System.out.println("Enter your choice:");
-        int userType = scanner.nextInt();
-        while (userType < 1 || userType > 3) {
-            System.out.println("Invalid choice");
-            System.out.println("Enter your choice:");
-            userType = scanner.nextInt();
-        }
+        int userChoice = Utils.getUserChoice(3);
         User user = new User();
-        switch (userType) {
+        switch (userChoice) {
             case 1 -> {
                 if (try_login(user)) break;
                 switch (user.userRole) {
@@ -87,12 +83,8 @@ class Main {
         System.out.println("6. View your profile");
         System.out.println("7. Logout");
         System.out.println("Enter your choice:");
-        int choice = scanner.nextInt();
-        while (choice < 1 || choice > 7) {
-            System.out.println("Invalid choice");
-            System.out.println("Enter your choice:");
-            choice = scanner.nextInt();
-        }
+        int choice = Utils.getUserChoice(7);
+
         switch (choice) {
             case 1:
                 try {
@@ -106,35 +98,42 @@ class Main {
                 studentMenu(student);
                 break;
             case 2:
-                student.dropCourse();
+                try {
+                    student.dropCourse();
+                }
+                catch (Exception e) {
+                    System.out.println("Unable to drop course at the moment. Please try again later.");
+                    studentMenu(student);
+                }
+                studentMenu(student);
                 break;
             case 3:
                 try {
                     student.viewCourses();
-                    studentMenu(student);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("Unable to fetch courses at the moment. Please try again later.");
                     studentMenu(student);
                 }
+                studentMenu(student);
                 break;
             case 4:
                 try {
                     student.viewGrades();
-                    studentMenu(student);
                 } catch (Exception e) {
                     System.out.println("Unable to fetch grades at the moment. Please try again later.");
                     studentMenu(student);
                 }
+                studentMenu(student);
                 break;
             case 5:
                 try {
                     student.computeGPA();
-                    studentMenu(student);
                 } catch (Exception e) {
                     System.out.println("Unable to compute GPA at the moment. Please try again later.");
                     studentMenu(student);
                 }
+                studentMenu(student);
                 break;
             case 6:
                 try
@@ -166,14 +165,9 @@ class Main {
         System.out.println("6. View your profile");
         System.out.println("7. Logout");
         System.out.println("Enter your choice:");
-        int choice = scanner.nextInt();
-        while (choice < 1 || choice > 7) {
-            System.out.println("Invalid choice");
-            System.out.println("Enter your choice:");
-            choice = scanner.nextInt();
-        }
+        int choice = Utils.getUserChoice(7);
         switch (choice) {
-            case 1:
+            case 1 -> {
                 try {
                     instructor.viewCourses();
                     instructorMenu(instructor);
@@ -181,8 +175,8 @@ class Main {
                     e.printStackTrace();
                     System.out.println("Unable to fetch courses at the moment. Please try again later.");
                 }
-                break;
-            case 2:
+            }
+            case 2 -> {
                 try {
                     instructor.floatCourse();
                     instructorMenu(instructor);
@@ -191,8 +185,8 @@ class Main {
                     System.out.println("Unable to float course at the moment. Please try again later.");
                     instructorMenu(instructor);
                 }
-                break;
-            case 3:
+            }
+            case 3 -> {
                 try {
                     instructor.delistCourse();
                     instructorMenu(instructor);
@@ -201,8 +195,8 @@ class Main {
                     System.out.println("Unable to delist course at the moment. Please try again later.");
                     instructorMenu(instructor);
                 }
-                break;
-            case 4:
+            }
+            case 4 -> {
                 try {
                     instructor.uploadGrades();
                     instructorMenu(instructor);
@@ -211,8 +205,8 @@ class Main {
                     System.out.println("Unable to upload grades at the moment. Please try again later.");
                     instructorMenu(instructor);
                 }
-                break;
-            case 5:
+            }
+            case 5 -> {
                 try {
                     instructor.viewStudentGrades();
                     instructorMenu(instructor);
@@ -221,8 +215,8 @@ class Main {
                     System.out.println("Unable to fetch student grades at the moment. Please try again later.");
                     instructorMenu(instructor);
                 }
-                break;
-            case 6:
+            }
+            case 6 -> {
                 try {
                     instructor.viewProfile();
                     instructorMenu(instructor);
@@ -231,13 +225,9 @@ class Main {
                     System.out.println("Unable to fetch profile at the moment. Please try again later.");
                     instructorMenu(instructor);
                 }
-                break;
-            case 7:
-                mainMenu();
-                break;
-            default:
-                System.out.println("Invalid choice");
-                break;
+            }
+            case 7 -> mainMenu();
+            default -> System.out.println("Invalid choice");
         }
 
     }

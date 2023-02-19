@@ -68,6 +68,21 @@ public class Student extends User {
                 return;
             }
 
+            PreparedStatement minCGPA = conn.prepareStatement("SELECT qualify from course_offerings WHERE course_code =? AND semester =?;");
+            minCGPA.setString(1, courses[Integer.parseInt(course_number) - 1][1].toString());
+            minCGPA.setString(2, session);
+            ResultSet minCGPAResult = minCGPA.executeQuery();
+            minCGPAResult.next();
+            double minCGPAValue = minCGPAResult.getDouble(1);
+            CallableStatement calculateCGPA = conn.prepareCall("{? = call calculate_cgpa(?)}");
+            calculateCGPA.registerOutParameter(1, Types.NUMERIC);
+            calculateCGPA.setString(2, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
+            calculateCGPA.execute();
+            if(calculateCGPA.getBigDecimal(1).setScale(2, RoundingMode.HALF_UP).doubleValue() < minCGPAValue){
+                System.out.println("You do not meet the minimum CGPA requirement for this course");
+                return;
+            }
+
             //Check Pre-requisites in course_catalog
             PreparedStatement Prerequisites = conn.prepareStatement("SELECT prerequisite from course_catalog WHERE course_code =?;");
             Prerequisites.setString(1, courses[Integer.parseInt(course_number) - 1][1].toString());
@@ -158,6 +173,15 @@ public class Student extends User {
                         }
                     }
                 }
+            }
+            try{
+                PreparedStatement enrolCourse= conn.prepareStatement("INSERT INTO course_enrollments (course_code, semester, student_id) VALUES(?,?,?);");
+                enrolCourse.setString(1, courses[Integer.parseInt(course_number) - 1][1].toString());
+                enrolCourse.setString(2, Utils.getCurrentSession());
+                enrolCourse.setString(3, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
+                enrolCourse.execute();
+            }catch (Exception e) {
+                e.printStackTrace();
             }
             System.out.println("You have successfully registered for " + courses[Integer.parseInt(course_number) - 1][2]);
         } catch (Exception e) {
