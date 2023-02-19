@@ -41,7 +41,28 @@ public class Utils {
         }
         return null;
     }
-
+    public static boolean verifyEventTime(String query){
+        Date currentDate = CurrentDate.getInstance().getCurrentDate();
+        try{
+            String session = getCurrentSession();
+            assert session != null;
+            int year = Integer.parseInt(session.substring(0,4));
+            int semester = Integer.parseInt(session.substring(5));
+            PreparedStatement statement = conn.prepareStatement("SELECT"+query+"_start_date, "+query+"_end_date FROM semester WHERE year = ? AND semester_number = ?");
+            statement.setInt(1, year);
+            statement.setInt(2, semester);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                if (currentDate.after(resultSet.getDate(1)) && currentDate.before(resultSet.getDate(2))){
+                    return true;
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("Oye! Something went wrong!");
+        }
+        return false;
+    }
     public static void exportCSV(ResultSet resultSet, String fileName, String [] p_extraColumnHeaders) {
         try {
             String os = System.getProperty("os.name").toLowerCase();
@@ -92,7 +113,4 @@ public class Utils {
 
     }
 
-    public static void importCSV(String fileName, String[] p_ColumnHeaders){
-
-    }
 }

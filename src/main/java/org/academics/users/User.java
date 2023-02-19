@@ -127,10 +127,10 @@ public class User {
         PreparedStatement userDetails = null;
         try {
             if(this.userRole.equals("student")){
-                userDetails=conn.prepareStatement("SELECT student_id,students.name,phone_number,dept,batch FROM students WHERE email_id = ?");
+                userDetails=conn.prepareStatement("SELECT student_id,students.name,phone_number,d.name,batch FROM students JOIN departments d on students.department_id = d.id WHERE email_id = ?");
             }
             else if(this.userRole.equals("instructor")){
-                userDetails=conn.prepareStatement("SELECT instructor_id,instructors.name,phone_number,dept,date_of_joining FROM instructors WHERE email_id = ?");
+                userDetails=conn.prepareStatement("SELECT instructor_id,instructors.name,phone_number,d.name,date_of_joining FROM instructors JOIN departments d on instructors.department_id = d.id WHERE email_id = ?");
             }
             assert userDetails != null;
             userDetails.setString(1, this.email_id);

@@ -8,15 +8,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Student Prerequisite Check">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Staff.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="CSV file write">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/init.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Instructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Staff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Staff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -198,7 +197,11 @@
       <workItem from="1676259024661" duration="7072000" />
       <workItem from="1676284272040" duration="3420000" />
       <workItem from="1676291900829" duration="477000" />
-      <workItem from="1676316080937" duration="10454000" />
+      <workItem from="1676316080937" duration="11375000" />
+      <workItem from="1676428269539" duration="840000" />
+      <workItem from="1676468536000" duration="978000" />
+      <workItem from="1676662854605" duration="5876000" />
+      <workItem from="1676743317724" duration="5428000" />
     </task>
     <task id="LOCAL-00001" summary="Fix DB Configuration">
       <created>1674704914591</created>
@@ -284,7 +287,14 @@
       <option name="project" value="LOCAL" />
       <updated>1676270565372</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="CSV file write">
+      <created>1676388052172</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1676388052172</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -314,7 +324,8 @@
     <MESSAGE value="Package Segregation &amp; Menu Options Progress" />
     <MESSAGE value="Instructor Float Course" />
     <MESSAGE value="Student Prerequisite Check" />
-    <option name="LAST_COMMIT_MESSAGE" value="Student Prerequisite Check" />
+    <MESSAGE value="CSV file write" />
+    <option name="LAST_COMMIT_MESSAGE" value="CSV file write" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

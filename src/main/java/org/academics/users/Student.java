@@ -239,50 +239,6 @@ public class Student extends User {
 
     }
 
-    private boolean checkPrerequisite(ResultSet resultSet) throws SQLException {
-        while (resultSet.next()) {
-            Array prerequisitesOfferingsResultArray = resultSet.getArray(1);
-            if (prerequisitesOfferingsResultArray == null) {
-                continue;
-            }
-            String[] prerequisites = (String[]) prerequisitesOfferingsResultArray.getArray();
-            for (String prerequisite : prerequisites) {
-                if (prerequisite != null) {
-                    String[] prerequisiteOptions = prerequisite.split("\\|");
-                    boolean check = false;
-                    for (String prerequisiteOption : prerequisiteOptions) {
-                        if(prerequisiteOption.equals("")){
-                            continue;
-                        }
-                        String prerequisiteCode = prerequisiteOption.substring(0, prerequisiteOption.indexOf("("));
-                        String minGrade = prerequisiteOption.substring(prerequisiteOption.indexOf("(") + 1, prerequisiteOption.indexOf(")"));
-                        System.out.println(prerequisiteCode+" "+minGrade);
-                        PreparedStatement checkPrerequisites = conn.prepareStatement("SELECT grade FROM course_enrollments WHERE course_code =? AND student_id =? AND semester<?;");
-                        checkPrerequisites.setString(1, prerequisiteCode);
-                        checkPrerequisites.setString(2, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
-                        checkPrerequisites.setString(3, Utils.getCurrentSession());
-                        ResultSet checkPrerequisitesResult = checkPrerequisites.executeQuery();
-                        if (!checkPrerequisitesResult.next()) {
-                            continue;
-                        }
-                        if (checkPrerequisitesResult.getString("grade").equals("F")) {
-                            continue;
-                        }
-                        if(minGrade.compareTo(checkPrerequisitesResult.getString("grade"))>0){
-                            continue;
-                        }
-                        check = true;
-                        break;
-                    }
-                    if (!check) {
-                        System.out.println("You have not completed the prerequisites for this course");
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
     private void formatOutput(ResultSet resultSet) throws SQLException {
         resultSet.last();
         if (resultSet.getRow() == 0) {

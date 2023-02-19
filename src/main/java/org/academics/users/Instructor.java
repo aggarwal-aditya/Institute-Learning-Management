@@ -1,9 +1,11 @@
 package org.academics.users;
 
+import com.opencsv.CSVReader;
 import dnl.utils.text.table.TextTable;
 import org.academics.dao.JDBCPostgreSQLConnection;
 import org.academics.utility.Utils;
 
+import java.io.FileReader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +104,7 @@ public class Instructor extends User {
                 return;
             }
             System.out.println("Enter the minimum CGPA requirement for the course");
-            int qualify = scanner.nextInt();
+            double qualify = scanner.nextDouble();
             System.out.println("Do you want to add additional prerequisites? (Y/N)");
             String choice = scanner.next();
             //Make a 2d array of prerequisites
@@ -139,53 +141,40 @@ public class Instructor extends User {
             floatCourse.setString(2, session);
             floatCourse.setInt(3, instructor_id);
             floatCourse.setInt(4, 0);
-            floatCourse.setInt(5, qualify);
+            floatCourse.setDouble(5, qualify);
             floatCourse.setArray(6, conn.createArrayOf("text", preRequisites.toArray()));
             floatCourse.executeUpdate();
 
+
             System.out.println("Program Core & Elective Selection");
             System.out.println("Enter the departments followed by year for which this course is core (CSE 2019 CSE 2020 EE 2018)");
+            scanner.nextLine();
             String core = scanner.nextLine();
             String [] tokens = core.split(" ");
             ArrayList<String> coreDepList = new ArrayList<>();
             ArrayList<Integer> coreYearList = new ArrayList<>();
             for(int i = 0; i < tokens.length; i+=2){
+                if(i+1 >= tokens.length)
+                    break;
                 coreDepList.add(tokens[i]);
                 coreYearList.add(Integer.parseInt(tokens[i+1]));
             }
             try{
-                CallableStatement ug_curriculum = conn.prepareCall("{call ug_curriculum(?, ?, ?,?,?)}");
+                CallableStatement ug_curriculum = conn.prepareCall("{call ug_curriculum(?,?,?,?,?)}");
                 ug_curriculum.setArray(1, conn.createArrayOf("text", coreDepList.toArray()));
                 ug_curriculum.setArray(2, conn.createArrayOf("int", coreYearList.toArray()));
                 ug_curriculum.setString(3, course_code);
                 ug_curriculum.setString(4, session);
                 ug_curriculum.setBoolean(5, false);
-                ug_curriculum.execute();
+//                ug_curriculum.execute();
             } catch (SQLException e) {
+                e.printStackTrace();
                 throw new RuntimeException(e);
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             System.out.println("Course floated successfully");
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
-
         }
 
     }
@@ -225,6 +214,21 @@ public class Instructor extends User {
         String session = scanner.next();
         System.out.println("Enter the path to the CSV file");
         String path = scanner.next();
+try {
+            if (!validateInstructor(course_code, session)) return;
+            PreparedStatement uploadGrades = conn.prepareStatement("UPDATE course_enrollments SET grade = ? WHERE enrollment_id = ?");
+            CSVReader reader = new CSVReader(new FileReader(path));
+            String[] line;
+            while ((line = reader.readNext()) != null) {
+                uploadGrades.setString(1, line[3]);
+                uploadGrades.setInt(2, Integer.parseInt(line[0]));
+                uploadGrades.executeUpdate();
+            }
+            System.out.println("Grades uploaded successfully");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
 
     }
 

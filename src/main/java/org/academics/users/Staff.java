@@ -20,6 +20,14 @@ public class Staff extends User{
 
     }
 
+    public void addSemesterTimeline(){
+
+    }
+
+    public void changeSystemSettings(){
+
+    }
+
     public void generateTranscript(){
 
     }
