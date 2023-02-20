@@ -1,11 +1,19 @@
 package org.academics.utility;
 
+import org.academics.users.Instructor;
+import org.academics.users.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Order;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.PrintStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 class UtilsTest {
@@ -60,5 +68,30 @@ class UtilsTest {
     @Test
     void exportCSV() {
 
+    }
+
+    @Test
+    void testFormatOutput() throws SQLException {
+        ResultSet resultSet = mock(ResultSet.class);
+        // Simulate the behavior of the result set
+        when(resultSet.next()).thenReturn(true, true, true, false);
+        when(resultSet.getString(1)).thenReturn("CSE101", "CSE102", "CSE103");
+        when(resultSet.getString(2)).thenReturn("Introduction to Programming", "Data Structures", "Algorithms");
+        when(resultSet.getString(3)).thenReturn("Fall 2022", "Spring 2023", "Fall 2023");
+        when(resultSet.getString(4)).thenReturn("1001", "1002", "1003");
+        when(resultSet.getString(5)).thenReturn("Alice", "Bob", "Charlie");
+        when(resultSet.getString(6)).thenReturn("A", "B", "C");
+
+        // Call the method and capture its output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+        Utils.printTable(resultSet,new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"});
+        String output = outputStream.toString();
+        assertTrue(output.contains("Course Code"));
+        assertTrue(output.contains("Course Name"));
+        assertTrue(output.contains("Semester"));
+        assertTrue(output.contains("Student ID"));
+        assertTrue(output.contains("Student Name"));
+        assertTrue(output.contains("Grade"));
     }
 }

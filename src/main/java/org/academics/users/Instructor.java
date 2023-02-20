@@ -7,7 +7,10 @@ import org.academics.utility.Utils;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +35,6 @@ public class Instructor extends User {
             while (resultSet.next()) {
                 return resultSet.getInt(1);
             }
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -94,8 +96,7 @@ public class Instructor extends User {
             TextTable courseTable = new TextTable(columnNames, courses);
             System.out.println("List of courses approved by Senate");
             courseTable.printTable();
-            System.out.println("Enter the course code to float the course");
-            String course_code = scanner.next();
+            String course_code = Utils.getInput("Enter the course code to float the course");
             PreparedStatement validateCourse = conn.prepareStatement("SELECT course_code FROM course_catalog WHERE course_code = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             validateCourse.setString(1, course_code);
             resultSet = validateCourse.executeQuery();
@@ -103,9 +104,8 @@ public class Instructor extends User {
                 System.out.println("The course code entered is invalid");
                 return;
             }
-            System.out.println("Enter the session (YYYY-Semester)");
-            String session = scanner.next();
-            if(!Utils.validateEventTime("course_float",session)){
+            String session = Utils.getInput("Enter the session (YYYY-Semester)");
+            if (!Utils.validateEventTime("course_float", session)) {
                 System.out.println("Course floatation for the specified semester is not allowed at this time");
                 return;
             }
@@ -191,10 +191,10 @@ public class Instructor extends User {
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
-        }finally {
+        } finally {
             try {
                 conn.setAutoCommit(true);
-            }catch (SQLException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
@@ -202,46 +202,110 @@ public class Instructor extends User {
     }
 
 
+//    public void uploadGrades() {
+//        System.out.println("Do you want to download the list of students enrolled in the course? (Y/N)? Note that this may overwrite a file in downloads folder for the same course");
+//        String choice = scanner.next();
+//        if (Objects.equals(choice, "Y")) {
+//            System.out.println("Enter the course code");
+//            String course_code = scanner.next();
+//            System.out.println("Enter the session (YYYY-Semester)");
+//            String session = scanner.next();
+//            try {
+//                if (!validateInstructor(course_code, session)) return;
+//                ResultSet resultSet;
+//                PreparedStatement getEnrolledStudents = conn.prepareStatement("SELECT course_enrollments.enrollment_id, course_enrollments.student_id, students.name FROM course_enrollments JOIN students on course_enrollments.student_id = students.student_id WHERE course_code = ? AND semester = ? ORDER BY course_enrollments.student_id ASC");
+//                getEnrolledStudents.setString(1, course_code);
+//                getEnrolledStudents.setString(2, session);
+//                resultSet = getEnrolledStudents.executeQuery();
+//                String[] extraHeaders = new String[]{"grade"};
+//                Utils.exportCSV(resultSet, course_code + "_" + session, extraHeaders);
+//                System.out.println("Please Enter the grades for the students in the CSV file");
+//                System.out.println("Waiting for you to complete the task. Press any key to continue or press 'q' to quit and upload later");
+//                String input = scanner.next();
+//                if (Objects.equals(input, "q")) {
+//                    return;
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                throw new RuntimeException(e);
+//            }
+//        }
+//        System.out.println("Enter the course code");
+//        String course_code = scanner.next();
+//        System.out.println("Enter the session (YYYY-Semester)");
+//        String session = scanner.next();
+//        if (!Utils.validateEventTime("grades_submission", session)) {
+//            System.out.println("Grades submission is not allowed at this time");
+//            return;
+//        }
+//        System.out.println("Enter the path to the CSV file");
+//        String path = scanner.next();
+//        try {
+//            if (!validateInstructor(course_code, session)) return;
+//            PreparedStatement uploadGrades = conn.prepareStatement("UPDATE course_enrollments SET grade = ? WHERE enrollment_id = ?");
+//            CSVReader reader = new CSVReader(new FileReader(path));
+//            String[] line;
+//            while ((line = reader.readNext()) != null) {
+//                uploadGrades.setString(1, line[3]);
+//                uploadGrades.setInt(2, Integer.parseInt(line[0]));
+//                uploadGrades.executeUpdate();
+//            }
+//            System.out.println("Grades uploaded successfully");
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//
+//    }
     public void uploadGrades() {
+    if (shouldDownloadStudentList()) {
+        downloadAndExportStudentList();
+    }
+    uploadGradesFromFile();
+}
+    private boolean shouldDownloadStudentList() {
         System.out.println("Do you want to download the list of students enrolled in the course? (Y/N)? Note that this may overwrite a file in downloads folder for the same course");
         String choice = scanner.next();
-        if(Objects.equals(choice, "Y")) {
-            System.out.println("Enter the course code");
-            String course_code = scanner.next();
-            System.out.println("Enter the session (YYYY-Semester)");
-            String session = scanner.next();
-            try {
-                if (!validateInstructor(course_code, session)) return;
-                ResultSet resultSet;
-                PreparedStatement getEnrolledStudents = conn.prepareStatement("SELECT course_enrollments.enrollment_id, course_enrollments.student_id, students.name FROM course_enrollments JOIN students on course_enrollments.student_id = students.student_id WHERE course_code = ? AND semester = ? ORDER BY course_enrollments.student_id ASC");
-                getEnrolledStudents.setString(1, course_code);
-                getEnrolledStudents.setString(2, session);
-                resultSet = getEnrolledStudents.executeQuery();
-                String[] extraHeaders = new String[]{"grade"};
-                Utils.exportCSV(resultSet, course_code + "_" + session, extraHeaders);
-                System.out.println("Please Enter the grades for the students in the CSV file");
-                System.out.println("Waiting for you to complete the task. Press any key to continue or press 'q' to quit and upload later");
-                String input = scanner.next();
-                if (Objects.equals(input, "q")) {
-                    return;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-        }
+        return Objects.equals(choice, "Y");
+    }
+    private void downloadAndExportStudentList() {
         System.out.println("Enter the course code");
-        String course_code = scanner.next();
+        String courseCode = scanner.next();
         System.out.println("Enter the session (YYYY-Semester)");
         String session = scanner.next();
-        if(!Utils.validateEventTime("grades_submission", session)){
+        try {
+            if (!validateInstructor(courseCode, session)) return;
+            ResultSet resultSet;
+            PreparedStatement getEnrolledStudents = conn.prepareStatement("SELECT course_enrollments.enrollment_id, course_enrollments.student_id, students.name FROM course_enrollments JOIN students on course_enrollments.student_id = students.student_id WHERE course_code = ? AND semester = ? ORDER BY course_enrollments.student_id ASC");
+            getEnrolledStudents.setString(1, courseCode);
+            getEnrolledStudents.setString(2, session);
+            resultSet = getEnrolledStudents.executeQuery();
+            String[] extraHeaders = new String[]{"grade"};
+            Utils.exportCSV(resultSet, courseCode + "_" + session, extraHeaders);
+            System.out.println("Please Enter the grades for the students in the CSV file");
+            System.out.println("Waiting for you to complete the task. Press any key to continue or press 'q' to quit and upload later");
+            String input = scanner.next();
+            if (Objects.equals(input, "q")) {
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+    private void uploadGradesFromFile() {
+        System.out.println("Enter the course code");
+        String courseCode = scanner.next();
+        System.out.println("Enter the session (YYYY-Semester)");
+        String session = scanner.next();
+        if (!Utils.validateEventTime("grades_submission", session)) {
             System.out.println("Grades submission is not allowed at this time");
             return;
         }
         System.out.println("Enter the path to the CSV file");
         String path = scanner.next();
-try {
-            if (!validateInstructor(course_code, session)) return;
+        try {
+            if (!validateInstructor(courseCode, session)) return;
             PreparedStatement uploadGrades = conn.prepareStatement("UPDATE course_enrollments SET grade = ? WHERE enrollment_id = ?");
             CSVReader reader = new CSVReader(new FileReader(path));
             String[] line;
@@ -254,29 +318,28 @@ try {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
-    public void delistCourse() {
-        if(!viewCourses())return;
-        System.out.println("Enter the course code");
-        String course_code = scanner.next();
-        System.out.println("Enter the session (YYYY-Semester)");
-        String session = scanner.next();
+    public void delistCourse() throws SQLException {
+        if (!viewCourses()) {
+            return;
+        }
+        String courseCode = Utils.getInput("Enter the course code");
+        String session = Utils.getInput("Enter the session (YYYY-Semester)");
+        if (!validateInstructor(courseCode, session)) {
+            return;
+        }
         try {
-            if (!validateInstructor(course_code, session)) return;
             PreparedStatement delistCourse = conn.prepareStatement("DELETE FROM course_offerings WHERE course_code = ? AND semester = ? AND instructor_id = ?");
-            delistCourse.setString(1, course_code);
+            delistCourse.setString(1, courseCode);
             delistCourse.setString(2, session);
             delistCourse.setInt(3, instructor_id);
             delistCourse.executeUpdate();
             System.out.println("Course delisted successfully");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delist course: " + e.getMessage(), e);
         }
     }
-
     private boolean validateInstructor(String course_code, String session) throws SQLException {
         PreparedStatement validateCourse = conn.prepareStatement("SELECT * FROM course_offerings WHERE course_code = ? AND semester = ? AND instructor_id = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
         validateCourse.setString(1, course_code);
@@ -289,64 +352,25 @@ try {
         }
         return true;
     }
-
-
-    public void viewStudentGrades() throws IOException {
+    public void viewStudentGrades() throws IOException, SQLException {
         System.out.println("1. Select a course to view grades");
         System.out.println("2. Search a student to view grades");
         System.out.println("3. Go back to main menu");
         int choice = Utils.getUserChoice(3);
         switch (choice) {
             case 1: {
-                System.out.println("Enter the course code");
-                String course_code = scanner.next();
-                System.out.println("Enter the session (YYYY-Semester)");
-                String session = scanner.next();
-                ResultSet resultSet;
-                try {
-                    PreparedStatement getGrades = conn.prepareStatement("SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.semester, course_enrollments.student_id, students.name, course_enrollments.grade FROM course_enrollments JOIN course_catalog ON course_enrollments.course_code=course_catalog.course_code JOIN students ON course_enrollments.student_id = students.student_id WHERE course_enrollments.course_code = ? AND course_enrollments.semester = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-                    getGrades.setString(1, course_code);
-                    getGrades.setString(2, session);
-                    resultSet = getGrades.executeQuery();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                try {
-                    resultSet.last();
-                    int rowCount = resultSet.getRow();
-                    if (rowCount == 0) {
-                        System.out.println("No course was found with the given course code and session or no students enrolled in the course");
-                        return;
-                    }
-                    formatOutput(resultSet);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                String course_code = Utils.getInput("Enter the course code");
+                String session = Utils.getInput("Enter the session (YYYY-Semester)");
+                ResultSet resultSet = getCourseGrades(course_code, session);
+                Utils.printTable(resultSet, new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"});
                 break;
             }
-            case 2:
-                System.out.println("Enter the student's Enrollment ID");
-                String enrollment_id = scanner.next();
-                ResultSet resultSet;
-                try {
-                    PreparedStatement getGrades = conn.prepareStatement("SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.semester, course_enrollments.student_id, students.name, course_enrollments.grade FROM course_enrollments JOIN course_catalog ON course_enrollments.course_code=course_catalog.course_code JOIN students ON course_enrollments.student_id = students.student_id WHERE course_enrollments.student_id = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-                    getGrades.setString(1, enrollment_id);
-                    resultSet = getGrades.executeQuery();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                try {
-                    resultSet.last();
-                    int rowCount = resultSet.getRow();
-                    if (rowCount == 0) {
-                        System.out.println("No student was found with the given enrollment ID or no courses enrolled by the student");
-                        return;
-                    }
-                    formatOutput(resultSet);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+            case 2: {
+                String enrollment_id = Utils.getInput("Enter the student's Enrollment ID");
+                ResultSet resultSet = getStudentGrades(enrollment_id);
+                Utils.printTable(resultSet, new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"});
                 break;
+            }
             case 3:
                 break;
             default:
@@ -355,22 +379,31 @@ try {
         }
     }
 
-    private void formatOutput(ResultSet resultSet) throws SQLException {
-        resultSet.beforeFirst();
-        String[] columnNames = {"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"};
-        List<Object[]> data = new ArrayList<>();
-        while (resultSet.next()) {
-            Object[] course_detail = new Object[6];
-            course_detail[0] = resultSet.getString(1);
-            course_detail[1] = resultSet.getString(2);
-            course_detail[2] = resultSet.getString(3);
-            course_detail[3] = resultSet.getString(4);
-            course_detail[4] = resultSet.getString(5);
-            course_detail[5] = resultSet.getString(6);
-            data.add(course_detail);
+    private ResultSet getCourseGrades(String course_code, String session) throws SQLException {
+        PreparedStatement getGrades = conn.prepareStatement("SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.semester, course_enrollments.student_id, students.name, course_enrollments.grade FROM course_enrollments JOIN course_catalog ON course_enrollments.course_code=course_catalog.course_code JOIN students ON course_enrollments.student_id = students.student_id WHERE course_enrollments.course_code = ? AND course_enrollments.semester = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        getGrades.setString(1, course_code);
+        getGrades.setString(2, session);
+        ResultSet resultSet = getGrades.executeQuery();
+        resultSet.last();
+        int rowCount = resultSet.getRow();
+        if (rowCount == 0) {
+            System.out.println("No course was found with the given course code and session or no students enrolled in the course");
         }
-        Object[][] courses = data.toArray(new Object[0][]);
-        TextTable courseTable = new TextTable(columnNames, courses);
-        courseTable.printTable();
+        resultSet.beforeFirst();
+        return resultSet;
     }
+
+    private ResultSet getStudentGrades(String enrollment_id) throws SQLException {
+        PreparedStatement getGrades = conn.prepareStatement("SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.semester, course_enrollments.student_id, students.name, course_enrollments.grade FROM course_enrollments JOIN course_catalog ON course_enrollments.course_code=course_catalog.course_code JOIN students ON course_enrollments.student_id = students.student_id WHERE course_enrollments.student_id = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        getGrades.setString(1, enrollment_id);
+        ResultSet resultSet = getGrades.executeQuery();
+        resultSet.last();
+        int rowCount = resultSet.getRow();
+        if (rowCount == 0) {
+            System.out.println("No student was found with the given enrollment ID or no courses enrolled by the student");
+        }
+        resultSet.beforeFirst();
+        return resultSet;
+    }
+
 }

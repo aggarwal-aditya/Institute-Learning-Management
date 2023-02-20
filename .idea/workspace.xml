@@ -8,16 +8,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Addition of Tests">
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/dao/JDBCPostgreSQLConnectionTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/UserTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/utility/CurrentDateTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/utility/MailManagementTest.java" afterDir="false" />
+    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Backup for Modularisartion and Refactoring">
+      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/InstructorTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/CurrentDate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/CurrentDate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dao/JDBCPostgreSQLConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dao/JDBCPostgreSQLConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/utility/UtilsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/utility/UtilsTest.java" afterDir="false" />
     </list>
@@ -52,6 +46,7 @@
       <list>
         <option value="package-info" />
         <option value="Class" />
+        <option value="Interface" />
         <option value="JUnit5 Test Class" />
       </list>
     </option>
@@ -111,6 +106,9 @@
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
     </key>
+    <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="org.academics.utility" />
+    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="org.academics.utility" />
       <recent name="org.academics.users" />
@@ -122,7 +120,7 @@
       <recent name="org.academics" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="Gradle.InstructorTest">
     <configuration name="Main" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="C:/Program Files/Java/jdk-17.0.1" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -132,7 +130,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="InstructorTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -145,7 +143,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;org.academics.users.UserTest&quot;" />
+            <option value="&quot;org.academics.users.InstructorTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -155,7 +153,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="UserTest.testChangePassword" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="InstructorTest.testDelistCourse" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -168,7 +166,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;org.academics.users.UserTest.testChangePassword&quot;" />
+            <option value="&quot;org.academics.users.InstructorTest.testDelistCourse&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -178,7 +176,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="UserTest.testExceptionChangePassword" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="InstructorTest.testNoCourseDelistCourse" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -191,7 +189,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;org.academics.users.UserTest.testExceptionChangePassword&quot;" />
+            <option value="&quot;org.academics.users.InstructorTest.testNoCourseDelistCourse&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -201,7 +199,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="UserTest.testNonExistentUserChangePassword" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="InstructorTest.testNonExistentInstructor" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -214,7 +212,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;org.academics.users.UserTest.testNonExistentUserChangePassword&quot;" />
+            <option value="&quot;org.academics.users.InstructorTest.testNonExistentInstructor&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -224,7 +222,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="UserTest.testchangePassword" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="UtilsTest.testFormatOutput" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -237,7 +235,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;org.academics.users.UserTest.testchangePassword&quot;" />
+            <option value="&quot;org.academics.utility.UtilsTest.testFormatOutput&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -249,19 +247,19 @@
     </configuration>
     <list>
       <item itemvalue="Application.Main" />
-      <item itemvalue="Gradle.UserTest" />
-      <item itemvalue="Gradle.UserTest.testChangePassword" />
-      <item itemvalue="Gradle.UserTest.testExceptionChangePassword" />
-      <item itemvalue="Gradle.UserTest.testNonExistentUserChangePassword" />
-      <item itemvalue="Gradle.UserTest.testchangePassword" />
+      <item itemvalue="Gradle.InstructorTest" />
+      <item itemvalue="Gradle.InstructorTest.testDelistCourse" />
+      <item itemvalue="Gradle.InstructorTest.testNoCourseDelistCourse" />
+      <item itemvalue="Gradle.InstructorTest.testNonExistentInstructor" />
+      <item itemvalue="Gradle.UtilsTest.testFormatOutput" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.UserTest.testNonExistentUserChangePassword" />
-        <item itemvalue="Gradle.UserTest.testExceptionChangePassword" />
-        <item itemvalue="Gradle.UserTest.testChangePassword" />
-        <item itemvalue="Gradle.UserTest.testchangePassword" />
-        <item itemvalue="Gradle.UserTest" />
+        <item itemvalue="Gradle.InstructorTest" />
+        <item itemvalue="Gradle.InstructorTest.testNoCourseDelistCourse" />
+        <item itemvalue="Gradle.InstructorTest.testDelistCourse" />
+        <item itemvalue="Gradle.UtilsTest.testFormatOutput" />
+        <item itemvalue="Gradle.InstructorTest.testNonExistentInstructor" />
       </list>
     </recent_temporary>
   </component>
@@ -306,7 +304,8 @@
       <workItem from="1676743317724" duration="11313000" />
       <workItem from="1676790809967" duration="3199000" />
       <workItem from="1676794242184" duration="605000" />
-      <workItem from="1676823956092" duration="19588000" />
+      <workItem from="1676823956092" duration="20128000" />
+      <workItem from="1676865952039" duration="9260000" />
     </task>
     <task id="LOCAL-00001" summary="Fix DB Configuration">
       <created>1674704914591</created>
@@ -413,7 +412,14 @@
       <option name="project" value="LOCAL" />
       <updated>1676834406504</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Backup for Modularisartion and Refactoring">
+      <created>1676865483297</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1676865483297</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -449,7 +455,8 @@
     <MESSAGE value="CSV file write" />
     <MESSAGE value="Overall Modifications" />
     <MESSAGE value="Addition of Tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="Addition of Tests" />
+    <MESSAGE value="Backup for Modularisartion and Refactoring" />
+    <option name="LAST_COMMIT_MESSAGE" value="Backup for Modularisartion and Refactoring" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
@@ -462,7 +469,9 @@
     <SUITE FILE_PATH="coverage/ilm$Tests_in__org_academics_.ic" NAME="Tests in 'org.academics' Coverage Results" MODIFIED="1676837093663" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_testInvalidInput.ic" NAME="UtilsTest.testInvalidInput Coverage Results" MODIFIED="1676835983021" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UserTest_testExceptionChangePassword.ic" NAME="UserTest.testExceptionChangePassword Coverage Results" MODIFIED="1676863461867" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$InstructorTest_testNoCourseDelistCourse.ic" NAME="InstructorTest.testNoCourseDelistCourse Coverage Results" MODIFIED="1676880287006" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$MainTest.ic" NAME="MainTest Coverage Results" MODIFIED="1676830212461" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$InstructorTest_testNonExistentInstructor.ic" NAME="InstructorTest.testNonExistentInstructor Coverage Results" MODIFIED="1676873894946" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$MailManagementTest.ic" NAME="MailManagementTest Coverage Results" MODIFIED="1676835817343" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_generateOTP.ic" NAME="UtilsTest.generateOTP Coverage Results" MODIFIED="1676834010490" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$CurrentDateTest.ic" NAME="CurrentDateTest Coverage Results" MODIFIED="1676834916976" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
@@ -470,12 +479,15 @@
       <FILTER>org.academics.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/ilm$UserTest_testChangePassword.ic" NAME="UserTest.testChangePassword Coverage Results" MODIFIED="1676863211251" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$InstructorTest_testDelistCourse.ic" NAME="InstructorTest.testDelistCourse Coverage Results" MODIFIED="1676879994304" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UserTest.ic" NAME="UserTest Coverage Results" MODIFIED="1676861246035" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$UtilsTest_testFormatOutput.ic" NAME="UtilsTest.testFormatOutput Coverage Results" MODIFIED="1676875357838" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_testValidInput.ic" NAME="UtilsTest.testValidInput Coverage Results" MODIFIED="1676831974327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_testOutOfRangeInput.ic" NAME="UtilsTest.testOutOfRangeInput Coverage Results" MODIFIED="1676835968572" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$Main.ic" NAME="Main Coverage Results" MODIFIED="1676833634098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.academics.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="coverage/ilm$JDBCPostgreSQLConnectionTest.ic" NAME="JDBCPostgreSQLConnectionTest Coverage Results" MODIFIED="1676834724102" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$InstructorTest.ic" NAME="InstructorTest Coverage Results" MODIFIED="1676880379956" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$JDBCPostgreSQLConnectionTest.ic" NAME="JDBCPostgreSQLConnectionTest Coverage Results" MODIFIED="1676866519289" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

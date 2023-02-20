@@ -1,12 +1,16 @@
 package org.academics.utility;
 
 
+import dnl.utils.text.table.TextTable;
 import org.academics.dao.JDBCPostgreSQLConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 public class Utils {
@@ -41,6 +45,11 @@ public class Utils {
             choice = scanner.nextInt();
         }
         return choice;
+    }
+
+    public static String getInput(String message) {
+        System.out.println(message);
+        return scanner.next();
     }
 
     public static String getCurrentSession() {
@@ -131,5 +140,24 @@ public class Utils {
         }
 
     }
+
+    public static void printTable(ResultSet resultSet, String[] columnNames) throws SQLException {
+        Object[][] data = getData(resultSet, columnNames.length);
+        TextTable courseTable = new TextTable(columnNames, data);
+        courseTable.printTable();
+    }
+    private static Object[][] getData(ResultSet resultSet, int numColumns) throws SQLException {
+        List<Object[]> data = new ArrayList<>();
+        resultSet.beforeFirst();
+        while (resultSet.next()) {
+            Object[] rowData = new Object[numColumns];
+            for (int i = 1; i <= numColumns; i++) {
+                rowData[i - 1] = resultSet.getString(i);
+            }
+            data.add(rowData);
+        }
+        return data.toArray(new Object[0][]);
+    }
+
 
 }
