@@ -1,7 +1,6 @@
 package org.academics.utility;
 
 
-import org.academics.CurrentDate;
 import org.academics.dao.JDBCPostgreSQLConnection;
 
 import java.sql.Connection;

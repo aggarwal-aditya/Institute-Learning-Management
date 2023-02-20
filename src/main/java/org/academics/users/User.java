@@ -115,8 +115,6 @@ public class User {
             userDetails.executeUpdate();
             userDetails.close();
         } catch (Exception e) {
-            assert userDetails != null;
-            userDetails.close();
             throw new RuntimeException(e);
         }
 

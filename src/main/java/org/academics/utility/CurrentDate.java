@@ -1,4 +1,4 @@
-package org.academics;
+package org.academics.utility;
 
 import java.util.Calendar;
 import java.util.Date;
