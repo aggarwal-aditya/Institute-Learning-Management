@@ -8,14 +8,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Progress on Instructor Test">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/dao/dbUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/StudentTest.java" afterDir="false" />
+    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Backup for Major Changes Henceforth">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Admin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/init.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dao/dbUtility.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Staff.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utility/CurrentDate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/CurrentDate.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/utility/UtilsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/utility/UtilsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/users/StudentTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/StudentTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,9 +51,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="package-info" />
-        <option value="Interface" />
         <option value="JUnit5 Test Class" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -109,6 +113,7 @@
       <recent name="" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="org.academics.users" />
       <recent name="org.academics.utility" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -307,7 +312,8 @@
       <workItem from="1676790809967" duration="3199000" />
       <workItem from="1676794242184" duration="605000" />
       <workItem from="1676823956092" duration="20128000" />
-      <workItem from="1676865952039" duration="22094000" />
+      <workItem from="1676865952039" duration="34570000" />
+      <workItem from="1676925370327" duration="1454000" />
     </task>
     <task id="LOCAL-00001" summary="Fix DB Configuration">
       <created>1674704914591</created>
@@ -428,7 +434,14 @@
       <option name="project" value="LOCAL" />
       <updated>1676881214855</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Backup for Major Changes Henceforth">
+      <created>1676899306683</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1676899306683</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -466,7 +479,8 @@
     <MESSAGE value="Addition of Tests" />
     <MESSAGE value="Backup for Modularisartion and Refactoring" />
     <MESSAGE value="Progress on Instructor Test" />
-    <option name="LAST_COMMIT_MESSAGE" value="Progress on Instructor Test" />
+    <MESSAGE value="Backup for Major Changes Henceforth" />
+    <option name="LAST_COMMIT_MESSAGE" value="Backup for Major Changes Henceforth" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
@@ -495,10 +509,10 @@
     <SUITE FILE_PATH="coverage/ilm$StudentTest_testNonExistentStudentComputeGPA.ic" NAME="StudentTest.testNonExistentStudentComputeGPA Coverage Results" MODIFIED="1676887173478" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UserTest_testSetUserDetails.ic" NAME="UserTest.testSetUserDetails Coverage Results" MODIFIED="1676861231439" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_testInvalidInput.ic" NAME="UtilsTest.testInvalidInput Coverage Results" MODIFIED="1676835983021" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$StudentTest.ic" NAME="StudentTest Coverage Results" MODIFIED="1676890329541" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$StudentTest.ic" NAME="StudentTest Coverage Results" MODIFIED="1676906709690" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$InstructorTest_testNonExistentInstructor.ic" NAME="InstructorTest.testNonExistentInstructor Coverage Results" MODIFIED="1676873894946" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$MailManagementTest.ic" NAME="MailManagementTest Coverage Results" MODIFIED="1676835817343" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$StudentTest_testDropCourse.ic" NAME="StudentTest.testDropCourse Coverage Results" MODIFIED="1676890528483" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$StudentTest_testDropCourse.ic" NAME="StudentTest.testDropCourse Coverage Results" MODIFIED="1676906874010" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_generateOTP.ic" NAME="UtilsTest.generateOTP Coverage Results" MODIFIED="1676834010490" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$InstructorTest_testDelistCourse.ic" NAME="InstructorTest.testDelistCourse Coverage Results" MODIFIED="1676879994304" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$Main.ic" NAME="Main Coverage Results" MODIFIED="1676833634098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

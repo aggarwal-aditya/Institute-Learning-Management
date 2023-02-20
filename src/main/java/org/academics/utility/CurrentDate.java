@@ -1,14 +1,14 @@
 package org.academics.utility;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 public class CurrentDate {
     private static CurrentDate instance = null;
-    private Calendar calendar;
+    private LocalDate currentDate;
 
     private CurrentDate() {
-        calendar = Calendar.getInstance();
+        currentDate = LocalDate.now();
     }
 
     public static CurrentDate getInstance() {
@@ -18,13 +18,11 @@ public class CurrentDate {
         return instance;
     }
 
-    public Date getCurrentDate() {
-        return calendar.getTime();
+    public LocalDate getCurrentDate() {
+        return currentDate;
     }
 
     public void overwriteCurrentDate(int year, int month, int day) {
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.DAY_OF_MONTH, day);
+        currentDate = LocalDate.of(year, month, day);
     }
 }

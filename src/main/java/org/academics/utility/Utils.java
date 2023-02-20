@@ -4,12 +4,13 @@ package org.academics.utility;
 import dnl.utils.text.table.TextTable;
 import org.academics.dao.JDBCPostgreSQLConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -53,12 +54,12 @@ public class Utils {
     }
 
     public static String getCurrentSession() {
-        Date currentDate = CurrentDate.getInstance().getCurrentDate();
+        LocalDate currentDate = CurrentDate.getInstance().getCurrentDate();
         try {
             PreparedStatement statement = conn.prepareStatement("SELECT year, semester_number FROM semester WHERE start_date <= ? AND end_date >= ?");
-            statement.setDate(1, new java.sql.Date(currentDate.getTime()));
-            statement.setDate(2, new java.sql.Date(currentDate.getTime()));
-            java.sql.ResultSet resultSet = statement.executeQuery();
+            statement.setDate(1, Date.valueOf(currentDate));
+            statement.setDate(2, Date.valueOf(currentDate));
+            ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getString(1) + "-" + resultSet.getString(2);
             } else {
@@ -71,7 +72,7 @@ public class Utils {
         return null;
     }
     public static boolean validateEventTime(String query,String session){
-        Date currentDate = CurrentDate.getInstance().getCurrentDate();
+        LocalDate currentDate = CurrentDate.getInstance().getCurrentDate();
         try{
             int year = Integer.parseInt(session.substring(0,4));
             int semester = Integer.parseInt(session.substring(5));
@@ -81,7 +82,7 @@ public class Utils {
             statement.setInt(2, semester);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){
-                if (currentDate.after(resultSet.getDate(1)) && currentDate.before(resultSet.getDate(2))){
+                if (currentDate.isAfter(resultSet.getDate(1).toLocalDate()) && currentDate.isBefore(resultSet.getDate(2).toLocalDate())){
                     return true;
                 }
             }
@@ -90,6 +91,37 @@ public class Utils {
             System.out.println("Oye! Something went wrong!");
         }
         return false;
+    }
+
+    public static void exportTxt(ResultSet resultSet,String fileName,String message){
+        try{
+            String os = System.getProperty("os.name").toLowerCase();
+            String username = System.getProperty("user.name");
+            String downloadPath = "";
+            if (os.contains("win")) {
+                downloadPath = "C:\\Users\\" + username + "\\Downloads\\" + fileName + ".txt";
+            } else if (os.contains("mac")) {
+                downloadPath = "/Users/" + username + "/Downloads/" + fileName + ".txt";
+            } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+                downloadPath = "/home/" + username + "/Downloads/" + fileName + ".txt";
+            } else {
+                System.out.println("Enter the path to download the file:");
+                downloadPath = new Scanner(System.in).nextLine();
+            }
+            System.out.println("Downloading file to " + downloadPath);
+            OutputStream outputStream = new FileOutputStream(downloadPath);
+            System.setOut(new PrintStream(outputStream));
+            printTable(resultSet,new String[]{"Course Code","Course Name", "Semester","Grade"},message);
+            System.setIn(System.in);
+            System.setOut(System.out);
+            System.out.println("File downloaded successfully!");
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("Oye! Something went wrong!");
+        }finally {
+            System.setIn(System.in);
+            System.setOut(System.out);
+        }
     }
     public static void exportCSV(ResultSet resultSet, String fileName, String [] p_extraColumnHeaders) {
         try {

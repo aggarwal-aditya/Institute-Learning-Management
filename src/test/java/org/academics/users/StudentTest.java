@@ -30,6 +30,12 @@ class StudentTest {
 
 
     @Test
+    void testEnrolCourse(){
+        User user=new User("student","2020csb1066@iitrpr.ac.in");
+        Student student=new Student(user);
+
+    }
+    @Test
     void testDropCourse(){
         try{
             CallableStatement callableStatement = connection.prepareCall("{call populate_database()}");
@@ -208,7 +214,7 @@ class StudentTest {
             callableStatement.execute();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
-        student.computeGPA();
+        student.printGPA();
         String output = outputStream.toString();
         assertTrue(output.contains("Your CGPA is: 9.50"));
         }catch (Exception e) {

@@ -138,7 +138,7 @@ BEGIN
                               FROM course_enrollments
                                        JOIN course_catalog
                                             ON course_enrollments.course_code = course_catalog.course_code
-                              WHERE student_id = p_student_id)
+                              WHERE student_id = p_student_id AND course_enrollments.grade<>'NA')
         LOOP
             -- check if the grade is not null
             IF course_enrollment.grade IS NOT NULL THEN
@@ -297,69 +297,73 @@ END;
 $$ LANGUAGE plpgsql;
 
 
--- CREATE OR REPLACE FUNCTION check_credit_limit()
---     RETURNS TRIGGER AS
---
--- $$
--- DECLARE
---     credit_limit    NUMERIC;
---     count           INTEGER;
---     current_credits NUMERIC;
--- BEGIN
---     -- Get the credit limit for the student based on previous semesters
---     SELECT SUM(credits)
---     INTO credit_limit
---     FROM (SELECT SUM(credit_str[5]) as credits
---           FROM course_enrollments
---                    JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
---           WHERE student_id = NEW.student_id
---           GROUP BY semester
---             AND semester < NEW.semester
---           ORDER BY semester DESC
---           LIMIT 2) as previous_semesters;
---     IF credit_limit IS NOT NULL THEN
---         SELECT COUNT(*)
---         INTO count
---         FROM (SELECT SUM(credit_str[5]) as credits
---               FROM course_enrollments
---                        JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
---               WHERE student_id = NEW.student_id
---                 AND semester < NEW.semester
---               ORDER BY semester DESC
---               LIMIT 2) as previous_semesters;
---         IF count < 2 THEN
---             credit_limit := 24;
---         ELSE
---             credit_limit := 1.25 * (credit_limit / count);
---         END IF;
---     ELSE
---         credit_limit := 24;
---     END IF;
---
---
---     -- Get the total credits for the current semester
---     SELECT SUM(credit_str[5])
---     INTO current_credits
---     FROM course_enrollments
---              JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
---     WHERE student_id = NEW.student_id
---       AND semester = NEW.semester;
---
---     -- Check if the student will exceed the credit limit
---     IF (current_credits + (SELECT credit_str[5] FROM course_catalog WHERE course_code = NEW.course_code)) >
---        credit_limit THEN
---         RAISE EXCEPTION 'The student will exceed the credit limit for this semester';
---     END IF;
---
---     RETURN NEW;
--- END;
--- $$ LANGUAGE plpgsql;
---
--- CREATE TRIGGER credit_limit_check
---     BEFORE INSERT
---     ON course_enrollments
---     FOR EACH ROW
--- EXECUTE FUNCTION check_credit_limit();
+
+CREATE OR REPLACE FUNCTION check_credit_limit()
+    RETURNS TRIGGER AS
+
+$$
+DECLARE
+    credit_limit    NUMERIC;
+    count           INTEGER;
+    current_credits NUMERIC;
+BEGIN
+    -- Get the credit limit for the student based on previous semesters
+    SELECT SUM(credits)
+    INTO credit_limit
+    FROM (SELECT SUM(credit_str[5]) as credits
+          FROM course_enrollments
+                   JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
+          WHERE student_id = NEW.student_id
+            AND semester < NEW.semester
+            GROUP BY semester
+          ORDER BY semester DESC
+          LIMIT 2) as previous_semesters;
+    IF credit_limit IS NOT NULL THEN
+        SELECT COUNT(*)
+        INTO count
+        FROM (SELECT SUM(credit_str[5]) as credits
+              FROM course_enrollments
+                       JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
+              WHERE student_id = NEW.student_id
+                AND semester < NEW.semester
+                GROUP BY semester
+              ORDER BY semester DESC
+              LIMIT 2) as previous_semesters;
+        IF count < 2 THEN
+            credit_limit := 24;
+        ELSE
+            credit_limit := 1.25 * (credit_limit / count);
+        END IF;
+    ELSE
+        credit_limit := 24;
+    END IF;
+    -- RAISE NOTICE 'CREDIT LIMIT %',credit_limit;
+
+    -- Get the total credits for the current semester
+    SELECT COALESCE(SUM(credit_str[5]),0)
+    INTO current_credits
+    FROM course_enrollments
+             JOIN course_catalog ON course_enrollments.course_code = course_catalog.course_code
+    WHERE student_id = NEW.student_id
+      AND semester = NEW.semester;
+
+    -- Check if the student will exceed the credit limit
+    -- RAISE NOTICE 'CREIDTS NOW %', current_credits;
+    IF (current_credits + (SELECT credit_str[5] FROM course_catalog WHERE course_code = NEW.course_code)) >
+       credit_limit THEN
+        RAISE EXCEPTION 'The student will exceed the credit limit for this semester';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER credit_limit_check
+    BEFORE INSERT
+    ON course_enrollments
+    FOR EACH ROW
+EXECUTE FUNCTION check_credit_limit();
+
 
 
 INSERT INTO grade_mapping (grade, value)
