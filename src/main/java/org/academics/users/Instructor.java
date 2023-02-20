@@ -51,21 +51,7 @@ public class Instructor extends User {
                 System.out.println("You have not floated any courses");
                 return false;
             }
-            resultSet.beforeFirst();
-            String[] columnNames = {"Course Code", "Semester", "Qualifying Criteria", "Enrollment Count"};
-            List<Object[]> data = new ArrayList<>();
-            while (resultSet.next()) {
-                Object[] course_detail = new Object[4];
-                course_detail[0] = resultSet.getString(1);
-                course_detail[1] = resultSet.getString(2);
-                course_detail[2] = resultSet.getString(3);
-                course_detail[3] = resultSet.getInt(4);
-                data.add(course_detail);
-            }
-            Object[][] courses = data.toArray(new Object[0][]);
-            TextTable courseTable = new TextTable(columnNames, courses);
-            System.out.println("List of courses floated by you");
-            courseTable.printTable();
+            Utils.printTable(resultSet,new String[]{"Course Code", "Semester", "Qualifying Criteria", "Enrollment Count"},"List of courses floated by you");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,19 +69,7 @@ public class Instructor extends User {
                 System.out.println("No courses approved by Senate");
                 return;
             }
-            resultSet.beforeFirst();
-            String[] columnNames = {"Course Code", "Course Name"};
-            List<Object[]> data = new ArrayList<>();
-            while (resultSet.next()) {
-                Object[] course_detail = new Object[2];
-                course_detail[0] = resultSet.getString(1);
-                course_detail[1] = resultSet.getString(2);
-                data.add(course_detail);
-            }
-            Object[][] courses = data.toArray(new Object[0][]);
-            TextTable courseTable = new TextTable(columnNames, courses);
-            System.out.println("List of courses approved by Senate");
-            courseTable.printTable();
+            Utils.printTable(resultSet,new String[]{"Course Code", "Course Name"},"List of courses approved by Senate");
             String course_code = Utils.getInput("Enter the course code to float the course");
             PreparedStatement validateCourse = conn.prepareStatement("SELECT course_code FROM course_catalog WHERE course_code = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             validateCourse.setString(1, course_code);
@@ -119,33 +93,25 @@ public class Instructor extends User {
             }
             System.out.println("Enter the minimum CGPA requirement for the course");
             double qualify = scanner.nextDouble();
-            System.out.println("Do you want to add additional prerequisites? (Y/N)");
-            String choice = scanner.next();
+            String choice = Utils.getInput("Do you want to add additional prerequisites? (Y/N)");
             //Make a 2d array of prerequisites
             ArrayList<String> preRequisites = new ArrayList<>();
             StringBuilder pre = new StringBuilder();
             if (Objects.equals(choice, "Y")) {
                 do {
-                    System.out.println("Enter the course code of the prerequisite");
-                    String code = scanner.next();
-                    System.out.println("Enter the minimum grade requirement for the prerequisite (Enter 'E' if no minimum grade requirement)");
-                    String grade = scanner.next();
+                    String code = Utils.getInput("Enter the course code of the prerequisite");
+                    String grade =Utils.getInput("Enter the minimum grade requirement for the prerequisite (Enter 'E' if no minimum grade requirement)");
                     pre.append(code).append("(").append(grade).append(")").append("|");
-                    System.out.println("Are there any alternatives to the prerequisite? (Y/N)");
-                    choice = scanner.next();
+                    choice = Utils.getInput("Are there any alternatives to the prerequisite? (Y/N)");
                     if (Objects.equals(choice, "Y")) {
                         do {
-                            System.out.println("Enter the course code of the alternative");
-                            code = scanner.next();
-                            System.out.println("Enter the minimum grade requirement for the alternative (Enter Pass if no minimum grade requirement)");
-                            grade = scanner.next();
+                            code = Utils.getInput("Enter the course code of the alternative");
+                            grade = Utils.getInput("Enter the minimum grade requirement for the alternative (Enter 'E' if no minimum grade requirement)");
                             pre.append(code).append("(").append(grade).append(")").append("|");
-                            System.out.println("Are there any more alternatives to the prerequisite? (Y/N)");
-                            choice = scanner.next();
+                            choice =Utils.getInput("Are there any alternatives to the prerequisite? (Y/N)");
                         } while (Objects.equals(choice, "Y"));
                     }
-                    System.out.println("Do you want to add additional prerequisites? (Y/N)");
-                    choice = scanner.next();
+                    choice = Utils.getInput("Do you want to add additional prerequisites? (Y/N)");
                     preRequisites.add(String.valueOf(pre));
                     pre = new StringBuilder();
                 } while (Objects.equals(choice, "Y"));
@@ -160,8 +126,7 @@ public class Instructor extends User {
             while (departmentId != -1) {
                 System.out.println("Enter batch:");
                 int batch = scanner.nextInt();
-                System.out.println("Enter course type (core, humanities_elective, programme_elective, science_math_elective, open_elective, internship, btech_project):");
-                String courseType = scanner.next();
+                String courseType = Utils.getInput("Enter course type (core, humanities_elective, programme_elective, science_math_elective, open_elective, internship, btech_project):");
                 departmentIds.add(departmentId);
                 batches.add(batch);
                 courseTypes.add(courseType);
@@ -264,15 +229,12 @@ public class Instructor extends User {
     uploadGradesFromFile();
 }
     private boolean shouldDownloadStudentList() {
-        System.out.println("Do you want to download the list of students enrolled in the course? (Y/N)? Note that this may overwrite a file in downloads folder for the same course");
-        String choice = scanner.next();
+        String choice =Utils.getInput("Do you want to download the list of students enrolled in the course? (Y/N)? Note that this may overwrite a file in downloads folder for the same course");
         return Objects.equals(choice, "Y");
     }
     private void downloadAndExportStudentList() {
-        System.out.println("Enter the course code");
-        String courseCode = scanner.next();
-        System.out.println("Enter the session (YYYY-Semester)");
-        String session = scanner.next();
+        String courseCode = Utils.getInput("Enter the course code");
+        String session =Utils.getInput("Enter the session (YYYY-Semester)");
         try {
             if (!validateInstructor(courseCode, session)) return;
             ResultSet resultSet;
@@ -283,8 +245,7 @@ public class Instructor extends User {
             String[] extraHeaders = new String[]{"grade"};
             Utils.exportCSV(resultSet, courseCode + "_" + session, extraHeaders);
             System.out.println("Please Enter the grades for the students in the CSV file");
-            System.out.println("Waiting for you to complete the task. Press any key to continue or press 'q' to quit and upload later");
-            String input = scanner.next();
+            String input = Utils.getInput("Waiting for you to complete the task. Press any key to continue or press 'q' to quit and upload later");
             if (Objects.equals(input, "q")) {
                 return;
             }
@@ -294,16 +255,13 @@ public class Instructor extends User {
         }
     }
     private void uploadGradesFromFile() {
-        System.out.println("Enter the course code");
-        String courseCode = scanner.next();
-        System.out.println("Enter the session (YYYY-Semester)");
-        String session = scanner.next();
+        String courseCode = Utils.getInput("Enter the course code");
+        String session =Utils.getInput("Enter the session (YYYY-Semester)");
         if (!Utils.validateEventTime("grades_submission", session)) {
             System.out.println("Grades submission is not allowed at this time");
             return;
         }
-        System.out.println("Enter the path to the CSV file");
-        String path = scanner.next();
+        String path =Utils.getInput("Enter the path to the CSV file");
         try {
             if (!validateInstructor(courseCode, session)) return;
             PreparedStatement uploadGrades = conn.prepareStatement("UPDATE course_enrollments SET grade = ? WHERE enrollment_id = ?");
@@ -362,13 +320,13 @@ public class Instructor extends User {
                 String course_code = Utils.getInput("Enter the course code");
                 String session = Utils.getInput("Enter the session (YYYY-Semester)");
                 ResultSet resultSet = getCourseGrades(course_code, session);
-                Utils.printTable(resultSet, new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"});
+                Utils.printTable(resultSet, new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"},"Please Find the Grades for the Course");
                 break;
             }
             case 2: {
                 String enrollment_id = Utils.getInput("Enter the student's Enrollment ID");
                 ResultSet resultSet = getStudentGrades(enrollment_id);
-                Utils.printTable(resultSet, new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"});
+                Utils.printTable(resultSet, new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"},"Please Find the Grades for the Student");
                 break;
             }
             case 3:

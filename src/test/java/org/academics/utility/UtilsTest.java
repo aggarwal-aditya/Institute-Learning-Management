@@ -2,6 +2,7 @@ package org.academics.utility;
 
 import org.academics.users.Instructor;
 import org.academics.users.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Order;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,6 +18,12 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 class UtilsTest {
+
+    @AfterEach
+    void tearDown() {
+        System.setIn(System.in);
+        System.setOut(System.out);
+    }
 
     @Test
     void generateOTP() {
@@ -85,7 +92,7 @@ class UtilsTest {
         // Call the method and capture its output
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
-        Utils.printTable(resultSet,new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"});
+        Utils.printTable(resultSet,new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"},"Please find the details below:");
         String output = outputStream.toString();
         assertTrue(output.contains("Course Code"));
         assertTrue(output.contains("Course Name"));

@@ -141,9 +141,15 @@ public class Utils {
 
     }
 
-    public static void printTable(ResultSet resultSet, String[] columnNames) throws SQLException {
+    public static void printTable(ResultSet resultSet, String[] columnNames, String message) throws SQLException {
+        resultSet.beforeFirst();
+        //Check if there are no entries in result set
+        if (!resultSet.next()) {
+            return;
+        }
         Object[][] data = getData(resultSet, columnNames.length);
         TextTable courseTable = new TextTable(columnNames, data);
+        System.out.println(message);
         courseTable.printTable();
     }
     private static Object[][] getData(ResultSet resultSet, int numColumns) throws SQLException {

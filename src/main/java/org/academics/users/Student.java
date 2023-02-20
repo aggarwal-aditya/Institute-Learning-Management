@@ -44,32 +44,19 @@ public class Student extends User {
                 return;
             }
             resultSet.beforeFirst();
-            System.out.println("The Following Courses are available for registration in " + session + " session");
-            String[] columnNames = {"S.No", "Course Code", "Course Name", "Instructor"};
-            List<Object[]> data = new ArrayList<>();
-            while (resultSet.next()) {
-                Object[] course_detail = new Object[4];
-                course_detail[0] = data.size() + 1;
-                course_detail[1] = resultSet.getString("course_code");
-                course_detail[2] = resultSet.getString("course_name");
-                course_detail[3] = resultSet.getString("name");
-                data.add(course_detail);
-            }
-            Object[][] courses = data.toArray(new Object[0][]);
-            TextTable courseTable = new TextTable(columnNames, courses);
-            courseTable.printTable();
-            System.out.println("\nEnter the S.No of the course you want to register. Press 0 to exit");
-            String course_number = scanner.nextLine();
-            if (course_number.equals("0")) {
+            String message="The Following Courses are available for registration in " + session + " session";
+            Utils.printTable(resultSet, new String[]{"S.No", "Course Code", "Course Name", "Instructor"},message);
+            String course_code = Utils.getInput("\nEnter the course code of the course you want to register. Press 0 to exit");
+            if (course_code.equals("0")) {
                 return;
             }
-            if (Integer.parseInt(course_number) > data.size() || Integer.parseInt(course_number) < 0) {
-                System.out.println("Invalid Course Number");
-                return;
-            }
+//            if (Integer.parseInt(course_number) > data.size() || Integer.parseInt(course_number) < 0) {
+//                System.out.println("Invalid Course Number");
+//                return;
+//            }
 
             PreparedStatement minCGPA = conn.prepareStatement("SELECT qualify from course_offerings WHERE course_code =? AND semester =?;");
-            minCGPA.setString(1, courses[Integer.parseInt(course_number) - 1][1].toString());
+            minCGPA.setString(1, course_code);
             minCGPA.setString(2, session);
             ResultSet minCGPAResult = minCGPA.executeQuery();
             minCGPAResult.next();
@@ -85,7 +72,7 @@ public class Student extends User {
 
             //Check Pre-requisites in course_catalog
             PreparedStatement Prerequisites = conn.prepareStatement("SELECT prerequisite from course_catalog WHERE course_code =?;");
-            Prerequisites.setString(1, courses[Integer.parseInt(course_number) - 1][1].toString());
+            Prerequisites.setString(1, course_code);
             ResultSet PrerequisitesResult = Prerequisites.executeQuery();
             while (PrerequisitesResult.next()) {
                 Array prerequisitesResultArray = PrerequisitesResult.getArray(1);
@@ -130,7 +117,7 @@ public class Student extends User {
             }
 
             PreparedStatement PrerequisitesOfferings = conn.prepareStatement("SELECT prerequisite from course_offerings WHERE course_code =? AND semester=?;");
-            PrerequisitesOfferings.setString(1, courses[Integer.parseInt(course_number) - 1][1].toString());
+            PrerequisitesOfferings.setString(1, course_code);
             PrerequisitesOfferings.setString(2, Utils.getCurrentSession());
             ResultSet PrerequisitesOfferingsResult = PrerequisitesOfferings.executeQuery();
             while (PrerequisitesOfferingsResult.next()) {
@@ -176,23 +163,49 @@ public class Student extends User {
             }
             try{
                 PreparedStatement enrolCourse= conn.prepareStatement("INSERT INTO course_enrollments (course_code, semester, student_id) VALUES(?,?,?);");
-                enrolCourse.setString(1, courses[Integer.parseInt(course_number) - 1][1].toString());
+                enrolCourse.setString(1, course_code);
                 enrolCourse.setString(2, Utils.getCurrentSession());
                 enrolCourse.setString(3, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
                 enrolCourse.execute();
             }catch (Exception e) {
                 e.printStackTrace();
             }
-            System.out.println("You have successfully registered for " + courses[Integer.parseInt(course_number) - 1][2]);
+            System.out.println("You have successfully registered for " + course_code);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private ResultSet getCoursePrerequisite(String course_code,String Semester){
+        ResultSet catalogPreRequisites;
+        ResultSet offeringPreRequisites;
+        try{
+            PreparedStatement getPrerequisite = conn.prepareStatement("SELECT prerequisite from course_catalog WHERE course_code =?");
+            getPrerequisite.setString(1, course_code);
+            catalogPreRequisites=getPrerequisite.executeQuery();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        try{
+            PreparedStatement getPrerequisite = conn.prepareStatement("SELECT prerequisite from course_offerings WHERE course_code =? AND semester=?;");
+            getPrerequisite.setString(1, course_code);
+            getPrerequisite.setString(2, Semester);
+            offeringPreRequisites=getPrerequisite.executeQuery();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public void dropCourse() {
-        viewCourses();
-        System.out.println("Enter the course code of the course you want to drop. Press 0 to exit");
-        String course_code = scanner.nextLine();
+        if(!viewCourses()) {
+            return;
+        }
+        String course_code = Utils.getInput("Enter the course code of the course you want to drop. Press 0 to exit");
         if (course_code.equals("0")) {
+            return;
+        }
+        if(!Utils.validateEventTime("course_add_drop",Utils.getCurrentSession())){
+            System.out.println("You are not allowed to drop courses now");
             return;
         }
         try {
@@ -202,7 +215,7 @@ public class Student extends User {
             dropCourse.setString(3, Utils.getCurrentSession());
             dropCourse.executeUpdate();
             if(dropCourse.getUpdateCount()==0){
-                System.out.println("You are not allowed to drop this course now or you are registered for this course");
+                System.out.println("You are not registered for this course");
                 return;
             }
             System.out.println("You have successfully dropped the course");
@@ -211,10 +224,10 @@ public class Student extends User {
         }
     }
 
-    public void viewCourses() {
+    public boolean viewCourses() {
         ResultSet resultSet = null;
         try {
-            PreparedStatement getRegisteredCourses = conn.prepareStatement("SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.grade FROM course_catalog JOIN course_enrollments ON course_catalog.course_code = course_enrollments.course_code WHERE course_enrollments.student_id =? AND course_enrollments.semester=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            PreparedStatement getRegisteredCourses = conn.prepareStatement("SELECT course_catalog.course_code, course_catalog.course_name FROM course_catalog JOIN course_enrollments ON course_catalog.course_code = course_enrollments.course_code WHERE course_enrollments.student_id =? AND course_enrollments.semester=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             getRegisteredCourses.setString(1, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
             getRegisteredCourses.setString(2, Utils.getCurrentSession());
             resultSet = getRegisteredCourses.executeQuery();
@@ -222,27 +235,33 @@ public class Student extends User {
             e.printStackTrace();
         }
         try {
-            assert resultSet != null;
-            formatOutput(resultSet);
+            if(!resultSet.next()){
+                System.out.println("You are not registered for any courses in the current semester");
+                return false;
+            }
+            Utils.printTable(resultSet, new String[]{"Course Code", "Course Name"},"Please find the list of courses you are registered for in the current semester");
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public void viewGrades() {
         ResultSet resultSet = null;
         try {
-//            PreparedStatement getRegisteredCourses = conn.prepareStatement("SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.grade FROM course_catalog JOIN course_enrollments ON course_catalog.course_code = course_enrollments.course_code WHERE course_enrollments.student_id =? AND course_enrollments.semester<?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             PreparedStatement getRegisteredCourses = conn.prepareStatement("SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.grade FROM course_catalog JOIN course_enrollments ON course_catalog.course_code = course_enrollments.course_code WHERE course_enrollments.student_id =?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             getRegisteredCourses.setString(1, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
-//            getRegisteredCourses.setString(2, Utils.getCurrentSession());
             resultSet = getRegisteredCourses.executeQuery();
         } catch (Exception e) {
             e.printStackTrace();
         }
         try {
-            assert resultSet != null;
-            formatOutput(resultSet);
+            if(!resultSet.next()){
+                System.out.println("You have not completed/registered any courses");
+                return;
+            }
+            Utils.printTable(resultSet, new String[]{"Course Code", "Course Name", "Grade"},"Please find your grades for the courses you have taken so far");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -261,27 +280,6 @@ public class Student extends User {
         }
 
 
-    }
-
-    private void formatOutput(ResultSet resultSet) throws SQLException {
-        resultSet.last();
-        if (resultSet.getRow() == 0) {
-            System.out.println("No courses to show");
-            return;
-        }
-        resultSet.beforeFirst();
-        String[] columnNames = {"Course Code", "Course Name", "Grade"};
-        List<Object[]> data = new ArrayList<>();
-        while (resultSet.next()) {
-            Object[] course_detail = new Object[3];
-            course_detail[0] = resultSet.getString("course_code");
-            course_detail[1] = resultSet.getString("course_name");
-            course_detail[2] = resultSet.getString("grade");
-            data.add(course_detail);
-        }
-        Object[][] courses = data.toArray(new Object[0][]);
-        TextTable courseTable = new TextTable(columnNames, courses);
-        courseTable.printTable();
     }
 
 }
