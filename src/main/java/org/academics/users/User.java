@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 import org.academics.utility.*;
-import org.academics.dao.*;
+import org.academics.dal.*;
 
 
 public class User {

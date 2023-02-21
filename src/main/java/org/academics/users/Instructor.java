@@ -1,7 +1,7 @@
 package org.academics.users;
 
 import com.opencsv.CSVReader;
-import org.academics.dao.JDBCPostgreSQLConnection;
+import org.academics.dal.JDBCPostgreSQLConnection;
 import org.academics.utility.Utils;
 
 import java.io.FileReader;

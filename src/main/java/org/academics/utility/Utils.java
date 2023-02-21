@@ -2,7 +2,7 @@ package org.academics.utility;
 
 
 import dnl.utils.text.table.TextTable;
-import org.academics.dao.JDBCPostgreSQLConnection;
+import org.academics.dal.JDBCPostgreSQLConnection;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -219,15 +219,15 @@ public class Utils {
 
     }
 
-    public static void printTable(ResultSet resultSet, String[] columnNames, String message) throws SQLException {
+    public static void printTable(ResultSet resultSet, String[] columnNames, String successMessage,String failureMessage) throws SQLException {
         resultSet.beforeFirst();
-        //Check if there are no entries in result set
         if (!resultSet.next()) {
+            System.out.println(failureMessage);
             return;
         }
         Object[][] data = getData(resultSet, columnNames.length);
         TextTable courseTable = new TextTable(columnNames, data);
-        System.out.println(message);
+        System.out.println(successMessage);
         courseTable.printTable();
     }
 

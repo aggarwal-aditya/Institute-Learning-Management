@@ -1,11 +1,10 @@
 package org.academics.users;
 
 
-import org.academics.dao.JDBCPostgreSQLConnection;
+import org.academics.dal.JDBCPostgreSQLConnection;
+import org.academics.dal.dbStudent;
 import org.academics.utility.Utils;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.*;
 
 
@@ -13,15 +12,18 @@ public class Student extends User {
 
     JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
     Connection conn = jdbc.getConnection();
+    String studentID;
 
     public Student(User user) {
         super(user.userRole, user.email_id);
+        this.studentID = user.email_id.substring(0, user.email_id.indexOf("@")).toUpperCase();
     }
 
     public void registerCourse() {
         String session = Utils.getCurrentSession();
         try {
-            ResultSet resultSet = getAvailableCourses(session);
+            ResultSet resultSet = dbStudent.fetchCoursesForRegistration(session);
+            //Check here if the result se has anything else return
             String message = "The Following Courses are available for registration in " + session + " session";
             Utils.printTable(resultSet, new String[]{"Course Code", "Course Name", "Instructor"}, message);
             String course_code = Utils.getInput("\nEnter the course code of the course you want to register. Press 0 to exit");
@@ -30,25 +32,25 @@ public class Student extends User {
                 return;
             }
 
-            if(!validateCourse(course_code,session)){
+            if (!dbStudent.checkEnrollmentAvailability(course_code, session)) {
                 System.out.println("Course not available for registration. Please Choose the course code from the list");
                 return;
             }
 
-            if (computeGPA().doubleValue() < getMinCGPA(course_code,session)) {
+            if (dbStudent.computeGPA(this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase()) < dbStudent.fetchMinCGPA(course_code, session)) {
                 System.out.println("You do not meet the minimum CGPA requirement for this course");
                 return;
             }
 
-            ResultSet preRequisites = getCoursePrerequisite(course_code, session);
-            String[] prerequisites = massageResultSet(preRequisites);
+            ResultSet preRequisites = dbStudent.getCoursePrerequisite(course_code, session);
+            String[] prerequisites = extractPrerequisites(preRequisites);
             if (prerequisites != null) {
                 if (!checkPrerequisites(prerequisites)) {
                     System.out.println("You do not meet the prerequisites for this course");
                     return;
                 }
             }
-            if(updateCourseEnroll(course_code, session)){
+            if (dbStudent.enrollCourse(this.studentID, course_code, session)) {
                 System.out.println("Course Registered Successfully");
             }
         } catch (Exception e) {
@@ -56,32 +58,33 @@ public class Student extends User {
         }
     }
 
-    private ResultSet getCoursePrerequisite(String course_code, String Semester) {
-        ResultSet preRequisites;
-        try {
-            PreparedStatement getPrerequisite = conn.prepareStatement("SELECT prerequisite from course_offerings WHERE course_code =? AND semester=? UNION SELECT prerequisite from course_catalog WHERE course_code =?;");
-            getPrerequisite.setString(1, course_code);
-            getPrerequisite.setString(2, Semester);
-            getPrerequisite.setString(3, course_code);
-            preRequisites = getPrerequisite.executeQuery();
-            return preRequisites;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private String[] massageResultSet(ResultSet preRequisites) {
+    /**
+     * Extracts the prerequisites for a course from a ResultSet containing the prerequisite information.
+     *
+     * @param preRequisites The ResultSet containing the prerequisite information
+     * @return An array of prerequisite course codes, or null if no prerequisites are listed for the course
+     */
+    private String[] extractPrerequisites(ResultSet preRequisites) {
         String[] prerequisites = null;
         try {
+            // Iterate through each row in the ResultSet
             while (preRequisites.next()) {
+                // Get the prerequisites array from the first column of the row
                 Array prerequisitesResultArray = preRequisites.getArray(1);
+
+                // If the prerequisites array is null, skip to the next row
                 if (prerequisitesResultArray == null) {
                     continue;
                 }
+
+                // Convert the array to a string array
                 prerequisites = (String[]) prerequisitesResultArray.getArray();
+
+                // Stop processing rows after the first non-null array is found
+                break;
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            // Print the stack trace if there is an error while processing the prerequisites
             e.printStackTrace();
         }
         return prerequisites;
@@ -124,155 +127,85 @@ public class Student extends User {
         return true;
     }
 
-    private boolean validateCourse(String course_code,String semester) throws SQLException {
-        PreparedStatement checkCourse = conn.prepareStatement("SELECT course_code FROM course_offerings WHERE course_code =? AND semester =?;");
-        checkCourse.setString(1, course_code);
-        checkCourse.setString(2, semester);
-        ResultSet checkCourseResult = checkCourse.executeQuery();
-        return checkCourseResult.next();
-    }
-
-    private double getMinCGPA(String course_code,String semester) throws SQLException{
-        PreparedStatement minCGPA = conn.prepareStatement("SELECT qualify from course_offerings WHERE course_code =? AND semester =?;");
-        minCGPA.setString(1, course_code);
-        minCGPA.setString(2, semester);
-        ResultSet minCGPAResult = minCGPA.executeQuery();
-        minCGPAResult.next();
-        return minCGPAResult.getDouble(1);
-    }
-
-    private ResultSet getAvailableCourses(String semester) throws SQLException{
-        if (semester == null) {
-            System.out.println("No courses available for registration");
-            return null;
-        }
-        PreparedStatement getAvailableCourses = conn.prepareStatement("SELECT course_offerings.course_code, course_catalog.course_name,instructors.name FROM course_offerings JOIN course_catalog ON course_offerings.course_code = course_catalog.course_code JOIN instructors ON course_offerings.instructor_id = instructors.instructor_id WHERE course_offerings.semester =?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-        getAvailableCourses.setString(1, semester);
-        ResultSet resultSet = getAvailableCourses.executeQuery();
-        resultSet.last();
-        if (resultSet.getRow() == 0) {
-            System.out.println("No courses available for registration");
-            return null;
-        }
-        return resultSet;
-    }
-
-    private boolean updateCourseEnroll(String course_code, String semester) {
-        try {
-            PreparedStatement enrolCourse = conn.prepareStatement("INSERT INTO course_enrollments (course_code, semester, student_id) VALUES(?,?,?);");
-            enrolCourse.setString(1, course_code);
-            enrolCourse.setString(2, semester);
-            enrolCourse.setString(3, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
-            enrolCourse.execute();
-            System.out.println("You have successfully registered for " + course_code);
-            return true;
-        } catch (SQLException ex) {
-            for (Throwable e : ex) {
-                if (e.getMessage().contains("The student is already enrolled in the course")) {
-                    System.out.println("You have already registered for this course");
-                    return false;
-                } else if (e.getMessage().contains("The student has already completed the course earlier")) {
-                    System.out.println("You have already completed this course");
-                    return false;
-                } else if (e.getMessage().contains("The student will exceed the credit limit for this semester")) {
-                    System.out.println("You will exceed the credit limit for this semester");
-                    return false;
-                } else {
-                    System.err.println("Message: " + e.getMessage());
-                    System.out.println("An error occurred while registering for the course");
-                    return false;
-                }
-            }
-        }
-        return false;
-    }
-
-    public void dropCourse() {
-        if (!viewCourses()) {
-            return;
-        }
-        String course_code = Utils.getInput("Enter the course code of the course you want to drop. Press 0 to exit");
-        if (course_code.equals("0")) {
-            return;
-        }
+    /**
+     * Allows a student to drop a course that they are currently enrolled in. If the drop period has ended,
+     * the method will return without doing anything.
+     *
+     * @throws SQLException if there is an error executing the SQL query
+     */
+    public void dropCourse() throws SQLException {
+        // Check if the current time falls within the course add/drop period
         if (!Utils.validateEventTime("course_add_drop", Utils.getCurrentSession())) {
             System.out.println("You are not allowed to drop courses now");
             return;
         }
-        try {
-            PreparedStatement dropCourse = conn.prepareStatement("DELETE FROM course_enrollments WHERE course_code =? AND student_id =? AND semester=?;");
-            dropCourse.setString(1, course_code);
-            dropCourse.setString(2, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
-            dropCourse.setString(3, Utils.getCurrentSession());
-            dropCourse.executeUpdate();
-            if (dropCourse.getUpdateCount() == 0) {
-                System.out.println("You are not registered for this course");
-                return;
-            }
+
+        // Prompt the user to enter the course code of the course they want to drop
+        String course_code = Utils.getInput("Enter the course code of the course you want to drop. Press -1 to go back");
+
+        // If the user enters -1, return without doing anything
+        if (course_code.equals("-1")) {
+            return;
+        }
+
+        // Attempt to drop the course for the current student in the database
+        int countDropped = dbStudent.dropCourse(this.studentID, course_code, Utils.getCurrentSession());
+
+        // If no rows were affected, the student is not registered for the course
+        if (countDropped == 0) {
+            System.out.println("You are not registered for this course");
+        }
+        // Otherwise, the course was successfully dropped
+        else {
             System.out.println("You have successfully dropped the course");
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
-    public boolean viewCourses() {
-        ResultSet resultSet = null;
-        try {
-            PreparedStatement getRegisteredCourses = conn.prepareStatement("SELECT course_catalog.course_code, course_catalog.course_name FROM course_catalog JOIN course_enrollments ON course_catalog.course_code = course_enrollments.course_code WHERE course_enrollments.student_id =? AND course_enrollments.semester=?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            getRegisteredCourses.setString(1, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
-            getRegisteredCourses.setString(2, Utils.getCurrentSession());
-            resultSet = getRegisteredCourses.executeQuery();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            if (!resultSet.next()) {
-                System.out.println("You are not registered for any courses in the current semester");
-                return false;
-            }
-            Utils.printTable(resultSet, new String[]{"Course Code", "Course Name"}, "Please find the list of courses you are registered for in the current semester");
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+    /**
+     * Displays the courses that the current student is registered for in the current semester, if any.
+     *
+     * @throws SQLException if an error occurs while interacting with the database
+     */
+    public void viewCourses() throws SQLException {
+        // Fetch the courses that the current student is registered for in the current semester
+        ResultSet fetchCourses = dbStudent.fetchCourses(this.studentID, Utils.getCurrentSession());
+
+        // Define success and failure messages to be displayed after the table of courses is printed
+        String successMessage = "Please find the list of courses you are registered for in the current semester";
+        String failureMessage = "You are not registered for any courses in the current semester";
+
+        // Print a table of the fetched courses, with headers "Course Code" and "Course Name",
+        // and either the success message or the failure message, depending on whether any courses were fetched
+        Utils.printTable(fetchCourses, new String[]{"Course Code", "Course Name"}, successMessage, failureMessage);
     }
 
-    public void viewGrades() {
-        ResultSet resultSet = null;
-        try {
-            PreparedStatement getRegisteredCourses = conn.prepareStatement("SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.grade FROM course_catalog JOIN course_enrollments ON course_catalog.course_code = course_enrollments.course_code WHERE course_enrollments.student_id =?;", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            getRegisteredCourses.setString(1, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
-            resultSet = getRegisteredCourses.executeQuery();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            if (!resultSet.next()) {
-                System.out.println("You have not completed/registered any courses");
-                return;
-            }
-            Utils.printTable(resultSet, new String[]{"Course Code", "Course Name", "Grade"}, "Please find your grades for the courses you have taken so far");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+    /**
+     * Displays the grades of the current student for all courses taken until the current semester, if any.
+     *
+     * @throws SQLException if an error occurs while interacting with the database
+     */
+    public void viewGrades() throws SQLException {
+        // Fetch the grades of the current student for all courses taken until the current semester
+        ResultSet fetchGrades = dbStudent.fetchGrades(this.studentID, Utils.getCurrentSession());
+
+        // Define success and failure messages to be displayed after the table of grades is printed
+        String successMessage = "Please find your grades for the courses you have taken so far";
+        String failureMessage = "You have not completed/registered any courses";
+
+        // Print a table of the fetched grades, with headers "Course Code", "Course Name", and "Grade",
+        // and either the success message or the failure message, depending on whether any grades were fetched
+        Utils.printTable(fetchGrades, new String[]{"Course Code", "Course Name", "Grade"}, successMessage, failureMessage);
     }
 
-    public void printGPA() {
-        System.out.println("Your CGPA is: " + computeGPA());
-    }
 
-    private BigDecimal computeGPA() {
-        try {
-            CallableStatement calculateCGPA = conn.prepareCall("{? = call calculate_cgpa(?)}");
-            calculateCGPA.registerOutParameter(1, Types.NUMERIC);
-            calculateCGPA.setString(2, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
-            calculateCGPA.execute();
-            return calculateCGPA.getBigDecimal(1).setScale(2, RoundingMode.HALF_UP);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+    /**
+     * Prints the current student's CGPA to the console.
+     *
+     * @throws SQLException if there is an error in the database query.
+     */
+    public void printGPA() throws SQLException {
+        System.out.println("Your CGPA is: " + dbStudent.computeGPA(this.studentID));
     }
 
 }

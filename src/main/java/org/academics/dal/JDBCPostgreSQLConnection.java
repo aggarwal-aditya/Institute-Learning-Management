@@ -1,9 +1,7 @@
-package org.academics.dao;
+package org.academics.dal;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;

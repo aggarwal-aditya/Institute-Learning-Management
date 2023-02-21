@@ -1,4 +1,4 @@
-package org.academics.dao;
+package org.academics.dal;
 
 import org.junit.jupiter.api.Test;
 

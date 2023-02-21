@@ -2,7 +2,7 @@ package org.academics;
 
 import java.sql.Connection;
 import java.util.Scanner;
-import org.academics.dao.*;
+import org.academics.dal.*;
 import org.academics.users.Admin;
 import org.academics.users.Instructor;
 import org.academics.users.Student;

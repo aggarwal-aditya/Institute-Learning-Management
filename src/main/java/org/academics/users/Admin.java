@@ -1,10 +1,9 @@
 package org.academics.users;
 
-import org.academics.dao.JDBCPostgreSQLConnection;
+import org.academics.dal.JDBCPostgreSQLConnection;
 import org.academics.utility.CurrentDate;
 import org.academics.utility.Utils;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.*;
