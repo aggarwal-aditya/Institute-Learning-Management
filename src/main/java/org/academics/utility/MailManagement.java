@@ -11,10 +11,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class MailManagement {
-    private String fromEmail;
+    String fromEmail;
 
     //Read the password from .env file
-    private String password;
+    String password;
 
 
     public MailManagement() {

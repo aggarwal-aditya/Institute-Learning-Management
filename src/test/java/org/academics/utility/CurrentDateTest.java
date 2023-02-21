@@ -15,9 +15,7 @@ class CurrentDateTest {
     void overwriteCurrentDate() {
         CurrentDate currentDate = CurrentDate.getInstance();
         currentDate.overwriteCurrentDate(2018, 9, 5); // Set to October 5th, 2018
-        assertEquals(2018, currentDate.getCurrentDate().getYear()+1900);
-        assertEquals(9, currentDate.getCurrentDate().getMonth()); // October is month 9
-        assertEquals(5, currentDate.getCurrentDate().getDate()); // Check the day of the month
+        assert ((currentDate).getCurrentDate().toString().equals("2018-09-05"));
     }
     @Test
     void getInstance() {

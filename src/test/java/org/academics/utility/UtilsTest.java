@@ -1,28 +1,39 @@
 package org.academics.utility;
 
-import org.academics.users.Instructor;
-import org.academics.users.User;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Scanner;
+import java.io.*;
+import java.sql.*;
 
 class UtilsTest {
 
-    @AfterEach
-    void tearDown() {
+    private Connection connection;
+    @BeforeEach
+    void setUp() throws SQLException {
+        connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ilmtest", "postgres", "password");
         System.setIn(System.in);
         System.setOut(System.out);
+        try {
+            while (System.in.available() > 0) {
+                System.in.read();
+            }
+        } catch (IOException ignored) {
+        }
+        System.out.flush();
+        System.err.flush();
+
+    }
+    @AfterEach
+    void tearDown() throws SQLException {
+        System.setIn(System.in);
+        System.setOut(System.out);
+        connection.close();
     }
 
     @Test
@@ -32,7 +43,7 @@ class UtilsTest {
     }
 
     @Test
-    void testValidInput() {
+    void testUserChoiceValidInput() {
         String input = "2\n"; // Set the input to be the number 2 followed by a newline
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
@@ -43,7 +54,7 @@ class UtilsTest {
     }
 
     @Test
-    void testOutOfRangeInput() {
+    void testUserChoiceOutOfRangeInput() {
         String input = "10\nqwerty\n3\n";
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
@@ -54,7 +65,7 @@ class UtilsTest {
     }
 
     @Test
-    void testInvalidInput() {
+    void testUserChoiceInvalidInput() {
         String input = "qwerty\n3\n";
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
@@ -65,7 +76,39 @@ class UtilsTest {
     }
 
     @Test
+    public void testGetInput() {
+        String message = "Enter a word:";
+        String input = "Hello";
+        System.setIn(new ByteArrayInputStream(input.getBytes())); // Set the standard input to a ByteArrayInputStream
+        String result = Utils.getInput(message);
+        assertEquals(input, result); // Check if the method returns the expected input
+
+        input = "\nHello";
+        System.setIn(new ByteArrayInputStream(input.getBytes())); // Set the standard input to an empty ByteArrayInputStream
+        result = Utils.getInput(message);
+        assertTrue(input.contains(result)); // Check if the method prompts the user to enter valid input when the input is empty
+    }
+
+
+    @Test
     void getCurrentSession() {
+        try {
+            CallableStatement populateDatabase = connection.prepareCall("CALL populate_database()");
+            populateDatabase.execute();
+            CurrentDate.getInstance().overwriteCurrentDate(2022, 9, 11);
+            assertEquals("2022-1", Utils.getCurrentSession());
+            CurrentDate.getInstance().overwriteCurrentDate(2050, 1, 11);
+            assertNull(Utils.getCurrentSession());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                CallableStatement clearDatabase = connection.prepareCall("CALL clear_database()");
+                clearDatabase.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Test
