@@ -1,219 +1,202 @@
 package org.academics.users;
 
+import org.academics.dal.JDBCPostgreSQLConnection;
+import org.academics.dal.dbUser;
+import org.academics.utility.MailManagement;
+import org.academics.utility.Utils;
+
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
-import org.academics.utility.*;
-import org.academics.dal.*;
 
+/**
+ * A class to represent a user.
+ */
 
 public class User {
-    Scanner scanner = new Scanner(System.in);
-
-    JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
-    Connection conn = jdbc.getConnection();
     public String userRole;
     public String email_id;
+    Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Constructs a new User object with null user role and email ID.
+     */
     public User() {
         this.userRole = null;
         this.email_id = null;
     }
+
+    /**
+     * Constructs a new User object with the given user role and email ID.
+     *
+     * @param userRole The user's role.
+     * @param email_id The user's email ID.
+     */
     public User(String userRole, String email_id) {
         this.userRole = userRole;
         this.email_id = email_id;
     }
 
+
+    /**
+     * Set the user role and email ID.
+     *
+     * @param userRole The user's role.
+     * @param email_id The user's email ID.
+     */
     public void setUserDetails(String userRole, String email_id) {
         this.userRole = userRole;
         this.email_id = email_id;
     }
 
-    public void login() {
-        System.out.println("Enter your username(email):");
-        String email_id = scanner.next();
-        System.out.println("Enter your password:");
-        String password = scanner.next();
-        PreparedStatement userDetails = null;
-        PreparedStatement statementRole=null;
-        try {
-            userDetails = conn.prepareStatement("SELECT * FROM users WHERE email_id = ? AND password = ?");
-            userDetails.setString(1, email_id);
-            userDetails.setString(2, password);
-            if (userDetails.executeQuery().next()) {
-                statementRole = conn.prepareStatement("SELECT role FROM users WHERE email_id = ?");
-                statementRole.setString(1, email_id);
-                ResultSet resultSet=statementRole.executeQuery();
-                while (resultSet.next()){
-                    userRole=resultSet.getString(1);
-                }
-                setUserDetails(userRole, email_id);
-            }
-            else {
-                return;
-            }
-        } catch (Exception e) {
-            //Print exception stack trace
-            e.printStackTrace();
-            throw new RuntimeException(e);
+
+    /**
+     * Authenticates a user by requesting their email and password, validating the credentials
+     * with the database, and setting the user details if the credentials are valid.
+     *
+     * @return true if the credentials are valid and the user details are set, false otherwise.
+     * @throws SQLException if there is an error accessing the database.
+     */
+    public boolean login() throws SQLException {
+        // Request email and password input from the user
+        String email_id = Utils.getInput("Enter your username(email):");
+        String password = Utils.getInput("Enter your password:");
+
+        // Validate the credentials with the database and get the user's role
+        String role = dbUser.validateCredentials(email_id, password);
+
+        // If the role is not null, the credentials are valid
+        if (role != null) {
+            // Set the user details with the user's role and email ID
+            this.setUserDetails(role, email_id);
+            System.out.println("Welcome " + this.email_id);
+            return true;
+        } else {
+            // If the role is null, the credentials are invalid
+            System.out.println("Invalid credentials. Redirecting to Main Menu");
+            return false;
         }
     }
 
-    public boolean resetPassword() {
-        System.out.println("Enter your username(email):");
-        String email_id = scanner.next();
-        //Check if the username exists
-        PreparedStatement userDetails = null;
-        try {
-            userDetails = conn.prepareStatement("SELECT * FROM users WHERE email_id = ?");
-            userDetails.setString(1, email_id);
-            if (!userDetails.executeQuery().next()) {
-                System.out.println("Invalid username. Redirecting to Main Menu");
-                return false;
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+
+    /**
+     * Resets the user's password by generating and sending an OTP to their email address.
+     *
+     * @return true if the password was reset successfully, false otherwise.
+     * @throws SQLException if an error occurs while accessing the database.
+     */
+    public boolean resetPassword() throws SQLException {
+        // Prompt the user to enter their username (email address)
+        String email_id = Utils.getInput("Enter your username(email):");
+
+        // Check if the username exists in the database
+        if (!dbUser.validateCredentials(email_id)) {
+            System.out.println("Username not registered with ILM. Contact Admin for new Account Creation.");
+            return false;
         }
-        MailManagement mailManagement = new MailManagement();
+
+        // Generate a random OTP and send it to the user's email address
         int otp = Utils.generateOTP();
+        MailManagement mailManagement = new MailManagement();
         String[] toEmails = {email_id};
         String subject = "Reset Password";
         String message = "Your OTP to reset your ILM password is: " + otp;
-        try {
-            mailManagement.sendMail(subject, message, toEmails);
-        } catch (Exception e) {
-//            System.out.println("Unable to reset password at the moment. Please try again later.");
-            throw new RuntimeException(e);
-        }
+        mailManagement.sendMail(subject, message, toEmails);
+
+        // Prompt the user to enter the OTP sent to their email address
         System.out.println("Enter the OTP sent on your email to reset your password :");
         int enteredOTP = scanner.nextInt();
+
+        // If the entered OTP is valid, prompt the user to enter their new password and update it in the database
         if (otp == enteredOTP) {
-            System.out.println("Enter your new password:");
-            String newPassword = scanner.next();
-            try {
-                changePassword(email_id, newPassword);
-            } catch (Exception e) {
-//                System.out.println("Unable to reset password at the moment. Please try again later.");
-                throw new RuntimeException(e);
-            }
-        }
-        else {
+            String newPassword = Utils.getInput("Enter your new password:");
+            dbUser.changePassword(this, newPassword);
+        } else {
+            // If the entered OTP is invalid, display an error message and return false
             System.out.println("Invalid OTP. Redirecting to Main Menu");
             return false;
         }
+        // Return true if the password was reset successfully
         return true;
     }
 
-    public void changePassword(String email_id, String newPassword) throws SQLException {
-        PreparedStatement userDetails = null;
-        try {
-            userDetails = conn.prepareStatement("UPDATE users SET password = ? WHERE email_id = ?");
-            userDetails.setString(1, newPassword);
-            userDetails.setString(2, email_id);
-            userDetails.executeUpdate();
-            userDetails.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    public void viewProfile(){
+    /**
+     * This method displays the user's profile details and prompts the user to either edit their profile or go back to the main menu.
+     *
+     * @throws SQLException if there is an error accessing the database
+     */
+    public void viewProfile() throws SQLException {
         System.out.printf("Hi %s !\n", this.email_id);
-        PreparedStatement userDetails = null;
-        try {
-            if(this.userRole.equals("student")){
-                userDetails=conn.prepareStatement("SELECT student_id,students.name,phone_number,d.name,batch FROM students JOIN departments d on students.department_id = d.id WHERE email_id = ?");
+        ResultSet profileDetails = dbUser.getProfileDetails(this);
+        while (profileDetails.next()) {
+            System.out.printf("ID: %s\n", profileDetails.getString(1));
+            System.out.printf("Name: %s\n", profileDetails.getString(2));
+            System.out.printf("Phone Number: %s\n", profileDetails.getString(3));
+            System.out.printf("Department: %s\n", profileDetails.getString(4));
+            if (this.userRole.equals("student")) {
+                System.out.printf("Batch: %s\n", profileDetails.getString(5));
+            } else if (this.userRole.equals("instructor")) {
+                System.out.printf("Date of Joining: %s\n", profileDetails.getString(5));
             }
-            else if(this.userRole.equals("instructor")){
-                userDetails=conn.prepareStatement("SELECT instructor_id,instructors.name,phone_number,d.name,date_of_joining FROM instructors JOIN departments d on instructors.department_id = d.id WHERE email_id = ?");
-            }
-            assert userDetails != null;
-            userDetails.setString(1, this.email_id);
-            ResultSet resultSet=userDetails.executeQuery();
-            while (resultSet.next()){
-                System.out.printf("ID: %s\n",resultSet.getString(1));
-                System.out.printf("Name: %s\n",resultSet.getString(2));
-                System.out.printf("Phone Number: %s\n",resultSet.getString(3));
-                System.out.printf("Department: %s\n",resultSet.getString(4));
-                if(this.userRole.equals("student")){
-                    System.out.printf("Batch: %s\n",resultSet.getString(5));
-                }
-                else if(this.userRole.equals("instructor")){
-                    System.out.printf("Date of Joining: %s\n",resultSet.getString(5));
-                }
-            }
-            userDetails.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
-        try {
-            System.out.println("Press 1 to Edit your profile");
-            System.out.println("Press 2 to go back to Main Menu");
-            int choice = Utils.getUserChoice(2);
-            switch (choice) {
-                case 1:
-                    editProfile();
-                    break;
-                case 2:
-                    break;
-                default:
-                    System.out.println("Invalid choice. Redirecting to Main Menu");
-            }
+        System.out.println("Press 1 to Edit your profile");
+        System.out.println("Press 2 to go back to Main Menu");
 
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
-
-    }
-    public void editProfile() {
-        System.out.println("1. Update Phone Number");
-        System.out.println("2. Update Password");
-        System.out.println("3. Go back to Main Menu");
-        int choice = Utils.getUserChoice(3);
+        // Prompt user for choice
+        int choice = Utils.getUserChoice(2);
         switch (choice) {
             case 1:
-                System.out.println("Enter your new phone number:");
-                String newPhoneNumber = scanner.next();
-                PreparedStatement userDetails = null;
-                try {
-                    if (this.userRole.equals("student")) {
-                        userDetails = conn.prepareStatement("UPDATE students SET phone_number = ? WHERE email_id = ?");
-                    } else if (this.userRole.equals("instructor")) {
-                        userDetails = conn.prepareStatement("UPDATE instructors SET phone_number = ? WHERE email_id = ?");
-                    }
-                    assert userDetails != null;
-                    userDetails.setString(1, newPhoneNumber);
-                    userDetails.setString(2, this.email_id);
-                    userDetails.executeUpdate();
-                    userDetails.close();
-                    System.out.println("Phone number updated successfully");
-                } catch (Exception e) {
-                    assert userDetails != null;
-                    try {
-                        userDetails.close();
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                    }
-                    throw new RuntimeException(e);
-                }
+                editProfile();
                 break;
             case 2:
-                System.out.println("Enter your new password:");
-                String newPassword = scanner.next();
-                try {
-                    changePassword(this.email_id, newPassword);
-                    System.out.println("Password updated successfully");
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case 3:
                 break;
             default:
                 System.out.println("Invalid choice. Redirecting to Main Menu");
         }
     }
+
+    /**
+     * Displays the menu for editing user profile and performs the selected action.
+     *
+     * @throws SQLException if an error occurs while accessing the database.
+     */
+    public void editProfile() throws SQLException {
+        // Display the menu options for editing user profile
+        System.out.println("1. Update Phone Number");
+        System.out.println("2. Update Password");
+        System.out.println("3. Go back to Main Menu");
+
+        // Get the user's choice from the menu options
+        int choice = Utils.getUserChoice(3);
+
+        // Perform the selected action based on the user's choice
+        switch (choice) {
+            case 1:
+                // Prompt the user to enter their new phone number and attempt to update it in the database
+                String newPhoneNumber = Utils.getInput("Enter your new phone number:");
+                if (dbUser.updatePhone(this, newPhoneNumber)) {
+                    System.out.println("Phone number updated successfully");
+                } else {
+                    System.out.println("Unable to update phone number. Please try again later.");
+                }
+                break;
+            case 2:
+                // Prompt the user to enter their new password and attempt to update it in the database
+                String newPassword = Utils.getInput("Enter your new password:");
+                if (dbUser.changePassword(this, newPassword)) {
+                    System.out.println("Password updated successfully");
+                } else {
+                    System.out.println("Unable to update password. Please try again later.");
+                }
+                break;
+            case 3:
+                // Go back to the main menu
+                break;
+            default:
+                // Display an error message if an invalid choice is selected
+                System.out.println("Invalid choice. Redirecting to Main Menu");
+        }
+    }
+
 }

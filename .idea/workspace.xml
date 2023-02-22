@@ -2,28 +2,28 @@
 <project version="4">
   <component name="AnalysisUIOptions">
     <option name="ANALYZE_INJECTED_CODE" value="false" />
-    <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Backup for Major Changes HenceForth">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbAdmin.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbInstructor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbStudent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUser.java" afterDir="false" />
+    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Refactoring and Documentation Wave 1">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/specialPrivileges.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dao/JDBCPostgreSQLConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/JDBCPostgreSQLConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/JDBCPostgreSQLConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/JDBCPostgreSQLConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbInstructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbInstructor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbStudent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbStudent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Admin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utility/CurrentDate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/CurrentDate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utility/MailManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/MailManagement.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/MainTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/MainTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/dao/JDBCPostgreSQLConnectionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/dal/JDBCPostgreSQLConnectionTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,6 +99,7 @@
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
@@ -320,7 +321,9 @@
       <workItem from="1676925370327" duration="1959000" />
       <workItem from="1676950187653" duration="1743000" />
       <workItem from="1676952928264" duration="6555000" />
-      <workItem from="1676981988807" duration="5709000" />
+      <workItem from="1676981988807" duration="17527000" />
+      <workItem from="1677049690466" duration="1661000" />
+      <workItem from="1677081071334" duration="11398000" />
     </task>
     <task id="LOCAL-00001" summary="Fix DB Configuration">
       <created>1674704914591</created>
@@ -462,7 +465,14 @@
       <option name="project" value="LOCAL" />
       <updated>1676982114688</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Refactoring and Documentation Wave 1">
+      <created>1676987923094</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1676987923094</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -503,7 +513,8 @@
     <MESSAGE value="Backup for Major Changes Henceforth" />
     <MESSAGE value="Refactoring &amp; Admin Menu" />
     <MESSAGE value="Backup for Major Changes HenceForth" />
-    <option name="LAST_COMMIT_MESSAGE" value="Backup for Major Changes HenceForth" />
+    <MESSAGE value="Refactoring and Documentation Wave 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring and Documentation Wave 1" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

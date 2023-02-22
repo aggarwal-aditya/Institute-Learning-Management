@@ -9,13 +9,12 @@ import java.math.RoundingMode;
 import java.sql.*;
 import java.util.Scanner;
 
-public class Admin extends Instructor{
+public class Admin extends User{
     Scanner scanner = new Scanner(System.in);
     JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
     Connection conn = jdbc.getConnection();
 
-    public Admin(User user) {
-        super(user);
+    public Admin() {
     }
     public void updateCourseCatalog(){
 

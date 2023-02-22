@@ -3,10 +3,7 @@ package org.academics;
 import java.sql.Connection;
 import java.util.Scanner;
 import org.academics.dal.*;
-import org.academics.users.Admin;
-import org.academics.users.Instructor;
-import org.academics.users.Student;
-import org.academics.users.User;
+import org.academics.users.*;
 import org.academics.utility.Utils;
 
 
@@ -25,7 +22,13 @@ class Main {
         User user = new User();
         switch (userChoice) {
             case 1 -> {
-                if (try_login(user)) break;
+                try{
+                    if(!user.login())
+                        return;
+                } catch (Exception e) {
+                    System.out.println("Unable to login at the moment. Please try again later.");
+                    mainMenu();
+                }
                 switch (user.userRole) {
                     case "student" -> {
                         Student student = new Student(user);
@@ -36,7 +39,7 @@ class Main {
                         instructorMenu(instructor);
                     }
                     case "admin" -> {
-                        Admin admin = new Admin(user);
+                        Admin admin = new Admin();
                         adminMenu(admin);
                     }
                 }
@@ -59,23 +62,6 @@ class Main {
         }
     }
 
-    private static boolean try_login(User user) {
-        try {
-            user.login();
-            if (user.email_id != null) {
-                System.out.println("Welcome " + user.email_id);
-            } else {
-                System.out.println("Invalid username or password. Returning to main menu.");
-                mainMenu();
-                return true;
-            }
-        } catch (Exception e) {
-            System.out.println("Unable to login at the moment. Please try again later.");
-            mainMenu();
-        }
-        return false;
-    }
-
     public static void studentMenu(Student student) {
         System.out.println("1. Register for a course");
         System.out.println("2. Drop a course");
@@ -88,28 +74,26 @@ class Main {
         int choice = Utils.getUserChoice(7);
 
         switch (choice) {
-            case 1:
+            case 1 -> {
                 try {
                     student.registerCourse();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("Unable to register for course at the moment. Please try again later.");
                     studentMenu(student);
                 }
                 studentMenu(student);
-                break;
-            case 2:
+            }
+            case 2 -> {
                 try {
                     student.dropCourse();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     System.out.println("Unable to drop course at the moment. Please try again later.");
                     studentMenu(student);
                 }
                 studentMenu(student);
-                break;
-            case 3:
+            }
+            case 3 -> {
                 try {
                     student.viewCourses();
                 } catch (Exception e) {
@@ -118,8 +102,8 @@ class Main {
                     studentMenu(student);
                 }
                 studentMenu(student);
-                break;
-            case 4:
+            }
+            case 4 -> {
                 try {
                     student.viewGrades();
                 } catch (Exception e) {
@@ -127,8 +111,8 @@ class Main {
                     studentMenu(student);
                 }
                 studentMenu(student);
-                break;
-            case 5:
+            }
+            case 5 -> {
                 try {
                     student.printGPA();
                 } catch (Exception e) {
@@ -136,25 +120,18 @@ class Main {
                     studentMenu(student);
                 }
                 studentMenu(student);
-                break;
-            case 6:
-                try
-                {
+            }
+            case 6 -> {
+                try {
                     student.viewProfile();
                     studentMenu(student);
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     System.out.println("Unable to fetch profile at the moment. Please try again later.");
                     studentMenu(student);
                 }
-                break;
-            case 7:
-                mainMenu();
-                break;
-            default:
-                System.out.println("Invalid choice");
-                break;
+            }
+            case 7 -> mainMenu();
+            default -> System.out.println("Invalid choice");
         }
     }
 
@@ -210,7 +187,7 @@ class Main {
             }
             case 5 -> {
                 try {
-                    instructor.viewStudentGrades();
+                    specialPrivileges.viewStudentGrades();
                     instructorMenu(instructor);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -265,7 +242,7 @@ class Main {
             }
             case 3 -> {
                 try {
-                    admin.viewStudentGrades();
+                    specialPrivileges.viewStudentGrades();
                     adminMenu(admin);
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -1,130 +1,84 @@
 package org.academics.users;
 
 
-import org.academics.dal.JDBCPostgreSQLConnection;
+
 import org.academics.dal.dbStudent;
 import org.academics.utility.Utils;
 
-import java.sql.*;
+import java.sql.Array;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 
+
+/**
+ * This class contains methods that are only accessible to the student
+ */
 public class Student extends User {
 
-    JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
-    Connection conn = jdbc.getConnection();
     String studentID;
 
+    /**
+     * Constructor for Student class
+     *
+     * @param user User object
+     */
     public Student(User user) {
         super(user.userRole, user.email_id);
         this.studentID = user.email_id.substring(0, user.email_id.indexOf("@")).toUpperCase();
     }
 
+    /**
+     * Fetches the available courses for registration and checks for eligibility requirements before enrolling student into the course
+     */
     public void registerCourse() {
-        String session = Utils.getCurrentSession();
-        try {
-            ResultSet resultSet = dbStudent.fetchCoursesForRegistration(session);
-            //Check here if the result se has anything else return
-            String message = "The Following Courses are available for registration in " + session + " session";
-            Utils.printTable(resultSet, new String[]{"Course Code", "Course Name", "Instructor"}, message);
-            String course_code = Utils.getInput("\nEnter the course code of the course you want to register. Press 0 to exit");
 
-            if (course_code.equals("0")) {
+        try {
+            // Get the current session
+            String session = Utils.getCurrentSession();
+
+            // Get the available courses for registration in the current session
+            ResultSet availableCourses = dbStudent.fetchCoursesForRegistration(session);
+            // Set the success and failure messages for printing available courses
+            String successMessage = "The Following Courses are available for registration in " + session + " session";
+            String failureMessage = "No Courses are available for registration in " + session + " session";
+            // Print the available courses along with the success/failure message
+            Utils.printTable(availableCourses, new String[]{"Course Code", "Course Name", "Instructor"}, successMessage, failureMessage);
+            // Return if no courses are available for registration
+            if (!availableCourses.next()) {
                 return;
             }
-
+            // Get the course code from user
+            String course_code = Utils.getInput("\nEnter the course code of the course you want to register. Press -1 to go back");
+            // Return if the user presses -1
+            if (course_code.equals("-1")) {
+                return;
+            }
+            // Check if the selected course is available for registration
             if (!dbStudent.checkEnrollmentAvailability(course_code, session)) {
                 System.out.println("Course not available for registration. Please Choose the course code from the list");
                 return;
             }
-
+            // Check if the student meets the minimum CGPA requirement for the selected course
             if (dbStudent.computeGPA(this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase()) < dbStudent.fetchMinCGPA(course_code, session)) {
                 System.out.println("You do not meet the minimum CGPA requirement for this course");
                 return;
             }
-
+            // Get the prerequisites for the selected course
             ResultSet preRequisites = dbStudent.getCoursePrerequisite(course_code, session);
             String[] prerequisites = extractPrerequisites(preRequisites);
-            if (prerequisites != null) {
-                if (!checkPrerequisites(prerequisites)) {
-                    System.out.println("You do not meet the prerequisites for this course");
-                    return;
-                }
+            // Check if the student meets the prerequisites for the selected course
+            if (!dbStudent.checkPreRequisitesEligibility(prerequisites, this.studentID)) {
+                System.out.println("You do not meet the prerequisites for this course");
+                return;
             }
+            // Enroll the student into the selected course if all eligibility criteria are met
             if (dbStudent.enrollCourse(this.studentID, course_code, session)) {
                 System.out.println("Course Registered Successfully");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Message: " + e.getMessage());
         }
-    }
-
-    /**
-     * Extracts the prerequisites for a course from a ResultSet containing the prerequisite information.
-     *
-     * @param preRequisites The ResultSet containing the prerequisite information
-     * @return An array of prerequisite course codes, or null if no prerequisites are listed for the course
-     */
-    private String[] extractPrerequisites(ResultSet preRequisites) {
-        String[] prerequisites = null;
-        try {
-            // Iterate through each row in the ResultSet
-            while (preRequisites.next()) {
-                // Get the prerequisites array from the first column of the row
-                Array prerequisitesResultArray = preRequisites.getArray(1);
-
-                // If the prerequisites array is null, skip to the next row
-                if (prerequisitesResultArray == null) {
-                    continue;
-                }
-
-                // Convert the array to a string array
-                prerequisites = (String[]) prerequisitesResultArray.getArray();
-
-                // Stop processing rows after the first non-null array is found
-                break;
-            }
-        } catch (SQLException e) {
-            // Print the stack trace if there is an error while processing the prerequisites
-            e.printStackTrace();
-        }
-        return prerequisites;
-    }
-
-    private boolean checkPrerequisites(String[] prerequisites) throws SQLException {
-        for (String prerequisite : prerequisites) {
-            if (prerequisite != null) {
-                String[] prerequisiteOptions = prerequisite.split("\\|");
-                boolean check = false;
-                for (String prerequisiteOption : prerequisiteOptions) {
-                    if (prerequisiteOption.equals("")) {
-                        continue;
-                    }
-                    String prerequisiteCode = prerequisiteOption.substring(0, prerequisiteOption.indexOf("("));
-                    String minGrade = prerequisiteOption.substring(prerequisiteOption.indexOf("(") + 1, prerequisiteOption.indexOf(")"));
-                    System.out.println(prerequisiteCode + " " + minGrade);
-                    PreparedStatement checkPrerequisites = conn.prepareStatement("SELECT grade FROM course_enrollments WHERE course_code =? AND student_id =? AND semester<?;");
-                    checkPrerequisites.setString(1, prerequisiteCode);
-                    checkPrerequisites.setString(2, this.email_id.substring(0, this.email_id.indexOf("@")).toUpperCase());
-                    checkPrerequisites.setString(3, Utils.getCurrentSession());
-                    ResultSet checkPrerequisitesResult = checkPrerequisites.executeQuery();
-                    if (!checkPrerequisitesResult.next()) {
-                        continue;
-                    }
-                    if (checkPrerequisitesResult.getString("grade").equals("F")) {
-                        continue;
-                    }
-                    if (minGrade.compareTo(checkPrerequisitesResult.getString("grade")) > 0) {
-                        continue;
-                    }
-                    check = true;
-                    break;
-                }
-                if (!check) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     /**
@@ -135,7 +89,12 @@ public class Student extends User {
      */
     public void dropCourse() throws SQLException {
         // Check if the current time falls within the course add/drop period
-        if (!Utils.validateEventTime("course_add_drop", Utils.getCurrentSession())) {
+        String session = Utils.getCurrentSession();
+        if(session==null){
+            System.out.println("No session is currently active");
+            return;
+        }
+        if (!Utils.validateEventTime("course_add_drop", session)) {
             System.out.println("You are not allowed to drop courses now");
             return;
         }
@@ -207,6 +166,37 @@ public class Student extends User {
     public void printGPA() throws SQLException {
         System.out.println("Your CGPA is: " + dbStudent.computeGPA(this.studentID));
     }
+
+    /**
+     * This method extracts the prerequisites from the result set returned by a SQL query. It returns a string
+     * array containing the prerequisites. If there are no prerequisites, it returns null.
+     *
+     * @param preRequisites The ResultSet containing the prerequisites
+     * @return A string array containing the prerequisites, or null if there are no prerequisites
+     * @throws SQLException If there is an error while processing the ResultSet
+     */
+    private String[] extractPrerequisites(ResultSet preRequisites) throws SQLException {
+        String[] prerequisites = null;
+        // Iterate through each row in the ResultSet
+        while (preRequisites.next()) {
+            // Get the prerequisites array from the first column of the row
+            Array prerequisitesResultArray = preRequisites.getArray(1);
+
+            // If the prerequisites array is null, skip to the next row
+            if (prerequisitesResultArray == null) {
+                continue;
+            }
+
+            // Convert the array to a string array
+            prerequisites = (String[]) prerequisitesResultArray.getArray();
+
+            // Stop processing rows after the first non-null array is found
+            break;
+        }
+        // Return the prerequisites array
+        return prerequisites;
+    }
+
 
 }
 

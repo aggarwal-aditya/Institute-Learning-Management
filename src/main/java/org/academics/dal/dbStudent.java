@@ -3,10 +3,13 @@ package org.academics.dal;
 import java.math.RoundingMode;
 import java.sql.*;
 
+/**
+ * A database access class for managing student actions.
+ */
 public class dbStudent {
 
-    private static JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
-    private static Connection conn = jdbc.getConnection();
+    private static final JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
+    private static final Connection conn = jdbc.getConnection();
 
     /**
      * Computes the grade point average (GPA) for a given student using a stored procedure in the database.
@@ -83,13 +86,13 @@ public class dbStudent {
     /**
      * Drops a course from a student's schedule for the current semester.
      *
-     * @param studentID  the ID of the student whose schedule should be updated
-     * @param courseCode the code of the course to be dropped
-     * @param semester   the semester in which the course is being dropped
+     * @param studentID   the ID of the student whose schedule should be updated
+     * @param course_code the code of the course to be dropped
+     * @param semester    the semester in which the course is being dropped
      * @return the number of rows affected by the update (should be 1 if the drop was successful)
      * @throws SQLException if an error occurs while interacting with the database
      */
-    public static int dropCourse(String studentID, String courseCode, String semester) throws SQLException {
+    public static int dropCourse(String studentID, String course_code, String semester) throws SQLException {
         // Prepare a PreparedStatement to delete the enrollment record for the given student and course in the current semester
         PreparedStatement dropCourse = conn.prepareStatement("DELETE FROM course_enrollments WHERE student_id=? AND course_code=? AND semester=?;");
 
@@ -97,7 +100,7 @@ public class dbStudent {
         dropCourse.setString(1, studentID);
 
         // Set the courseCode parameter as the second input parameter to the prepared statement
-        dropCourse.setString(2, courseCode);
+        dropCourse.setString(2, course_code);
 
         // Set the semester as the third input parameter to the prepared statement
         dropCourse.setString(3, semester);
@@ -229,6 +232,65 @@ public class dbStudent {
         // Execute the prepared statement and return a boolean indicating whether the course is being offered in the given semester
         ResultSet checkCourseResult = checkCourse.executeQuery();
         return checkCourseResult.next();
+    }
+
+
+    /**
+     * This method checks the eligibility of a student for the given prerequisites by verifying the grades
+     * of the required courses. It returns a boolean value indicating whether the student meets the prerequisites
+     * or not.
+     *
+     * @param prerequisites An array of prerequisites required for a course
+     * @param studentID The ID of the student whose eligibility is being checked
+     * @return A boolean value indicating whether the student meets the prerequisites or not
+     * @throws SQLException If there is an error while querying the database
+     */
+    public static boolean checkPreRequisitesEligibility(String[] prerequisites, String studentID) throws SQLException {
+        // Loop through all the prerequisites
+        for (String prerequisite : prerequisites) {
+            boolean check = false;
+            if (prerequisite != null) {
+                // Split the prerequisite options by the delimiter '|'
+                String[] prerequisiteOptions = prerequisite.split("\\|");
+                // Loop through all the options
+                for (String prerequisiteOption : prerequisiteOptions) {
+                    // If the option is an empty string, skip to the next option
+                    if (prerequisiteOption.equals("")) {
+                        continue;
+                    }
+                    // Extract the course code and minimum grade required from the option
+                    String prerequisiteCode = prerequisiteOption.substring(0, prerequisiteOption.indexOf("("));
+                    String minGrade = prerequisiteOption.substring(prerequisiteOption.indexOf("(") + 1, prerequisiteOption.indexOf(")"));
+//              System.out.println(prerequisiteCode + " " + minGrade);//Debug
+                    // Query the database to get the grade of the required course for the student
+                    PreparedStatement checkPrerequisites = conn.prepareStatement("SELECT grade FROM course_enrollments WHERE course_code =? AND student_id =?");
+                    checkPrerequisites.setString(1, prerequisiteCode);
+                    checkPrerequisites.setString(2, studentID);
+                    ResultSet checkPrerequisitesResult = checkPrerequisites.executeQuery();
+                    // If the student has not taken the required course, skip to the next option
+                    if (!checkPrerequisitesResult.next()) {
+                        continue;
+                    }
+                    // If the student has failed the required course or has not yet received a grade, skip to the next option
+                    if (checkPrerequisitesResult.getString("grade").equals("F") || checkPrerequisitesResult.getString("grade").equals("NA")) {
+                        continue;
+                    }
+                    // If the student has not met the minimum grade required, skip to the next option
+                    if (minGrade.compareTo(checkPrerequisitesResult.getString("grade")) > 0) {
+                        continue;
+                    }
+                    // If the student has met all the requirements for the option, set the check variable to true and break the loop
+                    check = true;
+                    break;
+                }
+                // If the student has not met the requirements for any option, return false
+                if (!check) {
+                    return false;
+                }
+            }
+        }
+        // If the student has met the requirements for all prerequisites, return true
+        return true;
     }
 
 
