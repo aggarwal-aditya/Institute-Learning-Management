@@ -8,25 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Refactoring and Documentation Wave 2">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/menus/InstructorMenu.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/menus/adminMenu.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/menus/mainMenu.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/menus/studentMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/JDBCPostgreSQLConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/JDBCPostgreSQLConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbAdmin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbAdmin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbInstructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbInstructor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Admin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/specialPrivileges.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/specialPrivileges.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utility/CurrentDate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/CurrentDate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" afterDir="false" />
-    </list>
+    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Refactoring and Documentation Wave 3" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -335,7 +317,7 @@
       <workItem from="1676981988807" duration="17527000" />
       <workItem from="1677049690466" duration="1661000" />
       <workItem from="1677081071334" duration="12784000" />
-      <workItem from="1677833141172" duration="16597000" />
+      <workItem from="1677833141172" duration="16909000" />
     </task>
     <task id="LOCAL-00001" summary="Fix DB Configuration">
       <created>1674704914591</created>
@@ -491,7 +473,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677095495927</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Refactoring and Documentation Wave 3">
+      <created>1677872326233</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1677872326233</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -534,7 +523,8 @@
     <MESSAGE value="Backup for Major Changes HenceForth" />
     <MESSAGE value="Refactoring and Documentation Wave 1" />
     <MESSAGE value="Refactoring and Documentation Wave 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactoring and Documentation Wave 2" />
+    <MESSAGE value="Refactoring and Documentation Wave 3" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring and Documentation Wave 3" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

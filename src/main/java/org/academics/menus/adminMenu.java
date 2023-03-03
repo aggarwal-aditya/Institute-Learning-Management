@@ -56,7 +56,9 @@ public class adminMenu {
             }
             case 5 -> {
                 try {
-                    admin.checkGraduationStatus();
+                    if(admin.checkGraduationStatus()){
+                        System.out.println("Student is eligible for graduation. Download transcript to get the degree.");
+                    }
                     adminMenu(admin);
                 } catch (Exception e) {
                     e.printStackTrace();
