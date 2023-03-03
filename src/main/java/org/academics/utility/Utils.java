@@ -4,6 +4,7 @@ package org.academics.utility;
 import dnl.utils.text.table.TextTable;
 import org.academics.dal.dbUtils;
 
+import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -13,7 +14,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
 
+/**
+ * This class is used to provide utility functions.
+ */
 public class Utils {
 
     private Utils() {
@@ -84,6 +90,7 @@ public class Utils {
      * Returns the current academic session, based on the current date.
      *
      * @return the current academic session in the format "YYYY-SEM", or null if no session is found.
+     * @throws SQLException if an error occurs while accessing the database
      */
     public static String getCurrentSession() throws SQLException {
         // Get the current date
@@ -146,13 +153,13 @@ public class Utils {
             System.setOut(new PrintStream(outputStream));
             printTable(resultSet, new String[]{"Course Code", "Course Name", "Semester", "Grade"}, message, "");
             System.setIn(System.in);
-            System.setOut(System.out);
+            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
             System.out.println("File downloaded successfully!");
         } catch (Exception e) {
             System.err.println(e.getMessage());
         } finally {
             System.setIn(System.in);
-            System.setOut(System.out);
+            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
         }
     }
 

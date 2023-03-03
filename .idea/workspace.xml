@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AnalysisUIOptions">
+    <option name="ANALYZE_TEST_SOURCES" value="false" />
     <option name="ANALYZE_INJECTED_CODE" value="false" />
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Refactoring and Documentation Wave 1">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/specialPrivileges.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Refactoring and Documentation Wave 2">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/menus/InstructorMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/menus/adminMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/menus/mainMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/academics/menus/studentMenu.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/JDBCPostgreSQLConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/JDBCPostgreSQLConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbAdmin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbAdmin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbInstructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbInstructor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbStudent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbStudent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Admin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/specialPrivileges.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/specialPrivileges.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utility/CurrentDate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/CurrentDate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utility/MailManagement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/MailManagement.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -83,6 +85,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectId" id="2KoiR1kqDlGKmP1ixuMgaNHWQff" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -117,6 +122,12 @@
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
     </key>
+    <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="org.academics.menus.studentMenu" />
+      <recent name="org.academics.menus.mainMenu" />
+      <recent name="org.academics.menus.adminMenu" />
+      <recent name="org.academics.menus.InstructorMenu" />
+    </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="org.academics.users" />
       <recent name="org.academics.utility" />
@@ -132,7 +143,7 @@
       <recent name="org.academics" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.UtilsTest.getCurrentSession">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="C:/Program Files/Java/jdk-17.0.1" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -323,7 +334,8 @@
       <workItem from="1676952928264" duration="6555000" />
       <workItem from="1676981988807" duration="17527000" />
       <workItem from="1677049690466" duration="1661000" />
-      <workItem from="1677081071334" duration="11398000" />
+      <workItem from="1677081071334" duration="12784000" />
+      <workItem from="1677833141172" duration="16597000" />
     </task>
     <task id="LOCAL-00001" summary="Fix DB Configuration">
       <created>1674704914591</created>
@@ -472,7 +484,14 @@
       <option name="project" value="LOCAL" />
       <updated>1676987923094</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Refactoring and Documentation Wave 2">
+      <created>1677095495927</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1677095495927</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -514,7 +533,8 @@
     <MESSAGE value="Refactoring &amp; Admin Menu" />
     <MESSAGE value="Backup for Major Changes HenceForth" />
     <MESSAGE value="Refactoring and Documentation Wave 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactoring and Documentation Wave 1" />
+    <MESSAGE value="Refactoring and Documentation Wave 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring and Documentation Wave 2" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -1,12 +1,9 @@
 package org.academics.users;
 
-import org.academics.dal.JDBCPostgreSQLConnection;
 import org.academics.dal.dbInstructor;
 import org.academics.utility.Utils;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -68,43 +65,27 @@ public class Instructor extends User {
                 return;
             }
 
-            System.out.println("Enter the minimum CGPA requirement for the course");
+            System.out.print("Enter the minimum CGPA requirement for the course ");
             double qualify = scanner.nextDouble();
 
             String choice = Utils.getInput("Do you want to add additional prerequisites? (Y/N)");
             //Make a 2d array of prerequisites
             ArrayList<String> preRequisites = new ArrayList<>();
-            StringBuilder pre = new StringBuilder();
             if (Objects.equals(choice, "Y")) {
-                do {
-                    String code = Utils.getInput("Enter the course code of the prerequisite");
-                    String grade = Utils.getInput("Enter the minimum grade requirement for the prerequisite (Enter 'E' if no minimum grade requirement)");
-                    pre.append(code).append("(").append(grade).append(")").append("|");
-                    choice = Utils.getInput("Are there any alternatives to the prerequisite? (Y/N)");
-                    if (Objects.equals(choice, "Y")) {
-                        do {
-                            code = Utils.getInput("Enter the course code of the alternative");
-                            grade = Utils.getInput("Enter the minimum grade requirement for the alternative (Enter 'E' if no minimum grade requirement)");
-                            pre.append(code).append("(").append(grade).append(")").append("|");
-                            choice = Utils.getInput("Are there any alternatives to the prerequisite? (Y/N)");
-                        } while (Objects.equals(choice, "Y"));
-                    }
-                    choice = Utils.getInput("Do you want to add additional prerequisites? (Y/N)");
-                    preRequisites.add(String.valueOf(pre));
-                    pre = new StringBuilder();
-                } while (Objects.equals(choice, "Y"));
+                preRequisites=specialPrivileges.getPreRequisites();
             }
 
             System.out.println("Program Core & Elective Selection");
             List<Integer> departmentIds = new ArrayList<>();
             List<Integer> batches = new ArrayList<>();
             List<String> courseTypes = new ArrayList<>();
+            specialPrivileges.viewDepartmentIDs();
             System.out.println("Enter department ID (press -1 to stop entering):");
             int departmentId = scanner.nextInt();
             while (departmentId != -1) {
                 System.out.println("Enter batch:");
                 int batch = scanner.nextInt();
-                String courseType = Utils.getInput("Enter course type (core, humanities_elective, programme_elective, science_math_elective, open_elective, internship, btech_project):");
+                String courseType = Utils.getInput("Enter course type (core, humanities, programme_elective, science_math, open_elective, internship, project, extra_curricular):");
                 departmentIds.add(departmentId);
                 batches.add(batch);
                 courseTypes.add(courseType);
@@ -115,9 +96,11 @@ public class Instructor extends User {
             {
                 System.out.println("Course floated successfully");
             }
-            dbInstructor.updateCourseMapping(course_code, session, departmentIds, batches, courseTypes);
-
-
+            try {
+                dbInstructor.updateCourseMapping(course_code, session, departmentIds, batches, courseTypes);
+            }catch (SQLException e) {
+                System.out.println("Some of the course mappings were not added successfully (Duplicates/Missing Department ID. Contact Admin to Confirm or Float the course again.)");
+            }
     }
 
 
@@ -133,42 +116,19 @@ public class Instructor extends User {
         String failureMessage = "You have not floated any courses yet";
         // Displays the list of courses using the printTable() utility method
         Utils.printTable(instructorCourses, new String[]{"Course Code", "Semester", "Qualifying Criteria", "Enrollment Count"}, successMessage, failureMessage);
+        instructorCourses.beforeFirst();
         return instructorCourses.next();
     }
 
 
-    /**
-     * Checks if student list needs to be downloaded, and downloads and exports the list if needed.
-     * Then, uploads grades from a CSV file.
-     *
-     * @throws SQLException if there is an SQL error
-     * @throws IOException if there is an I/O error
-     */
-    public void uploadGrades() throws SQLException, IOException {
-        if (shouldDownloadStudentList()) { // check if student list needs to be downloaded
-            downloadAndExportStudentList(); // download and export the student list
-        }
-        uploadGradesFromFile(); // upload grades from a CSV file
-    }
-
-    /**
-     * Asks user whether to download the list of students enrolled in the course
-     * and returns a boolean indicating the choice.
-     *
-     * @return true if the user chooses to download the list, false otherwise
-     */
-
-    private boolean shouldDownloadStudentList() {
-        String choice = Utils.getInput("Do you want to download the list of students enrolled in the course? (Y/N)? Note that this may overwrite a file in downloads folder for the same course");
-        return Objects.equals(choice, "Y");
-    }
 
 
     /**
      * Download the list of students enrolled in the course, exports it to a CSV file
+     *
      * @throws SQLException If an error occurs while executing SQL queries
      */
-    private void downloadAndExportStudentList() throws SQLException {
+    public void downloadAndExportStudentList() throws SQLException {
         String courseCode = Utils.getInput("Enter the course code");
         String session = Utils.getInput("Enter the session (YYYY-Semester)");
         if (!dbInstructor.isCourseInstructor(courseCode, session, this.instructor_id)) {
@@ -188,7 +148,7 @@ public class Instructor extends User {
      * @throws SQLException if there is an issue with the database
      * @throws IOException  if there is an issue with reading the file
      */
-    private void uploadGradesFromFile() throws SQLException, IOException {
+    public void uploadGrades() throws SQLException, IOException {
         // Prompt the user for the course code and session
         String courseCode = Utils.getInput("Enter the course code");
         String session = Utils.getInput("Enter the session (YYYY-Semester)");
@@ -199,14 +159,14 @@ public class Instructor extends User {
             return;
         }
 
-        // Prompt the user for the path to the CSV file
-        String path = Utils.getInput("Enter the path to the CSV file");
-
         // Check if the instructor is authorized to upload grades for the given course and session
         if (!dbInstructor.isCourseInstructor(courseCode, session, this.instructor_id)) {
             System.out.println("You are not authorized to add grades for this course");
             return;
         }
+
+        // Prompt the user for the path to the CSV file
+        String path = Utils.getInput("Enter the path to the CSV file");
 
         // Upload the grades from the CSV file to the database
         dbInstructor.uploadGrades(path, courseCode, session);
@@ -231,6 +191,10 @@ public class Instructor extends User {
         // Check if the instructor is authorized to delist the course
         if (!dbInstructor.isCourseInstructor(courseCode, session, this.instructor_id)) {
             System.out.println("You are not authorized to delist this course");
+            return;
+        }
+        if (!Utils.validateEventTime("course_float", session)) {
+            System.out.println("Course delisting for the specified semester is not allowed at this time");
             return;
         }
         // Attempt to delist the course from the course offerings table

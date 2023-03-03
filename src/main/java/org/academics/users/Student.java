@@ -44,6 +44,7 @@ public class Student extends User {
             String failureMessage = "No Courses are available for registration in " + session + " session";
             // Print the available courses along with the success/failure message
             Utils.printTable(availableCourses, new String[]{"Course Code", "Course Name", "Instructor"}, successMessage, failureMessage);
+            availableCourses.beforeFirst();
             // Return if no courses are available for registration
             if (!availableCourses.next()) {
                 return;

@@ -34,7 +34,9 @@ public class dbUser {
             // Here, a prepared statement is created to retrieve the user's role from the database
             PreparedStatement statementRole = conn.prepareStatement("SELECT role FROM users WHERE email_id = ?");
             statementRole.setString(1, email_id);
-            return statementRole.executeQuery().getString(1);
+            ResultSet resultSet = statementRole.executeQuery();
+            resultSet.next();
+            return resultSet.getString(1);
         }
         // If the retrieved details don't exist, null is returned
         return null;
@@ -113,7 +115,6 @@ public class dbUser {
         userDetails.setString(1, password);
         userDetails.setString(2, user.email_id);
         userDetails.executeUpdate();
-        userDetails.close();
         return userDetails.getUpdateCount() > 0;
     }
 

@@ -1,10 +1,14 @@
 package org.academics.dal;
 
-import org.academics.utility.CurrentDate;
+
 
 import java.sql.*;
 import java.time.LocalDate;
 
+
+/**
+ * This class is used to fetch data from the database pertaining to the Utility package
+ */
 public class dbUtils {
     private static final JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
     private static final Connection conn = jdbc.getConnection();
@@ -32,11 +36,22 @@ public class dbUtils {
         return false;
     }
 
+    /**
+     * Returns the current session
+     * @param currentDate the current date
+     * @return the current session
+     * @throws SQLException if there is an error with database access
+     */
     public static ResultSet getCurrentSession(LocalDate currentDate) throws SQLException {
         PreparedStatement statement = conn.prepareStatement("SELECT semester.year, semester_number FROM semester WHERE start_date <= ? AND end_date >= ?");
         statement.setDate(1, Date.valueOf(currentDate));
         statement.setDate(2, Date.valueOf(currentDate));
         // Execute the query and get the result set
         return  statement.executeQuery();
+    }
+
+    public static ResultSet getDepartmentIDs() throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("SELECT * FROM departments",ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        return statement.executeQuery();
     }
 }

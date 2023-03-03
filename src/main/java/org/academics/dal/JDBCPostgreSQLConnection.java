@@ -11,6 +11,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+/**
+ * This class provides a singleton JDBC connection to the PostgreSQL database.
+ */
 public class JDBCPostgreSQLConnection {
     // Singleton instance of the class.
     private static JDBCPostgreSQLConnection instance = null;

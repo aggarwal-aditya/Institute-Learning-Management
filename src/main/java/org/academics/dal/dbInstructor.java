@@ -3,6 +3,7 @@ package org.academics.dal;
 import com.opencsv.CSVReader;
 import org.academics.users.User;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -12,15 +13,26 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class provides methods to fetch data from the database pertaining to instructor.
+ */
 public class dbInstructor {
     private static final JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
     private static final Connection conn = jdbc.getConnection();
 
 
+    /**
+     * This method fetches the instructor ID of the instructor with the given email ID.
+     * @param user the user whose instructor ID is to be fetched
+     * @return the instructor ID of the instructor with the given email ID
+     * @throws SQLException if there is an error with database access
+     */
     public static int fetchInstructorID(User user) throws SQLException {
         PreparedStatement getInstructorId = conn.prepareStatement("SELECT instructor_id FROM instructors WHERE email_id = ?");
         getInstructorId.setString(1, user.email_id);
-        return getInstructorId.executeQuery().getInt("instructor_id");
+        ResultSet resultSet = getInstructorId.executeQuery();
+        resultSet.next();
+        return resultSet.getInt("instructor_id");
 
 
     }
@@ -166,27 +178,34 @@ public class dbInstructor {
     public static void uploadGrades(String filePath, String course_code, String semester) throws SQLException, IOException {
 
         // Prepare an SQL statement to update course enrollments with grades
-        PreparedStatement uploadGrades = conn.prepareStatement("UPDATE course_enrollments SET grade = ? WHERE student_id = ? AND course_code = ? AND semester = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        PreparedStatement uploadGrades = conn.prepareStatement("UPDATE course_enrollments SET grade = ? WHERE enrollment_id = ? AND course_code = ? AND semester = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
+        CSVReader reader = null;
         // Read the CSV file using a CSVReader
-        CSVReader reader = new CSVReader(new FileReader(filePath));
+        try {reader = new CSVReader(new FileReader(filePath));
+        }catch (FileNotFoundException e) {
+            System.out.println("File not found");
+            return;
+        }
         String[] line;
 
         // Loop through each row in the CSV file
+        reader.readNext(); // Skip the first line
         while ((line = reader.readNext()) != null) {
 
             // Set the parameters for the SQL statement
             uploadGrades.setString(1, line[3]); // set the grade
-            uploadGrades.setString(2, (line[0])); // set the student_id
+            uploadGrades.setInt(2, Integer.parseInt((line[0]))); // set the student_id
             uploadGrades.setString(3, course_code); // set the course_code
             uploadGrades.setString(4, semester); // set the semester
+
 
             // Execute the SQL statement to update the course enrollment with the grade
             uploadGrades.executeUpdate();
 
             // Check if any rows were updated by the SQL statement
             if (uploadGrades.getUpdateCount() == 0) {
-                System.out.println("Error uploading grades for student ID " + line[0]);
+                System.out.printf("Error uploading grades for enrollment ID %s (StudentID %s) (No Course Enrollment Record Found)\n" ,line[0], line[1]);
             }
         }
     }

@@ -2,6 +2,11 @@ package org.academics.utility;
 
 import java.time.LocalDate;
 
+
+/**
+ * This class is used to manage academic calendar
+ */
+
 public class CurrentDate {
     private static CurrentDate instance = null;
     private LocalDate currentDate;
