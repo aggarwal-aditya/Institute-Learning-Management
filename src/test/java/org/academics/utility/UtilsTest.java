@@ -1,39 +1,36 @@
 package org.academics.utility;
 
+import org.academics.dal.dbUtils;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+
 import java.io.*;
-import java.sql.*;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.time.LocalDate;
+
 
 class UtilsTest {
 
-    private Connection connection;
     @BeforeEach
-    void setUp() throws SQLException {
-        connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ilmtest", "postgres", "password");
-        System.setIn(System.in);
-        System.setOut(System.out);
-        try {
-            while (System.in.available() > 0) {
-                System.in.read();
-            }
-        } catch (IOException ignored) {
-        }
-        System.out.flush();
-        System.err.flush();
-
+    void setUp() {
     }
+
     @AfterEach
-    void tearDown() throws SQLException {
-        System.setIn(System.in);
-        System.setOut(System.out);
-        connection.close();
+    void tearDown() {
+        //close all mockito static mocks
+        Mockito.framework().clearInlineMocks();
     }
 
     @Test
@@ -43,40 +40,27 @@ class UtilsTest {
     }
 
     @Test
-    void testUserChoiceValidInput() {
+    void getUserChoice() {
         String input = "2\n"; // Set the input to be the number 2 followed by a newline
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
-
         int choice = Utils.getUserChoice(3);
-
         assertEquals(2, choice);
-    }
-
-    @Test
-    void testUserChoiceOutOfRangeInput() {
-        String input = "10\nqwerty\n3\n";
-        InputStream in = new ByteArrayInputStream(input.getBytes());
+        input = "10\nqwerty\n3\n";
+        in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
-
-        int choice = Utils.getUserChoice(5);
-
+        choice = Utils.getUserChoice(5);
+        assertEquals(3, choice);
+        input = "qwerty\n3\n";
+        in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+        choice = Utils.getUserChoice(5);
         assertEquals(3, choice);
     }
 
     @Test
-    void testUserChoiceInvalidInput() {
-        String input = "qwerty\n3\n";
-        InputStream in = new ByteArrayInputStream(input.getBytes());
-        System.setIn(in);
+    void getInput() {
 
-        int choice = Utils.getUserChoice(5);
-
-        assertEquals(3, choice);
-    }
-
-    @Test
-    public void testGetInput() {
         String message = "Enter a word:";
         String input = "Hello";
         System.setIn(new ByteArrayInputStream(input.getBytes())); // Set the standard input to a ByteArrayInputStream
@@ -89,59 +73,202 @@ class UtilsTest {
         assertTrue(input.contains(result)); // Check if the method prompts the user to enter valid input when the input is empty
     }
 
-
     @Test
-    void getCurrentSession() {
-        try {
-            CallableStatement populateDatabase = connection.prepareCall("CALL populate_database()");
-            populateDatabase.execute();
-            CurrentDate.getInstance().overwriteCurrentDate(2022, 9, 11);
-            assertEquals("2022-1", Utils.getCurrentSession());
-            CurrentDate.getInstance().overwriteCurrentDate(2050, 1, 11);
-            assertNull(Utils.getCurrentSession());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                CallableStatement clearDatabase = connection.prepareCall("CALL clear_database()");
-                clearDatabase.execute();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+    void getCurrentSession() throws SQLException{
+        ResultSet resultSet = mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(true);
+        when(resultSet.getString(1)).thenReturn("2023");
+        when(resultSet.getString(2)).thenReturn("1");
+
+        // Set up the mock static method call
+        try (MockedStatic<dbUtils> mockedDbUtils = Mockito.mockStatic(dbUtils.class)) {
+            mockedDbUtils.when(() -> dbUtils.getCurrentSession(Mockito.any(LocalDate.class))).thenReturn(resultSet);
+
+            // Call the method being tested
+            String result = Utils.getCurrentSession();
+
+
+            // Verify the result
+            assertEquals("2023-1", result);
+        }
+
+        when(resultSet.next()).thenReturn(false);
+        try (MockedStatic<dbUtils> mockedDbUtils = Mockito.mockStatic(dbUtils.class)) {
+            mockedDbUtils.when(() -> dbUtils.getCurrentSession(Mockito.any(LocalDate.class))).thenReturn(resultSet);
+
+            // Call the method being tested
+            String result = Utils.getCurrentSession();
+
+            // Verify the result
+            assertNull(result);
         }
     }
 
     @Test
-    void validateEventTime() {
+    void validateEventTime() throws SQLException {
+        // Set up the mock ResultSet object
+        ResultSet resultSet = mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getDate(1)).thenReturn(Date.valueOf("2022-03-01"));
+        when(resultSet.getDate(2)).thenReturn(Date.valueOf("2024-03-03"));
+
+
+        // Set up the mock static method call
+        try (MockedStatic<dbUtils> mockedDbUtils = Mockito.mockStatic(dbUtils.class)) {
+            mockedDbUtils.when(() -> dbUtils.validateEventTime(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(LocalDate.class)))
+                    .thenReturn(resultSet);
+
+            // Call the method being tested
+            boolean result = Utils.validateEventTime("eventType", "2023-1");
+
+
+            // Verify the result
+            assertTrue(result);
+        }
+
+        resultSet = mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(false);
+
+        try (MockedStatic<dbUtils> mockedDbUtils = Mockito.mockStatic(dbUtils.class)) {
+            mockedDbUtils.when(() -> dbUtils.validateEventTime(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(), Mockito.any(LocalDate.class)))
+                    .thenReturn(resultSet);
+
+            // Call the method being tested
+            boolean result = Utils.validateEventTime("eventType", "2023-1");
+            // Verify the result
+            assertFalse(result);
+
+        }
+
     }
 
     @Test
-    void exportCSV() {
+    public void exportTxt() throws Exception {
+        // Mock the ResultSet
+        ResultSet resultSet = mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(true).thenReturn(true).thenReturn(false);
+        when(resultSet.getString("Course Code")).thenReturn("CS101");
+        when(resultSet.getString("Course Name")).thenReturn("Introduction to Computer Science");
+        when(resultSet.getString("Semester")).thenReturn("Spring 2022");
+        when(resultSet.getString("Grade")).thenReturn("A");
 
+        // Mock the file name and message
+        String fileName = "testFile";
+        String message = "Test message";
+
+        // Call the method being tested
+        Utils.exportTxt(resultSet, fileName, message);
+
+        // Verify that the file was downloaded
+        String os = System.getProperty("os.name").toLowerCase();
+        String username = System.getProperty("user.name");
+        String downloadPath ;
+        if (os.contains("win")) {
+            downloadPath = "C:\\Users\\" + username + "\\Downloads\\" + fileName + ".txt";
+        } else if (os.contains("mac")) {
+            downloadPath = "/Users/" + username + "/Downloads/" + fileName + ".txt";
+        } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+            downloadPath = "/home/" + username + "/Downloads/" + fileName + ".txt";
+        } else {
+            downloadPath = "";
+        }
+        File file = new File(downloadPath);
+        assertTrue(file.exists());
+        assertTrue(file.isFile());
+
+        // Delete the file
+        file.delete();
+    }
+
+
+    @Test
+    void exportCSV() throws SQLException, IOException {
+        // Mock ResultSet object
+        ResultSet resultSet = mock(ResultSet.class);
+        ResultSetMetaData metaData = mock(ResultSetMetaData.class);
+
+        // Set up mock behavior
+        when(resultSet.getMetaData()).thenReturn(metaData);
+        when(metaData.getColumnCount()).thenReturn(2);
+        when(metaData.getColumnName(1)).thenReturn("Name");
+        when(metaData.getColumnName(2)).thenReturn("Age");
+
+        // Set up mock data
+        when(resultSet.next()).thenReturn(true, true, false);
+        when(resultSet.getString(1)).thenReturn("John", "Jane");
+        when(resultSet.getString(2)).thenReturn("25", "30");
+
+        // Call the method under test
+        String[] headers = {"Gender"};
+        String fileName = "test";
+        Utils.exportCSV(resultSet, fileName, headers);
+
+        // Verify that the CSV file is correctly generated with the expected content
+        String downloadPath = getDownloadPath();
+        BufferedReader reader = new BufferedReader(new FileReader(downloadPath));
+        Assertions.assertEquals("Name,Age,Gender", reader.readLine());
+        Assertions.assertEquals("John,25", reader.readLine());
+        Assertions.assertEquals("Jane,30", reader.readLine());
+        reader.close();
     }
 
     @Test
-    void testFormatOutput() throws SQLException {
+    void printTable() throws SQLException {
         ResultSet resultSet = mock(ResultSet.class);
         // Simulate the behavior of the result set
         when(resultSet.next()).thenReturn(true, true, true, false);
-        when(resultSet.getString(1)).thenReturn("CSE101", "CSE102", "CSE103");
-        when(resultSet.getString(2)).thenReturn("Introduction to Programming", "Data Structures", "Algorithms");
-        when(resultSet.getString(3)).thenReturn("Fall 2022", "Spring 2023", "Fall 2023");
-        when(resultSet.getString(4)).thenReturn("1001", "1002", "1003");
-        when(resultSet.getString(5)).thenReturn("Alice", "Bob", "Charlie");
-        when(resultSet.getString(6)).thenReturn("A", "B", "C");
+        when(resultSet.getString(1)).thenReturn("CSE101");
+        when(resultSet.getString(2)).thenReturn("Introduction to Programming");
+        when(resultSet.getString(3)).thenReturn("Fall 2022");
+        when(resultSet.getString(4)).thenReturn("1001");
+        when(resultSet.getString(5)).thenReturn("Alice");
+        when(resultSet.getString(6)).thenReturn("A");
 
-        // Call the method and capture its output
+
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
-        Utils.printTable(resultSet,new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"},"Please find the details below:");
+        String successMessage="Success";
+        String failureMessage="Failure";
+        Utils.printTable(resultSet,new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"},successMessage,failureMessage);
         String output = outputStream.toString();
+        assertTrue(output.contains(successMessage));
         assertTrue(output.contains("Course Code"));
         assertTrue(output.contains("Course Name"));
         assertTrue(output.contains("Semester"));
         assertTrue(output.contains("Student ID"));
         assertTrue(output.contains("Student Name"));
         assertTrue(output.contains("Grade"));
+        assertTrue(output.contains("CSE101"));
+        assertTrue(output.contains("Introduction to Programming"));
+        assertTrue(output.contains("Fall 2022"));
+        assertTrue(output.contains("1001"));
+        assertTrue(output.contains("Alice"));
+        assertTrue(output.contains("A"));
+
+        when(resultSet.next()).thenReturn(false);
+        outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+        Utils.printTable(resultSet,new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"},successMessage,failureMessage);
+        output = outputStream.toString();
+        assertTrue(output.contains(failureMessage));
+
     }
+
+
+    private String getDownloadPath() {
+        String os = System.getProperty("os.name").toLowerCase();
+        String username = System.getProperty("user.name");
+        String downloadPath;
+        if (os.contains("win")) {
+            downloadPath = "C:\\Users\\" + username + "\\Downloads\\test.csv";
+        } else if (os.contains("mac")) {
+            downloadPath = "/Users/" + username + "/Downloads/test.csv";
+        } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+            downloadPath = "/home/" + username + "/Downloads/test.csv";
+        } else {
+            throw new RuntimeException("Unsupported operating system");
+        }
+        return downloadPath;
+    }
+
 }

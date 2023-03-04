@@ -1,191 +1,167 @@
 package org.academics.users;
 
+import org.academics.dal.dbInstructor;
+import org.academics.utility.Utils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-import java.io.*;
-import java.sql.*;
-import java.util.Date;
-import java.util.Scanner;
-
-import static org.mockito.Mockito.*;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 class InstructorTest {
-    private Connection connection;
-    private Scanner scanner;
+
     @BeforeEach
-    void setUp() throws SQLException {
-        connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ilmtest", "postgres", "password");
-        scanner = new Scanner(System.in);
+    void setUp() {
+        //clear all static mocks
+        Mockito.framework().clearInlineMocks();
+
     }
+
     @AfterEach
-    void teardown() throws SQLException {
-        connection.close();
+    void tearDown() {
     }
-    void addTestInstructor() throws SQLException {
-        String email = "test@example.com";
-        String password = "password";
-        String name="test";
-        String phone="1234567890";
-        int department_id=1;
-        Date date=new Date();
-        PreparedStatement addUser = connection.prepareStatement("INSERT INTO users (email_id, password,role) VALUES (?, ?,?)");
-        addUser.setString(1, email);
-        addUser.setString(2, password);
-        addUser.setString(3, "instructor");
-        addUser.execute();
-        addUser=connection.prepareStatement("INSERT INTO departments (id,name) VALUES (?,?)");
-        addUser.setInt(1,1);
-        addUser.setString(2,"test_dept");
-        addUser.execute();
-        addUser = connection.prepareStatement("INSERT INTO instructors (instructor_id,email_id, name,phone_number,department_id,date_of_joining) VALUES (?,?, ?,?,?,?)");
-        addUser.setInt(1, 1);
-        addUser.setString(2, email);
-        addUser.setString(3, name);
-        addUser.setString(4, phone);
-        addUser.setInt(5, department_id);
-        addUser.setDate(6, new java.sql.Date(date.getTime()));
-        addUser.execute();
-    }
-    @Test
-    void testInstructor() throws SQLException {
-        try {
-            addTestInstructor();
-            User user = new User();
-            user.setUserDetails("instructor", "test@example.com");
-            Instructor instructor = new Instructor(user);
-            PreparedStatement instructorID= connection.prepareStatement("SELECT instructor_id FROM instructors WHERE email_id = ?");
-            instructorID.setString(1, "test@example.com");
-            instructorID.execute();
-            ResultSet rs = instructorID.getResultSet();
-            rs.next();
-            int instructor_id = rs.getInt("instructor_id");
-            assertEquals(instructor_id,instructor.getInstructorId());
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            PreparedStatement deleteUser= connection.prepareStatement("DELETE FROM instructors");
-            deleteUser.execute();
-            deleteUser = connection.prepareStatement("DELETE FROM users");
-            deleteUser.execute();
-            deleteUser= connection.prepareStatement("DELETE FROM departments");
-            deleteUser.execute();
-            connection.close();
-        }
-    }
+
     @Test
-    void testNonExistentInstructor() throws SQLException {
-        try {
-            User user = new User();
-            Instructor instructor = new Instructor(user);
-            assertEquals(0,instructor.getInstructorId());
-        } catch (Exception e) {
-            e.printStackTrace();
+    void floatCourse() {
+    }
+
+    @Test
+    void viewCourses() {
+    }
+
+    @Test
+    void downloadAndExportStudentList() {
+    }
+
+    @Test
+    void testUploadGrades() throws Exception {
+        try (MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class);
+             MockedStatic<dbInstructor> mockedDbInstructor = Mockito.mockStatic(dbInstructor.class);) {
+            mockedUtils.when(() -> Utils.getInput("Enter the course code")).thenReturn("CSCI1234");
+            mockedUtils.when(() -> Utils.getInput("Enter the session (YYYY-Semester)")).thenReturn("2022-1");
+            mockedUtils.when(() -> Utils.getInput("Enter the path to the CSV file")).thenReturn(Mockito.anyString());
+
+            mockedUtils.when(() -> Utils.validateEventTime(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(true);
+            mockedDbInstructor.when(() -> dbInstructor.isCourseInstructor(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt()))
+                    .thenReturn(true);
+            mockedDbInstructor.when(() -> dbInstructor.uploadGrades(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()));
+            Instructor instructor = new Instructor(new User("instructor", "test@yopmail.com"));
+            ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(outContent));
+            instructor.uploadGrades();
+
+
         }
     }
 
-//    @Test
-//    public void testViewStudentGrades() throws IOException, SQLException {
-//        // mock user input
-//        String[] userInput = new String[]{"2", "STU01", "3"};
-//        ByteArrayInputStream in = new ByteArrayInputStream(String.join(System.lineSeparator(), userInput).getBytes());
-//        System.setIn(in);
-//
-//        // mock the database connection and result set
-//        Connection conn = Mockito.mock(Connection.class);
-//        PreparedStatement statement = Mockito.mock(PreparedStatement.class);
-//        ResultSet resultSet = Mockito.mock(ResultSet.class);
-//        Mockito.when(conn.prepareStatement(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(statement);
-//        Mockito.when(statement.executeQuery()).thenReturn(resultSet);
-//
-//        // mock the `getCourseGrades` and `getStudentGrades` methods
-//        Mockito.when(this.mockClass.getCourseGrades(Mockito.anyString(), Mockito.anyString())).thenReturn(resultSet);
-//        Mockito.when(this.mockClass.getStudentGrades(Mockito.anyString())).thenReturn(resultSet);
-//
-//        // capture the console output
-//        ByteArrayOutputStream out = new ByteArrayOutputStream();
-//        System.setOut(new PrintStream(out));
-//
-//        // call the method to test
-//        this.mockClass.viewStudentGrades();
-//
-//        // check the console output
-//        String expectedOutput = "1. Select a course to view grades" + System.lineSeparator() +
-//                "2. Search a student to view grades" + System.lineSeparator() +
-//                "3. Go back to main menu" + System.lineSeparator() +
-//                "Enter the student's Enrollment ID" + System.lineSeparator() +
-//                "Course Code   Course Name   Semester   Student ID   Student Name   Grade" + System.lineSeparator();
-//        Mockito.verify(conn, Mockito.times(2)).prepareStatement(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt());
-//        Mockito.verify(statement, Mockito.times(2)).setString(Mockito.anyInt(), Mockito.anyString());
-//        Mockito.verify(statement, Mockito.times(2)).executeQuery();
-//        Mockito.verify(resultSet, Mockito.times(2)).last();
-//        Mockito.verify(resultSet, Mockito.times(2)).beforeFirst();
-//        assertEquals(expectedOutput, out.toString());
-//    }
 
     @Test
-    void testDelistCourse() throws SQLException {
-        try {
-            PreparedStatement addCourse = connection.prepareStatement("INSERT INTO course_catalog VALUES (?,?,?)");
-            addCourse.setString(1, "test");
-            addCourse.setString(2, "test");
-            addCourse.setArray(3, connection.createArrayOf("integer", new Integer[]{1, 2, 3, 4, 5}));
-            addCourse.execute();
-            addTestInstructor();
-            addCourse = connection.prepareStatement("INSERT INTO course_offerings VALUES (?,?,?)");
-            addCourse.setString(1, "test");
-            addCourse.setString(2, "test");
-            addCourse.setInt(3, 1);
-            addCourse.execute();
+    public void testDelistCourse() throws SQLException {
+        // Set up mocked static methods for the external dependencies
+        try (MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class);
+             MockedStatic<dbInstructor> mockedDbInstructor = Mockito.mockStatic(dbInstructor.class);) {
+            mockedUtils.when(() -> Utils.getInput("Enter the course code")).thenReturn("CSCI1234");
+            mockedUtils.when(() -> Utils.getInput("Enter the session (YYYY-Semester)")).thenReturn("2022-1");
 
-            User user = new User();
-            user.setUserDetails("instructor", "test@example.com");
-            Instructor instructor = new Instructor(user);
+            // Mock the dbInstructor.isCourseInstructor() method to return true
+            mockedDbInstructor.when(() -> dbInstructor.isCourseInstructor(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt()))
+                    .thenReturn(true);
 
-            String input = "test\ntest\n";
-            InputStream in = new ByteArrayInputStream(input.getBytes());
-            System.setIn(in);
+            mockedDbInstructor.when(() -> dbInstructor.delistCourse(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt()))
+                    .thenReturn(true);
+
+            ResultSet resultSet = Mockito.mock(ResultSet.class);
+            mockedDbInstructor.when(() -> dbInstructor.fetchCourses(Mockito.anyInt()))
+                    .thenReturn(resultSet);
+
+            // Mock the Utils.validateEventTime() method to return true
+            mockedUtils.when(() -> Utils.validateEventTime(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(true);
+            ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(outContent));
+            Instructor instructor = new Instructor(new User("instructor", "test@yopmail.com"));
+            //mock instructor view_courses
+
             instructor.delistCourse();
-            PreparedStatement checkCourse = connection.prepareStatement("SELECT * FROM course_offerings WHERE course_code = ? AND semester = ?");
-            checkCourse.setString(1, "test");
-            checkCourse.setString(2, "test");
-            checkCourse.execute();
-            ResultSet rs = checkCourse.getResultSet();
-            assertFalse(rs.next());
-        }catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            PreparedStatement deleteUser = connection.prepareStatement("DELETE FROM course_offerings");
-            deleteUser.execute();
-            deleteUser= connection.prepareStatement("DELETE FROM instructors");
-            deleteUser.execute();
-            deleteUser = connection.prepareStatement("DELETE FROM users");
-            deleteUser.execute();
-            deleteUser= connection.prepareStatement("DELETE FROM departments");
-            deleteUser.execute();
-            deleteUser = connection.prepareStatement("DELETE FROM course_catalog");
-            deleteUser.execute();
-            connection.close();
-        }
-    }
-    @Test
-    void testNoCourseDelistCourse() throws SQLException {
-        try{
-            User user = new User();
-            Instructor instructor = new Instructor(user);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            System.setOut(new PrintStream(outputStream));
+            assertEquals(outContent.toString(), "");
+
+            resultSet = Mockito.mock(ResultSet.class);
+            when(resultSet.next()).thenReturn(true).thenReturn(false);
+            when(resultSet.getString("course_code")).thenReturn("CSCI1234");
+            when(resultSet.getString("semester")).thenReturn("2022-1");
+            when(resultSet.getString("qualify")).thenReturn("7");
+            when(resultSet.getInt("enrollment_count")).thenReturn(10);
+            mockedDbInstructor.when(() -> dbInstructor.fetchCourses(Mockito.anyInt()))
+                    .thenReturn(resultSet);
+            outContent = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(outContent));
             instructor.delistCourse();
-            String output = outputStream.toString();
-            assertTrue(output.contains("You have not floated any courses"));
-        }catch (Exception e) {
-            e.printStackTrace();
+            String output = outContent.toString();
+            assert (output.contains("Course delisted successfully"));
+
+            resultSet = Mockito.mock(ResultSet.class);
+            when(resultSet.next()).thenReturn(true).thenReturn(false);
+            when(resultSet.getString("course_code")).thenReturn("CSCI1234");
+            when(resultSet.getString("semester")).thenReturn("2022-1");
+            when(resultSet.getString("qualify")).thenReturn("7");
+            when(resultSet.getInt("enrollment_count")).thenReturn(10);
+            mockedDbInstructor.when(() -> dbInstructor.fetchCourses(Mockito.anyInt()))
+                    .thenReturn(resultSet);
+            mockedDbInstructor.when(() -> dbInstructor.isCourseInstructor(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt()))
+                    .thenReturn(false);
+            outContent = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(outContent));
+            instructor.delistCourse();
+            output = outContent.toString();
+            assert (output.contains("You are not authorized to delist this course"));
+
+
+            resultSet = Mockito.mock(ResultSet.class);
+            when(resultSet.next()).thenReturn(true).thenReturn(false);
+            when(resultSet.getString("course_code")).thenReturn("CSCI1234");
+            when(resultSet.getString("semester")).thenReturn("2022-1");
+            when(resultSet.getString("qualify")).thenReturn("7");
+            when(resultSet.getInt("enrollment_count")).thenReturn(10);
+            mockedDbInstructor.when(() -> dbInstructor.fetchCourses(Mockito.anyInt()))
+                    .thenReturn(resultSet);
+            mockedDbInstructor.when(() -> dbInstructor.isCourseInstructor(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt()))
+                    .thenReturn(true);
+            mockedDbInstructor.when(() -> dbInstructor.delistCourse(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt()))
+                    .thenReturn(false);
+            outContent = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(outContent));
+            instructor.delistCourse();
+            output = outContent.toString();
+            assert (output.contains("Course delisting failed"));
+
+            resultSet = Mockito.mock(ResultSet.class);
+            when(resultSet.next()).thenReturn(true).thenReturn(false);
+            when(resultSet.getString("course_code")).thenReturn("CSCI1234");
+            when(resultSet.getString("semester")).thenReturn("2022-1");
+            when(resultSet.getString("qualify")).thenReturn("7");
+            when(resultSet.getInt("enrollment_count")).thenReturn(10);
+            mockedDbInstructor.when(() -> dbInstructor.fetchCourses(Mockito.anyInt()))
+                    .thenReturn(resultSet);
+            mockedDbInstructor.when(() -> dbInstructor.delistCourse(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt()))
+                    .thenReturn(true);
+            mockedUtils.when(() -> Utils.validateEventTime(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(false);
+            outContent = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(outContent));
+            instructor.delistCourse();
+            output = outContent.toString();
+            assert (output.contains("Course delisting for the specified semester is not allowed at this time"));
         }
     }
+
 }

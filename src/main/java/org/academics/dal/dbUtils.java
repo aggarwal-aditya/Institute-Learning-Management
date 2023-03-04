@@ -23,17 +23,13 @@ public class dbUtils {
      * @throws SQLException if there is an error with database access
      */
 
-    public static boolean validateEventTime(String eventType, int year, int semester, LocalDate currentDate) throws SQLException {
+    public static ResultSet validateEventTime(String eventType, int year, int semester, LocalDate currentDate) throws SQLException {
         PreparedStatement statement = conn.prepareStatement("SELECT" + eventType + "_start_date, " + eventType + "_end_date FROM semester WHERE year = ? AND semester_number = ?");
         statement.setInt(1, year);
         statement.setInt(2, semester);
         ResultSet eventDetails = statement.executeQuery();
-        while (eventDetails.next()) {
-            if (currentDate.isAfter(eventDetails.getDate(1).toLocalDate()) && currentDate.isBefore(eventDetails.getDate(2).toLocalDate())) {
-                return true;
-            }
-        }
-        return false;
+        return eventDetails;
+
     }
 
     /**

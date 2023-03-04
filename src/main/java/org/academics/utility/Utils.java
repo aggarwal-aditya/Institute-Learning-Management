@@ -14,8 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
+
 
 /**
  * This class is used to provide utility functions.
@@ -97,10 +96,8 @@ public class Utils {
         LocalDate currentDate = CurrentDate.getInstance().getCurrentDate();
         ResultSet resultSet = dbUtils.getCurrentSession(currentDate);
         if (resultSet.next()) {
-            // If a result is found, return the session in the format "YYYY-SEM"
             return resultSet.getString(1) + "-" + resultSet.getString(2);
         } else {
-            // If no result is found, return null
             return null;
         }
     }
@@ -119,7 +116,13 @@ public class Utils {
         int year = Integer.parseInt(session.substring(0, 4));
         int semester = Integer.parseInt(session.substring(5));
         eventType = " " + eventType;
-        return dbUtils.validateEventTime(eventType, year, semester, currentDate);
+        ResultSet eventDetails= dbUtils.validateEventTime(eventType, year, semester, currentDate);
+        while (eventDetails.next()) {
+            if (currentDate.isAfter(eventDetails.getDate(1).toLocalDate()) && currentDate.isBefore(eventDetails.getDate(2).toLocalDate())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -137,16 +140,13 @@ public class Utils {
         try {
             String os = System.getProperty("os.name").toLowerCase();
             String username = System.getProperty("user.name");
-            String downloadPath ;
-            if (os.contains("win")) {
-                downloadPath = "C:\\Users\\" + username + "\\Downloads\\" + fileName + ".txt";
-            } else if (os.contains("mac")) {
+            String downloadPath = null;
+            if (os.contains("mac")) {
                 downloadPath = "/Users/" + username + "/Downloads/" + fileName + ".txt";
-            } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+            }else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
                 downloadPath = "/home/" + username + "/Downloads/" + fileName + ".txt";
-            } else {
-                System.out.println("Enter the path to download the file:");
-                downloadPath = new Scanner(System.in).nextLine();
+            }else if (os.contains("win")) {
+                downloadPath = "C:\\Users\\" + username + "\\Downloads\\" + fileName + ".txt";
             }
             System.out.println("Downloading file to " + downloadPath);
             OutputStream outputStream = new FileOutputStream(downloadPath);
@@ -175,16 +175,13 @@ public class Utils {
         try {
             String os = System.getProperty("os.name").toLowerCase();
             String username = System.getProperty("user.name");
-            String downloadPath;
-            if (os.contains("win")) {
-                downloadPath = "C:\\Users\\" + username + "\\Downloads\\" + fileName + ".csv";
-            } else if (os.contains("mac")) {
+            String downloadPath = null;
+            if (os.contains("mac")) {
                 downloadPath = "/Users/" + username + "/Downloads/" + fileName + ".csv";
             } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
                 downloadPath = "/home/" + username + "/Downloads/" + fileName + ".csv";
-            } else {
-                System.out.println("Enter the path to download the file:");
-                downloadPath = new Scanner(System.in).nextLine();
+            }else if (os.contains("win")) {
+                downloadPath = "C:\\Users\\" + username + "\\Downloads\\" + fileName + ".csv";
             }
             System.out.println("Downloading file to " + downloadPath);
             java.io.FileWriter fw = new java.io.FileWriter(downloadPath);
@@ -214,13 +211,10 @@ public class Utils {
             pw.close();
             bw.close();
             fw.close();
-
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-
     }
-
 
     /**
      * Prints a table of results fetched from a ResultSet object.

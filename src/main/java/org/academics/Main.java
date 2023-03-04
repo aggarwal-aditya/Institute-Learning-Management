@@ -7,8 +7,6 @@ import org.academics.menus.mainMenu;
 
 
 class Main {
-    private static final Scanner scanner = new Scanner(System.in);
-
     public static void main(String[] args) {
         JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
         Connection conn = jdbc.getConnection();

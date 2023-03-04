@@ -51,12 +51,9 @@ public class JDBCPostgreSQLConnection {
             if (conn == null) {
                 System.out.println("Failed to make connection!");
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // Catch any SQL Exceptions and print the error message.
             System.out.println(e.getMessage());
-        } catch (Exception e) {
-            // Catch any other exceptions and print the stack trace.
-            e.printStackTrace();
         }
     }
 
