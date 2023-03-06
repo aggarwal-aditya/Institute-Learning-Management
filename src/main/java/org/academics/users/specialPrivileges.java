@@ -4,7 +4,6 @@ import org.academics.dal.dbInstructor;
 import org.academics.dal.dbUtils;
 import org.academics.utility.Utils;
 
-import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public class specialPrivileges {
         }
     }
 
-    public static void viewDepartmentIDs() throws SQLException{
+    public static void viewDepartmentIDs() throws SQLException {
         ResultSet departmentID = dbUtils.getDepartmentIDs();
         String successMessage = "Please Find the Department ID";
         String failureMessage = "No Department ID found";
@@ -72,11 +71,11 @@ public class specialPrivileges {
 
     }
 
-    public static ArrayList<String> getPreRequisites(){
+    public static ArrayList<String> getPreRequisites() {
         ArrayList<String> preRequisites = new ArrayList<>();
         StringBuilder pre = new StringBuilder();
         String choice;
-        do{
+        do {
             String code = Utils.getInput("Enter the course code of the prerequisite");
             String grade = Utils.getInput("Enter the minimum grade requirement for the prerequisite (Enter 'E' if no minimum grade requirement)");
             pre.append(code).append("(").append(grade).append(")").append("|");

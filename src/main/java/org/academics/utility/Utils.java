@@ -116,7 +116,7 @@ public class Utils {
         int year = Integer.parseInt(session.substring(0, 4));
         int semester = Integer.parseInt(session.substring(5));
         eventType = " " + eventType;
-        ResultSet eventDetails= dbUtils.validateEventTime(eventType, year, semester, currentDate);
+        ResultSet eventDetails = dbUtils.validateEventTime(eventType, year, semester, currentDate);
         while (eventDetails.next()) {
             if (currentDate.isAfter(eventDetails.getDate(1).toLocalDate()) && currentDate.isBefore(eventDetails.getDate(2).toLocalDate())) {
                 return true;
@@ -143,9 +143,9 @@ public class Utils {
             String downloadPath = null;
             if (os.contains("mac")) {
                 downloadPath = "/Users/" + username + "/Downloads/" + fileName + ".txt";
-            }else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+            } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
                 downloadPath = "/home/" + username + "/Downloads/" + fileName + ".txt";
-            }else if (os.contains("win")) {
+            } else if (os.contains("win")) {
                 downloadPath = "C:\\Users\\" + username + "\\Downloads\\" + fileName + ".txt";
             }
             System.out.println("Downloading file to " + downloadPath);
@@ -180,7 +180,7 @@ public class Utils {
                 downloadPath = "/Users/" + username + "/Downloads/" + fileName + ".csv";
             } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
                 downloadPath = "/home/" + username + "/Downloads/" + fileName + ".csv";
-            }else if (os.contains("win")) {
+            } else if (os.contains("win")) {
                 downloadPath = "C:\\Users\\" + username + "\\Downloads\\" + fileName + ".csv";
             }
             System.out.println("Downloading file to " + downloadPath);

@@ -23,83 +23,80 @@ public class Instructor extends User {
      *
      * @param user User object
      */
-    public Instructor(User user){
+    public Instructor(User user) {
         super(user.userRole, user.email_id);
         try {
             this.instructor_id = dbInstructor.fetchInstructorID(this);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
 
-
     /**
-
-     This method allows an instructor to float a new course.
-
-     @throws SQLException if there is an error accessing the database
+     * This method allows an instructor to float a new course.
+     *
+     * @throws SQLException if there is an error accessing the database
      */
 
     public void floatCourse() throws SQLException {
-            ResultSet approvedCourses = dbInstructor.fetchApprovedCourses();
-            String successMessage = "List of courses approved by Senate";
-            String failureMessage = "No courses have been approved by Senate yet";
-            Utils.printTable(approvedCourses, new String[]{"Course Code", "Course Name"}, successMessage, failureMessage);
+        ResultSet approvedCourses = dbInstructor.fetchApprovedCourses();
+        String successMessage = "List of courses approved by Senate";
+        String failureMessage = "No courses have been approved by Senate yet";
+        Utils.printTable(approvedCourses, new String[]{"Course Code", "Course Name"}, successMessage, failureMessage);
 
-            String course_code = Utils.getInput("Enter the course code to float the course");
+        String course_code = Utils.getInput("Enter the course code to float the course");
 
-            if (!dbInstructor.checkCourseApproval(course_code)) {
-                System.out.println("Course not approved by Senate");
-                return;
-            }
-            String session = Utils.getInput("Enter the session (YYYY-Semester)");
-            if (!Utils.validateEventTime("course_float", session)) {
-                System.out.println("Course floatation for the specified semester is not allowed at this time");
-                return;
-            }
-            String isFloated= dbInstructor.isCourseFloated(course_code, session);
-            if (isFloated!=null) {
-                System.out.println(isFloated);
-                return;
-            }
+        if (!dbInstructor.checkCourseApproval(course_code)) {
+            System.out.println("Course not approved by Senate");
+            return;
+        }
+        String session = Utils.getInput("Enter the session (YYYY-Semester)");
+        if (!Utils.validateEventTime("course_float", session)) {
+            System.out.println("Course floatation for the specified semester is not allowed at this time");
+            return;
+        }
+        String isFloated = dbInstructor.isCourseFloated(course_code, session);
+        if (isFloated != null) {
+            System.out.println(isFloated);
+            return;
+        }
 
-            System.out.print("Enter the minimum CGPA requirement for the course ");
-            double qualify = scanner.nextDouble();
+        System.out.print("Enter the minimum CGPA requirement for the course ");
+        double qualify = scanner.nextDouble();
 
-            String choice = Utils.getInput("Do you want to add additional prerequisites? (Y/N)");
-            //Make a 2d array of prerequisites
-            ArrayList<String> preRequisites = new ArrayList<>();
-            if (Objects.equals(choice, "Y")) {
-                preRequisites=specialPrivileges.getPreRequisites();
-            }
+        String choice = Utils.getInput("Do you want to add additional prerequisites? (Y/N)");
+        //Make a 2d array of prerequisites
+        ArrayList<String> preRequisites = new ArrayList<>();
+        if (Objects.equals(choice, "Y")) {
+            preRequisites = specialPrivileges.getPreRequisites();
+        }
 
-            System.out.println("Program Core & Elective Selection");
-            List<Integer> departmentIds = new ArrayList<>();
-            List<Integer> batches = new ArrayList<>();
-            List<String> courseTypes = new ArrayList<>();
-            specialPrivileges.viewDepartmentIDs();
+        System.out.println("Program Core & Elective Selection");
+        List<Integer> departmentIds = new ArrayList<>();
+        List<Integer> batches = new ArrayList<>();
+        List<String> courseTypes = new ArrayList<>();
+        specialPrivileges.viewDepartmentIDs();
+        System.out.println("Enter department ID (press -1 to stop entering):");
+        int departmentId = scanner.nextInt();
+        while (departmentId != -1) {
+            System.out.println("Enter batch:");
+            int batch = scanner.nextInt();
+            String courseType = Utils.getInput("Enter course type (core, humanities, programme_elective, science_math, open_elective, internship, project, extra_curricular):");
+            departmentIds.add(departmentId);
+            batches.add(batch);
+            courseTypes.add(courseType);
             System.out.println("Enter department ID (press -1 to stop entering):");
-            int departmentId = scanner.nextInt();
-            while (departmentId != -1) {
-                System.out.println("Enter batch:");
-                int batch = scanner.nextInt();
-                String courseType = Utils.getInput("Enter course type (core, humanities, programme_elective, science_math, open_elective, internship, project, extra_curricular):");
-                departmentIds.add(departmentId);
-                batches.add(batch);
-                courseTypes.add(courseType);
-                System.out.println("Enter department ID (press -1 to stop entering):");
-                departmentId = scanner.nextInt();
-            }
-            if(dbInstructor.floatCourse(course_code, session, this.instructor_id,0,qualify,preRequisites))
-            {
-                System.out.println("Course floated successfully");
-            }
-            try {
-                dbInstructor.updateCourseMapping(course_code, session, departmentIds, batches, courseTypes);
-            }catch (SQLException e) {
-                System.out.println("Some of the course mappings were not added successfully (Duplicates/Missing Department ID. Contact Admin to Confirm or Float the course again.)");
-            }
+            departmentId = scanner.nextInt();
+        }
+        if (dbInstructor.floatCourse(course_code, session, this.instructor_id, 0, qualify, preRequisites)) {
+            System.out.println("Course floated successfully");
+        }
+        try {
+            dbInstructor.updateCourseMapping(course_code, session, departmentIds, batches, courseTypes);
+        } catch (SQLException e) {
+            System.out.println("Some of the course mappings were not added successfully (Duplicates/Missing Department ID. Contact Admin to Confirm or Float the course again.)");
+        }
     }
 
 
@@ -118,8 +115,6 @@ public class Instructor extends User {
         instructorCourses.beforeFirst();
         return instructorCourses.next();
     }
-
-
 
 
     /**
@@ -168,8 +163,8 @@ public class Instructor extends User {
         String path = Utils.getInput("Enter the path to the CSV file");
 
         // Upload the grades from the CSV file to the database
-        int count=dbInstructor.uploadGrades(path, courseCode, session);
-        System.out.println("Grades uploaded successfully for "+count+" students");
+        int count = dbInstructor.uploadGrades(path, courseCode, session);
+        System.out.println("Grades uploaded successfully for " + count + " students");
     }
 
 
@@ -204,7 +199,6 @@ public class Instructor extends User {
             System.out.println("Course delisting failed");
         }
     }
-
 
 
 }

@@ -4,21 +4,19 @@ import org.academics.users.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 
 
 class dbUserTest {
 
     JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
     Connection connection = jdbc.getConnection();
+
     @BeforeEach
     void setUp() throws SQLException {
         CallableStatement callableStatement = connection.prepareCall("call populate_database()");
@@ -62,11 +60,11 @@ class dbUserTest {
     @Test
     public void testGetProfileDetails() throws SQLException {
         // Test getting profile details for a student
-        User student = new User("student","2020csb1066@iitpr.ac.in");
+        User student = new User("student", "2020csb1066@iitpr.ac.in");
         assertNotNull(dbUser.getProfileDetails(student));
 
         // Test getting profile details for an instructor
-        User instructor = new User( "instructor","mudgal@yopmail.com");
+        User instructor = new User("instructor", "mudgal@yopmail.com");
         assertNotNull(dbUser.getProfileDetails(instructor));
     }
 
@@ -74,18 +72,18 @@ class dbUserTest {
     @Test
     public void testUpdatePhone() throws SQLException {
         // Test updating phone number for a student
-        User student = new User("student","2020csb1066@iitrpr.ac.in");
+        User student = new User("student", "2020csb1066@iitrpr.ac.in");
         assertTrue(dbUser.updatePhone(student, "123-456-7890"));
 
         // Test updating phone number for an instructor
-        User instructor = new User("instructor","mudgal@yopmail.com");
+        User instructor = new User("instructor", "mudgal@yopmail.com");
         assertTrue(dbUser.updatePhone(instructor, "555-555-5555"));
     }
 
     @Test
     public void testChangePassword() throws SQLException {
         // Test changing password for a user
-        User user = new User("student","2020csb1066@iitrpr.ac.in");
+        User user = new User("student", "2020csb1066@iitrpr.ac.in");
         assertTrue(dbUser.changePassword(user, "newpassword"));
     }
 

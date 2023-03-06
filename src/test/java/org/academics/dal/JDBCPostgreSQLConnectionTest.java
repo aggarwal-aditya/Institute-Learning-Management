@@ -1,13 +1,14 @@
 package org.academics.dal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class JDBCPostgreSQLConnectionTest {
     private static JDBCPostgreSQLConnection jdbcPostgreSQLConnection;
@@ -45,7 +46,6 @@ public class JDBCPostgreSQLConnectionTest {
         assertNotNull(connection2);
         connection2.close();
     }
-
 
 
     @AfterAll

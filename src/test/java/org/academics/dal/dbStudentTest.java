@@ -1,13 +1,17 @@
 package org.academics.dal;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.*;
-import java.math.RoundingMode;
-import java.sql.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class dbStudentTest {
 
@@ -29,6 +33,7 @@ class dbStudentTest {
         CallableStatement callableStatement = connection.prepareCall("call clear_database()");
         callableStatement.execute();
     }
+
     @Test
     public void testComputeGPA() throws SQLException {
         // Test a valid student ID
@@ -60,8 +65,8 @@ class dbStudentTest {
         int actualRowsAffected = dbStudent.dropCourse(STUDENT_ID, courseCode, CURRENT_SEMESTER);
         assertEquals(expectedRowsAffected, actualRowsAffected);
 
-        courseCode="CS202";
-        expectedRowsAffected =0;
+        courseCode = "CS202";
+        expectedRowsAffected = 0;
         actualRowsAffected = dbStudent.dropCourse(STUDENT_ID, courseCode, CURRENT_SEMESTER);
         assertEquals(expectedRowsAffected, actualRowsAffected);
 
@@ -94,6 +99,7 @@ class dbStudentTest {
         result = dbStudent.enrollCourse("2020CSB1066", "CS201", "2022-2");
         Assertions.assertTrue(result);
     }
+
     @Test
     public void testCheckEnrollmentAvailability() throws SQLException {
         boolean result = dbStudent.checkEnrollmentAvailability("CS201", "2022-2");
@@ -101,7 +107,6 @@ class dbStudentTest {
         result = dbStudent.checkEnrollmentAvailability("CS201", "2022-1");
         Assertions.assertFalse(result);
     }
-
 
 
 }

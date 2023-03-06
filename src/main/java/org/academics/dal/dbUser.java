@@ -43,12 +43,13 @@ public class dbUser {
     }
 
     /**
-     Validates user credentials based on the email id provided.
-     @param email_id The email id of the user.
-     @return true if the user's details are found in the database, false otherwise.
-     @throws SQLException if an error occurs while accessing the database.
+     * Validates user credentials based on the email id provided.
+     *
+     * @param email_id The email id of the user.
+     * @return true if the user's details are found in the database, false otherwise.
+     * @throws SQLException if an error occurs while accessing the database.
      */
-    public static boolean validateCredentials(String email_id) throws SQLException{
+    public static boolean validateCredentials(String email_id) throws SQLException {
         // Here, a prepared statement is created to retrieve the user's details from the database
         PreparedStatement userDetails = conn.prepareStatement("SELECT * FROM users WHERE email_id = ?");
         userDetails.setString(1, email_id);
@@ -81,7 +82,7 @@ public class dbUser {
      * Updates the phone number of the given user in the database
      * depending on the user's role.
      *
-     * @param user The User object representing the user whose phone number is to be updated.
+     * @param user  The User object representing the user whose phone number is to be updated.
      * @param phone The new phone number to be set.
      * @return true if the phone number was updated successfully, false otherwise.
      * @throws SQLException if there is an error executing the SQL query.
@@ -105,7 +106,8 @@ public class dbUser {
 
     /**
      * Changes the password of the given user in the database.
-     * @param user the User whose password will be changed.
+     *
+     * @param user     the User whose password will be changed.
      * @param password the new password to be set.
      * @return a boolean indicating whether the password was successfully changed or not.
      * @throws SQLException if there is an error while updating the user's password in the database.

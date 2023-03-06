@@ -1,10 +1,13 @@
 package org.academics.dal;
 
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class dbUtilsTest {
 
@@ -50,7 +53,6 @@ public class dbUtilsTest {
         try {
             // Execute method under test
             ResultSet actualResultSet = dbUtils.getDepartmentIDs();
-
             // Assert expected result
             assertNotNull(actualResultSet);
         } catch (SQLException e) {

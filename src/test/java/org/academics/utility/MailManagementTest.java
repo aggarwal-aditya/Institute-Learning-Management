@@ -19,7 +19,7 @@ public class MailManagementTest {
         System.setOut(new PrintStream(outputStream));
         mailManagement.sendMail(subject, message, toEmails);
         String output = outputStream.toString();
-        assert(output.contains("Mail sent successfully!"));
+        assert (output.contains("Mail sent successfully!"));
     }
 
     @Test

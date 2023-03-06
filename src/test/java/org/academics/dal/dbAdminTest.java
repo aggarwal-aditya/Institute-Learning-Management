@@ -1,11 +1,13 @@
 package org.academics.dal;
 
-import org.academics.dal.JDBCPostgreSQLConnection;
-import org.academics.dal.dbAdmin;
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.*;
 import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class dbAdminTest {
     JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
@@ -73,6 +75,7 @@ class dbAdminTest {
         boolean result = dbAdmin.updateCourseCatalog(courseCode, courseName, L, T, P, S, C, preRequisites);
         assert (result);
     }
+
     @Test
     void testGetStudentCourses() throws SQLException {
         CallableStatement callableStatement = connection.prepareCall("call populate_database()");

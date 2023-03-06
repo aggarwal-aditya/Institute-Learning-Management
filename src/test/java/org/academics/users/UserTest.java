@@ -49,7 +49,7 @@ class UserTest {
         assertEquals("test@example.com", user.email_id);
 
         mockedDbUser.when(() -> dbUser.validateCredentials(anyString(), anyString())).thenReturn(null);
-        user= new User();
+        user = new User();
         assertFalse(user.login());
     }
 

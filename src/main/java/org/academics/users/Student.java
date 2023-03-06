@@ -1,14 +1,12 @@
 package org.academics.users;
 
 
-
 import org.academics.dal.dbStudent;
 import org.academics.utility.Utils;
 
 import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 
 
 /**
@@ -31,7 +29,7 @@ public class Student extends User {
     /**
      * Fetches the available courses for registration and checks for eligibility requirements before enrolling student into the course
      */
-    public void registerCourse(){
+    public void registerCourse() {
 
         try {
             // Get the current session
@@ -91,7 +89,7 @@ public class Student extends User {
     public void dropCourse() throws SQLException {
         // Check if the current time falls within the course add/drop period
         String session = Utils.getCurrentSession();
-        if(session==null){
+        if (session == null) {
             System.out.println("No session is currently active");
             return;
         }

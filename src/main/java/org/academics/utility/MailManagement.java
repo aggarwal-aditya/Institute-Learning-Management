@@ -2,13 +2,13 @@ package org.academics.utility;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
-import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 
 /**
  * A utility class for sending emails using JavaMail API.
@@ -32,9 +32,9 @@ public class MailManagement {
     /**
      * Sends an email with the given subject and message to the specified email addresses.
      *
-     * @param subject   The subject of the email.
-     * @param message   The message body of the email.
-     * @param toEmails  An array of email addresses to send the email to.
+     * @param subject  The subject of the email.
+     * @param message  The message body of the email.
+     * @param toEmails An array of email addresses to send the email to.
      */
     public void sendMail(String subject, String message, String[] toEmails) {
         Properties prop = new Properties();

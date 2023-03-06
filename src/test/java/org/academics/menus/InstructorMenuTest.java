@@ -1,6 +1,5 @@
 package org.academics.menus;
 
-import org.academics.users.Admin;
 import org.academics.users.Instructor;
 import org.academics.users.specialPrivileges;
 import org.academics.utility.Utils;
@@ -15,13 +14,13 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class InstructorMenuTest {
 
 
     ByteArrayOutputStream outputStream;
+
     @BeforeEach
     void setUp() {
         outputStream = new ByteArrayOutputStream();
@@ -140,9 +139,9 @@ class InstructorMenuTest {
     }
 
     @Test
-    void instructorMenuOPT6(){
+    void instructorMenuOPT6() {
         Instructor instructor = mock(Instructor.class);
-        MockedStatic<specialPrivileges>specialPrivilegesMockedStatic = Mockito.mockStatic(specialPrivileges.class);
+        MockedStatic<specialPrivileges> specialPrivilegesMockedStatic = Mockito.mockStatic(specialPrivileges.class);
         MockedStatic<Utils> mockedUtils = mockStatic(Utils.class);
         mockedUtils.when(() -> Utils.getUserChoice(8)).thenReturn(6).thenReturn(9);
         InstructorMenu.instructorMenu(instructor);
@@ -150,9 +149,9 @@ class InstructorMenuTest {
     }
 
     @Test
-    void instructorMenuOPT6Ex(){
+    void instructorMenuOPT6Ex() {
         Instructor instructor = mock(Instructor.class);
-        MockedStatic<specialPrivileges>specialPrivilegesMockedStatic = Mockito.mockStatic(specialPrivileges.class);
+        MockedStatic<specialPrivileges> specialPrivilegesMockedStatic = Mockito.mockStatic(specialPrivileges.class);
         MockedStatic<Utils> mockedUtils = mockStatic(Utils.class);
         mockedUtils.when(() -> Utils.getUserChoice(8)).thenReturn(6).thenReturn(9);
         specialPrivilegesMockedStatic.when(specialPrivileges::viewStudentGrades).thenThrow(new SQLException());

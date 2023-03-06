@@ -12,10 +12,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.sql.SQLException;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 public class studentMenuTest {
     ByteArrayOutputStream outputStream;
+
     @BeforeEach
     void setUp() {
         outputStream = new ByteArrayOutputStream();
@@ -55,7 +56,7 @@ public class studentMenuTest {
         Mockito.doThrow(new SQLException()).when(student).dropCourse();
         StudentMenu.studentMenu(student);
         verify(student).dropCourse();
-        assert(outputStream.toString().contains("Unable to drop course at the moment. Please try again later."));
+        assert (outputStream.toString().contains("Unable to drop course at the moment. Please try again later."));
     }
 
     @Test
@@ -76,7 +77,7 @@ public class studentMenuTest {
         Mockito.doThrow(new SQLException()).when(student).viewCourses();
         StudentMenu.studentMenu(student);
         verify(student).viewCourses();
-        assert(outputStream.toString().contains("Unable to fetch courses at the moment. Please try again later."));
+        assert (outputStream.toString().contains("Unable to fetch courses at the moment. Please try again later."));
     }
 
     @Test
@@ -97,7 +98,7 @@ public class studentMenuTest {
         Mockito.doThrow(new SQLException()).when(student).viewGrades();
         StudentMenu.studentMenu(student);
         verify(student).viewGrades();
-        assert(outputStream.toString().contains("Unable to fetch grades at the moment. Please try again later."));
+        assert (outputStream.toString().contains("Unable to fetch grades at the moment. Please try again later."));
     }
 
     @Test
@@ -118,7 +119,7 @@ public class studentMenuTest {
         Mockito.doThrow(new SQLException()).when(student).printGPA();
         StudentMenu.studentMenu(student);
         verify(student).printGPA();
-        assert(outputStream.toString().contains("Unable to compute GPA at the moment. Please try again later."));
+        assert (outputStream.toString().contains("Unable to compute GPA at the moment. Please try again later."));
     }
 
     @Test
@@ -139,7 +140,7 @@ public class studentMenuTest {
         Mockito.doThrow(new SQLException()).when(student).viewProfile();
         StudentMenu.studentMenu(student);
         verify(student).viewProfile();
-        assert(outputStream.toString().contains("Unable to fetch profile at the moment. Please try again later."));
+        assert (outputStream.toString().contains("Unable to fetch profile at the moment. Please try again later."));
     }
 
     @Test

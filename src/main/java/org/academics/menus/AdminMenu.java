@@ -52,7 +52,7 @@ public class AdminMenu {
             }
             case 5 -> {
                 try {
-                    if(admin.checkGraduationStatus()){
+                    if (admin.checkGraduationStatus()) {
                         System.out.println("Student is eligible for graduation. Download transcript to get the degree.");
                     }
                 } catch (Exception e) {

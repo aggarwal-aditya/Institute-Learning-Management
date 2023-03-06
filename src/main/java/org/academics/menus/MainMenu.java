@@ -19,8 +19,8 @@ public class MainMenu {
         User user = new User();
         switch (userChoice) {
             case 1 -> {
-                try{
-                    if(!user.login())
+                try {
+                    if (!user.login())
                         return;
                 } catch (Exception e) {
                     System.out.println("Unable to login at the moment. Please try again later.");
@@ -43,7 +43,7 @@ public class MainMenu {
             }
             case 2 -> {
                 try {
-                    if(user.resetPassword())
+                    if (user.resetPassword())
                         System.out.println("Password reset successful. Please login again.");
                 } catch (Exception e) {
                     System.out.println("Unable to reset password at the moment. Please try again later.");

@@ -241,7 +241,7 @@ public class dbStudent {
      * or not.
      *
      * @param prerequisites An array of prerequisites required for a course
-     * @param studentID The ID of the student whose eligibility is being checked
+     * @param studentID     The ID of the student whose eligibility is being checked
      * @return A boolean value indicating whether the student meets the prerequisites or not
      * @throws SQLException If there is an error while querying the database
      */

@@ -23,6 +23,7 @@ public class dbInstructor {
 
     /**
      * This method fetches the instructor ID of the instructor with the given email ID.
+     *
      * @param user the user whose instructor ID is to be fetched
      * @return the instructor ID of the instructor with the given email ID
      * @throws SQLException if there is an error with database access
@@ -56,6 +57,7 @@ public class dbInstructor {
 
     /**
      * This method fetches all the approved courses from the course catalog.
+     *
      * @return a ResultSet containing the approved courses
      * @throws SQLException if there is an error with the SQL query
      */
@@ -69,6 +71,7 @@ public class dbInstructor {
 
     /**
      * This method checks if a course with the given course code is approved by the Senate.
+     *
      * @param course_code the code of the course to be checked
      * @return true if the course is approved, false otherwise
      * @throws SQLException if there is an error with the SQL query
@@ -130,8 +133,9 @@ public class dbInstructor {
 
     /**
      * Checks if the course has already been floated in the given semester
+     *
      * @param course_code The code of the course to check
-     * @param semester The semester to check
+     * @param semester    The semester to check
      * @return A string message indicating if the course is already floated or null if it is not floated yet
      * @throws SQLException If there is an error executing the SQL query
      */
@@ -182,8 +186,9 @@ public class dbInstructor {
 
         CSVReader reader = null;
         // Read the CSV file using a CSVReader
-        try {reader = new CSVReader(new FileReader(filePath));
-        }catch (FileNotFoundException e) {
+        try {
+            reader = new CSVReader(new FileReader(filePath));
+        } catch (FileNotFoundException e) {
             System.out.println("File not found");
             return 0;
         }
@@ -205,10 +210,10 @@ public class dbInstructor {
             // Execute the SQL statement to update the course enrollment with the grade
             uploadGrades.executeUpdate();
 
-            count+=uploadGrades.getUpdateCount();
+            count += uploadGrades.getUpdateCount();
             // Check if any rows were updated by the SQL statement
             if (uploadGrades.getUpdateCount() == 0) {
-                System.out.printf("Error uploading grades for enrollment ID %s (StudentID %s) (No Course Enrollment Record Found)\n" ,line[0], line[1]);
+                System.out.printf("Error uploading grades for enrollment ID %s (StudentID %s) (No Course Enrollment Record Found)\n", line[0], line[1]);
             }
         }
         return count;
@@ -218,7 +223,7 @@ public class dbInstructor {
      * Fetches a result set of all students enrolled in a given course and semester.
      *
      * @param course_code the course code to fetch students for
-     * @param semester the semester to fetch students for
+     * @param semester    the semester to fetch students for
      * @return a {@link java.sql.ResultSet} containing the enrollment ID, student ID, and name of each enrolled student
      * @throws java.sql.SQLException if a database error occurs
      */
@@ -233,12 +238,12 @@ public class dbInstructor {
     /**
      * Adds a new course offering in the database.
      *
-     * @param course_code the code of the course to float
-     * @param semester the semester of the course offering
-     * @param instructorID the ID of the instructor for the course
+     * @param course_code     the code of the course to float
+     * @param semester        the semester of the course offering
+     * @param instructorID    the ID of the instructor for the course
      * @param enrollmentCount the enrollment count for the course offering
-     * @param qualify the qualification score required for the course offering
-     * @param preRequisites the prerequisites for the course offering
+     * @param qualify         the qualification score required for the course offering
+     * @param preRequisites   the prerequisites for the course offering
      * @return true if the course offering was successfully floated, false otherwise
      * @throws SQLException if a database access error occurs
      */
@@ -276,8 +281,6 @@ public class dbInstructor {
             updateCourseMapping.executeUpdate();
         }
     }
-
-
 
 
 }

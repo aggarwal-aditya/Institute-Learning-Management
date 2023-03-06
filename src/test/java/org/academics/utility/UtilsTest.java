@@ -8,17 +8,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-
 import java.io.*;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 class UtilsTest {
@@ -74,7 +73,7 @@ class UtilsTest {
     }
 
     @Test
-    void getCurrentSession() throws SQLException{
+    void getCurrentSession() throws SQLException {
         ResultSet resultSet = mock(ResultSet.class);
         when(resultSet.next()).thenReturn(true);
         when(resultSet.getString(1)).thenReturn("2023");
@@ -162,7 +161,7 @@ class UtilsTest {
         // Verify that the file was downloaded
         String os = System.getProperty("os.name").toLowerCase();
         String username = System.getProperty("user.name");
-        String downloadPath ;
+        String downloadPath;
         if (os.contains("win")) {
             downloadPath = "C:\\Users\\" + username + "\\Downloads\\" + fileName + ".txt";
         } else if (os.contains("mac")) {
@@ -227,9 +226,9 @@ class UtilsTest {
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
-        String successMessage="Success";
-        String failureMessage="Failure";
-        Utils.printTable(resultSet,new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"},successMessage,failureMessage);
+        String successMessage = "Success";
+        String failureMessage = "Failure";
+        Utils.printTable(resultSet, new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"}, successMessage, failureMessage);
         String output = outputStream.toString();
         assertTrue(output.contains(successMessage));
         assertTrue(output.contains("Course Code"));
@@ -248,7 +247,7 @@ class UtilsTest {
         when(resultSet.next()).thenReturn(false);
         outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
-        Utils.printTable(resultSet,new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"},successMessage,failureMessage);
+        Utils.printTable(resultSet, new String[]{"Course Code", "Course Name", "Semester", "Student ID", "Student Name", "Grade"}, successMessage, failureMessage);
         output = outputStream.toString();
         assertTrue(output.contains(failureMessage));
 

@@ -1,7 +1,6 @@
 package org.academics.dal;
 
 
-
 import java.sql.*;
 import java.time.LocalDate;
 
@@ -15,9 +14,10 @@ public class dbUtils {
 
     /**
      * Validates if the current date is within the start and end date of the event
-     * @param eventType the event type
-     * @param year the year
-     * @param semester the semester
+     *
+     * @param eventType   the event type
+     * @param year        the year
+     * @param semester    the semester
      * @param currentDate the current date
      * @return true if the current date is within the start and end date of the event, false otherwise
      * @throws SQLException if there is an error with database access
@@ -34,6 +34,7 @@ public class dbUtils {
 
     /**
      * Returns the current session
+     *
      * @param currentDate the current date
      * @return the current session
      * @throws SQLException if there is an error with database access
@@ -43,11 +44,11 @@ public class dbUtils {
         statement.setDate(1, Date.valueOf(currentDate));
         statement.setDate(2, Date.valueOf(currentDate));
         // Execute the query and get the result set
-        return  statement.executeQuery();
+        return statement.executeQuery();
     }
 
     public static ResultSet getDepartmentIDs() throws SQLException {
-        PreparedStatement statement = conn.prepareStatement("SELECT * FROM departments",ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+        PreparedStatement statement = conn.prepareStatement("SELECT * FROM departments", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
         return statement.executeQuery();
     }
 }

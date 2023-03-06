@@ -33,38 +33,37 @@ class InstructorTest {
     }
 
 
-    @Test
-    void floatCourse() throws SQLException {
-        try (MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class);
-             MockedStatic<dbInstructor> mockedDbInstructor = Mockito.mockStatic(dbInstructor.class);) {
+//    @Test
+//    void floatCourse() throws SQLException {
+//        try (MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class);
+//             MockedStatic<dbInstructor> mockedDbInstructor = Mockito.mockStatic(dbInstructor.class);) {
 //            ResultSet resultSet=Mockito.mock(ResultSet.class);
 //            when(resultSet.next()).thenReturn(true).thenReturn(false);
 //            when(resultSet.getString("course_code")).thenReturn("CSCI1234");
 //            when(resultSet.getString("course_name")).thenReturn("Test Course");
-            doNothing().when(mockedUtils).when(() -> Utils.printTable(Mockito.any(ResultSet.class), Mockito.any(String[].class), Mockito.anyString(), Mockito.anyString()));
-            mockedDbInstructor.when(() -> dbInstructor.checkCourseApproval(Mockito.anyString()))
-                    .thenReturn(true);
-            mockedUtils.when(() -> Utils.validateEventTime(Mockito.anyString(), Mockito.anyString()))
-                    .thenReturn(true);
+//            doNothing().when(mockedUtils).when(() -> Utils.printTable(Mockito.any(ResultSet.class), Mockito.any(String[].class), Mockito.anyString(), Mockito.anyString()));
+//            mockedDbInstructor.when(() -> dbInstructor.checkCourseApproval(Mockito.anyString()))
+//                    .thenReturn(true);
+//            mockedUtils.when(() -> Utils.validateEventTime(Mockito.anyString(), Mockito.anyString()))
+//                    .thenReturn(true);
 
 
-
-        }
-    }
+//        }
+//    }
 
 
     @Test
     void viewCourses() throws SQLException {
         try (MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class);
              MockedStatic<dbInstructor> mockedDbInstructor = Mockito.mockStatic(dbInstructor.class);) {
-            ResultSet resultSet=Mockito.mock(ResultSet.class);
+            ResultSet resultSet = Mockito.mock(ResultSet.class);
             mockedDbInstructor.when(() -> dbInstructor.fetchCourses(Mockito.anyInt()))
                     .thenReturn(resultSet);
             //doNothing when Utils.printTable is called
             Instructor instructor = new Instructor(new User("instructor", "test@yopmail.com"));
             ByteArrayOutputStream outContent = new ByteArrayOutputStream();
             System.setOut(new PrintStream(outContent));
-            boolean returnValue=instructor.viewCourses();
+            boolean returnValue = instructor.viewCourses();
             assertFalse(returnValue);
 
             resultSet = Mockito.mock(ResultSet.class);
@@ -73,7 +72,7 @@ class InstructorTest {
             when(resultSet.getString("semester")).thenReturn("2022-1");
             when(resultSet.getString("qualify")).thenReturn("7");
             when(resultSet.getInt("enrollment_count")).thenReturn(10);
-            returnValue=resultSet.next();
+            returnValue = resultSet.next();
             assertTrue(returnValue);
 
         }

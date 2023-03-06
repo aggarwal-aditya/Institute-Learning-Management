@@ -33,16 +33,16 @@ public class JDBCPostgreSQLConnection {
 
             // Load the database properties based on the environment.
             Properties props = new Properties();
-            if("test".equals(dotenv.get("ENVIRONMENT"))) {
+            if ("test".equals(dotenv.get("ENVIRONMENT"))) {
                 props.load(new FileReader("src/main/resources/testdatabase.properties"));
             } else {
                 props.load(new FileReader("src/main/resources/database.properties"));
             }
 
             // Get the database URL, username and password from the properties.
-            String url =props.getProperty("db.url");
-            String user= props.getProperty("db.user");
-            String password =props.getProperty("db.password");
+            String url = props.getProperty("db.url");
+            String user = props.getProperty("db.user");
+            String password = props.getProperty("db.password");
 
             // Establish the JDBC connection to the database.
             conn = DriverManager.getConnection(url, user, password);
@@ -59,6 +59,7 @@ public class JDBCPostgreSQLConnection {
 
     /**
      * Returns the singleton instance of the class.
+     *
      * @return Singleton instance of the class.
      */
     public static JDBCPostgreSQLConnection getInstance() {
@@ -70,12 +71,13 @@ public class JDBCPostgreSQLConnection {
 
     /**
      * Returns the JDBC connection object to the database.
+     *
      * @return JDBC Connection object.
      */
     public Connection getConnection() {
         //if connection is closed, reopen it
         try {
-            if(conn.isClosed())
+            if (conn.isClosed())
                 instance = new JDBCPostgreSQLConnection();
         } catch (SQLException ignored) {
         }
