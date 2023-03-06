@@ -8,20 +8,32 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Backup for Code Completion Phase">
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/dal/dbUtilsTest.java" afterDir="false" />
+    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Progress on Testing">
+      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/dal/dbAdminTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/dal/dbInstructorTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/dal/dbStudentTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/dal/dbUserTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/menus/InstructorMenuTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/menus/adminMenuTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/menus/mainMenuTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/menus/studentMenuTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/UserTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/JDBCPostgreSQLConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/JDBCPostgreSQLConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/utility/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/MainTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/MainTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbAdmin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbAdmin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbInstructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbInstructor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/menus/InstructorMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/menus/InstructorMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/menus/adminMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/menus/AdminMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/menus/mainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/menus/MainMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/menus/studentMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/menus/StudentMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Admin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/dal/JDBCPostgreSQLConnectionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/dal/JDBCPostgreSQLConnectionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/dal/dbUtilsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/dal/dbUtilsTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/users/InstructorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/InstructorTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/users/StudentTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/users/UserTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/utility/UtilsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/utility/UtilsTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,14 +145,14 @@
       <recent name="org.academics.users" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
-      <recent name="org.academics.users" />
-      <recent name="org.academics.utility" />
-      <recent name="org.academics" />
       <recent name="org.academics.dal" />
-      <recent name="org.academics.dao" />
+      <recent name="org.academics.users" />
+      <recent name="org.academics" />
+      <recent name="org.academics.menus" />
+      <recent name="org.academics.utility" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.InstructorTest.testUploadGrades">
+  <component name="RunManager" selected="Gradle.dbAdminTest.testGetStudentCourses">
     <configuration name="Main" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="C:/Program Files/Java/jdk-17.0.1" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -150,7 +162,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="InstructorTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="JDBCPostgreSQLConnectionTest.testConnectionNotNullAfterMultipleGetConnectionCalls" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -163,7 +175,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;org.academics.users.InstructorTest&quot;" />
+            <option value="&quot;org.academics.dal.JDBCPostgreSQLConnectionTest.testConnectionNotNullAfterMultipleGetConnectionCalls&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -173,7 +185,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="InstructorTest.testDelistCourse" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="Tests in 'org.academics'" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -186,7 +198,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;org.academics.users.InstructorTest.testDelistCourse&quot;" />
+            <option value="&quot;org.academics.*&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -196,7 +208,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="InstructorTest.testUploadGrades" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="dbAdminTest.testAddSemesterTimeline" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -209,7 +221,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;org.academics.users.InstructorTest.testUploadGrades&quot;" />
+            <option value="&quot;org.academics.dal.dbAdminTest.testAddSemesterTimeline&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -219,7 +231,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="UtilsTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="dbAdminTest.testGetStudentCourses" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -232,7 +244,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;org.academics.utility.UtilsTest&quot;" />
+            <option value="&quot;org.academics.dal.dbAdminTest.testGetStudentCourses&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -242,7 +254,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="UtilsTest.getCurrentSession" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="dbAdminTest.testUpdateCourseCatalog" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -255,7 +267,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;org.academics.utility.UtilsTest.getCurrentSession&quot;" />
+            <option value="&quot;org.academics.dal.dbAdminTest.testUpdateCourseCatalog&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -267,19 +279,19 @@
     </configuration>
     <list>
       <item itemvalue="Application.Main" />
-      <item itemvalue="Gradle.InstructorTest" />
-      <item itemvalue="Gradle.InstructorTest.testDelistCourse" />
-      <item itemvalue="Gradle.InstructorTest.testUploadGrades" />
-      <item itemvalue="Gradle.UtilsTest" />
-      <item itemvalue="Gradle.UtilsTest.getCurrentSession" />
+      <item itemvalue="Gradle.JDBCPostgreSQLConnectionTest.testConnectionNotNullAfterMultipleGetConnectionCalls" />
+      <item itemvalue="Gradle.Tests in 'org.academics'" />
+      <item itemvalue="Gradle.dbAdminTest.testAddSemesterTimeline" />
+      <item itemvalue="Gradle.dbAdminTest.testGetStudentCourses" />
+      <item itemvalue="Gradle.dbAdminTest.testUpdateCourseCatalog" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.InstructorTest.testUploadGrades" />
-        <item itemvalue="Gradle.InstructorTest.testDelistCourse" />
-        <item itemvalue="Gradle.InstructorTest" />
-        <item itemvalue="Gradle.UtilsTest" />
-        <item itemvalue="Gradle.UtilsTest.getCurrentSession" />
+        <item itemvalue="Gradle.dbAdminTest.testGetStudentCourses" />
+        <item itemvalue="Gradle.Tests in 'org.academics'" />
+        <item itemvalue="Gradle.JDBCPostgreSQLConnectionTest.testConnectionNotNullAfterMultipleGetConnectionCalls" />
+        <item itemvalue="Gradle.dbAdminTest.testAddSemesterTimeline" />
+        <item itemvalue="Gradle.dbAdminTest.testUpdateCourseCatalog" />
       </list>
     </recent_temporary>
   </component>
@@ -334,7 +346,7 @@
       <workItem from="1677081071334" duration="12784000" />
       <workItem from="1677833141172" duration="24675000" />
       <workItem from="1677903842305" duration="162000" />
-      <workItem from="1677907880299" duration="6134000" />
+      <workItem from="1677907880299" duration="46953000" />
     </task>
     <task id="LOCAL-00001" summary="Fix DB Configuration">
       <created>1674704914591</created>
@@ -504,7 +516,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677872875795</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Testing Progress">
+      <created>1677920199742</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1677920199742</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -525,7 +544,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix DB Configuration" />
     <MESSAGE value="Add Database Integration Class" />
     <MESSAGE value="Add recursive style menus" />
     <MESSAGE value="Changes in Login Method" />
@@ -549,48 +567,83 @@
     <MESSAGE value="Refactoring and Documentation Wave 2" />
     <MESSAGE value="Refactoring and Documentation Wave 3" />
     <MESSAGE value="Backup for Code Completion Phase" />
-    <option name="LAST_COMMIT_MESSAGE" value="Backup for Code Completion Phase" />
+    <MESSAGE value="Testing Progress" />
+    <MESSAGE value="Progress on Testing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Progress on Testing" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
     <select />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ilm$CurrentDateTest_overwriteCurrentDate.ic" NAME="CurrentDateTest.overwriteCurrentDate Coverage Results" MODIFIED="1676835022699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT7.ic" NAME="adminMenuTest.adminMenuOPT7 Coverage Results" MODIFIED="1678089871122" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest__1_.ic" NAME="UtilsTest (1) Coverage Results" MODIFIED="1676832642291" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$Tests_in__org_academics_.ic" NAME="Tests in 'org.academics' Coverage Results" MODIFIED="1676837093663" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$UtilsTest.ic" NAME="UtilsTest Coverage Results" MODIFIED="1677908689324" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$UserTest_testExceptionChangePassword.ic" NAME="UserTest.testExceptionChangePassword Coverage Results" MODIFIED="1676863461867" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$InstructorTest_testNoCourseDelistCourse.ic" NAME="InstructorTest.testNoCourseDelistCourse Coverage Results" MODIFIED="1676880287006" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$mainMenuTest_mainMenuOPT2Ex.ic" NAME="mainMenuTest.mainMenuOPT2Ex Coverage Results" MODIFIED="1678096098862" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT3.ic" NAME="adminMenuTest.adminMenuOPT3 Coverage Results" MODIFIED="1678088960339" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$dbUserTest_testGetProfileDetails.ic" NAME="dbUserTest.testGetProfileDetails Coverage Results" MODIFIED="1678101995694" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$MainTest.ic" NAME="MainTest Coverage Results" MODIFIED="1676830212461" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$StudentTest_testNonViewGrades.ic" NAME="StudentTest.testNonViewGrades Coverage Results" MODIFIED="1676884629823" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$CurrentDateTest.ic" NAME="CurrentDateTest Coverage Results" MODIFIED="1677874502790" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$dbUserTest.ic" NAME="dbUserTest Coverage Results" MODIFIED="1678103322296" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT5Ex.ic" NAME="adminMenuTest.adminMenuOPT5Ex Coverage Results" MODIFIED="1678089476900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$org_academics_Main.ic" NAME="org.academics.Main Coverage Results" MODIFIED="1674803949666" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.academics.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/ilm$UserTest_testChangePassword.ic" NAME="UserTest.testChangePassword Coverage Results" MODIFIED="1676863211251" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UserTest.ic" NAME="UserTest Coverage Results" MODIFIED="1676861246035" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$studentMenuTest_studentMenuOPT1.ic" NAME="studentMenuTest.studentMenuOPT1 Coverage Results" MODIFIED="1678099587977" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_testFormatOutput.ic" NAME="UtilsTest.testFormatOutput Coverage Results" MODIFIED="1676875357838" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$StudentTest_testViewGrades.ic" NAME="StudentTest.testViewGrades Coverage Results" MODIFIED="1676886637509" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$UtilsTest_testValidInput.ic" NAME="UtilsTest.testValidInput Coverage Results" MODIFIED="1676831974327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_testOutOfRangeInput.ic" NAME="UtilsTest.testOutOfRangeInput Coverage Results" MODIFIED="1676835968572" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$dbStudentTest.ic" NAME="dbStudentTest Coverage Results" MODIFIED="1678105345906" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$InstructorTest.ic" NAME="InstructorTest Coverage Results" MODIFIED="1676880379956" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$JDBCPostgreSQLConnectionTest.ic" NAME="JDBCPostgreSQLConnectionTest Coverage Results" MODIFIED="1677873808189" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$StudentTest_testNonExistentStudentComputeGPA.ic" NAME="StudentTest.testNonExistentStudentComputeGPA Coverage Results" MODIFIED="1676887173478" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$UserTest_testSetUserDetails.ic" NAME="UserTest.testSetUserDetails Coverage Results" MODIFIED="1676861231439" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$UtilsTest_testInvalidInput.ic" NAME="UtilsTest.testInvalidInput Coverage Results" MODIFIED="1676835983021" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$UtilsTest_getCurrentSession.ic" NAME="UtilsTest.getCurrentSession Coverage Results" MODIFIED="1677903597327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$StudentTest.ic" NAME="StudentTest Coverage Results" MODIFIED="1676906709690" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$InstructorTest_testNonExistentInstructor.ic" NAME="InstructorTest.testNonExistentInstructor Coverage Results" MODIFIED="1676873894946" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$StudentTest_testDropCourse.ic" NAME="StudentTest.testDropCourse Coverage Results" MODIFIED="1676906874010" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$MailManagementTest.ic" NAME="MailManagementTest Coverage Results" MODIFIED="1677874536803" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$InstructorTest_downloadAndExportStudentList.ic" NAME="InstructorTest.downloadAndExportStudentList Coverage Results" MODIFIED="1678021637834" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$mainMenuTest_mainMenuOPT2.ic" NAME="mainMenuTest.mainMenuOPT2 Coverage Results" MODIFIED="1678094680536" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$studentMenuTest_testRegisterForCourseSuccess.ic" NAME="studentMenuTest.testRegisterForCourseSuccess Coverage Results" MODIFIED="1678080997298" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT6.ic" NAME="adminMenuTest.adminMenuOPT6 Coverage Results" MODIFIED="1678089653878" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$dbAdminTest_testGetStudentCourses.ic" NAME="dbAdminTest.testGetStudentCourses Coverage Results" MODIFIED="1678113803422" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_generateOTP.ic" NAME="UtilsTest.generateOTP Coverage Results" MODIFIED="1676834010490" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_printTable.ic" NAME="UtilsTest.printTable Coverage Results" MODIFIED="1677899970664" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$InstructorTest_testDelistCourse.ic" NAME="InstructorTest.testDelistCourse Coverage Results" MODIFIED="1677918767445" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPTdefault.ic" NAME="adminMenuTest.adminMenuOPTdefault Coverage Results" MODIFIED="1678089775302" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_validateEventTime.ic" NAME="UtilsTest.validateEventTime Coverage Results" MODIFIED="1677902557111" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_testGetInput.ic" NAME="UtilsTest.testGetInput Coverage Results" MODIFIED="1676956648055" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$Main.ic" NAME="Main Coverage Results" MODIFIED="1676833634098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>org.academics.*</FILTER>
     </SUITE>
+    <SUITE FILE_PATH="coverage/ilm$InstructorMenuTest_instructorMenuOPT8.ic" NAME="InstructorMenuTest.instructorMenuOPT8 Coverage Results" MODIFIED="1678090158246" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$CurrentDateTest_overwriteCurrentDate.ic" NAME="CurrentDateTest.overwriteCurrentDate Coverage Results" MODIFIED="1676835022699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$InstructorMenuTest.ic" NAME="InstructorMenuTest Coverage Results" MODIFIED="1678090978048" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT5.ic" NAME="adminMenuTest.adminMenuOPT5 Coverage Results" MODIFIED="1678089461486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$Tests_in__org_academics_.ic" NAME="Tests in 'org.academics' Coverage Results" MODIFIED="1678108581238" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$UtilsTest.ic" NAME="UtilsTest Coverage Results" MODIFIED="1678081387914" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$studentMenuTest_testStudentMenu.ic" NAME="studentMenuTest.testStudentMenu Coverage Results" MODIFIED="1678081372646" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$UserTest_testExceptionChangePassword.ic" NAME="UserTest.testExceptionChangePassword Coverage Results" MODIFIED="1676863461867" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$dbUtilsTest.ic" NAME="dbUtilsTest Coverage Results" MODIFIED="1678100824661" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$InstructorTest_testNoCourseDelistCourse.ic" NAME="InstructorTest.testNoCourseDelistCourse Coverage Results" MODIFIED="1676880287006" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT2Ex.ic" NAME="adminMenuTest.adminMenuOPT2Ex Coverage Results" MODIFIED="1678087648539" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$StudentTest_testNonViewGrades.ic" NAME="StudentTest.testNonViewGrades Coverage Results" MODIFIED="1676884629823" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$dbUserTest_testValidateCredentialsByEmail.ic" NAME="dbUserTest.testValidateCredentialsByEmail Coverage Results" MODIFIED="1678102016277" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$CurrentDateTest.ic" NAME="CurrentDateTest Coverage Results" MODIFIED="1677874502790" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT2.ic" NAME="adminMenuTest.adminMenuOPT2 Coverage Results" MODIFIED="1678087633857" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT3Ex.ic" NAME="adminMenuTest.adminMenuOPT3Ex Coverage Results" MODIFIED="1678088883364" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$StudentTest_testViewGrades.ic" NAME="StudentTest.testViewGrades Coverage Results" MODIFIED="1676886637509" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$UtilsTest_testValidInput.ic" NAME="UtilsTest.testValidInput Coverage Results" MODIFIED="1676831974327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$InstructorTest_viewCourses.ic" NAME="InstructorTest.viewCourses Coverage Results" MODIFIED="1678023776447" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$StudentTest_testNonExistentStudentComputeGPA.ic" NAME="StudentTest.testNonExistentStudentComputeGPA Coverage Results" MODIFIED="1676887173478" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$UserTest_testSetUserDetails.ic" NAME="UserTest.testSetUserDetails Coverage Results" MODIFIED="1676861231439" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$UtilsTest_testInvalidInput.ic" NAME="UtilsTest.testInvalidInput Coverage Results" MODIFIED="1676835983021" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$UtilsTest_getCurrentSession.ic" NAME="UtilsTest.getCurrentSession Coverage Results" MODIFIED="1677903597327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT4.ic" NAME="adminMenuTest.adminMenuOPT4 Coverage Results" MODIFIED="1678089074958" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$StudentTest.ic" NAME="StudentTest Coverage Results" MODIFIED="1676906709690" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$UserTest_resetPassword.ic" NAME="UserTest.resetPassword Coverage Results" MODIFIED="1678084478822" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$adminMenuTest.ic" NAME="adminMenuTest Coverage Results" MODIFIED="1678089924886" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$InstructorTest_testNonExistentInstructor.ic" NAME="InstructorTest.testNonExistentInstructor Coverage Results" MODIFIED="1676873894946" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$StudentTest_testDropCourse.ic" NAME="StudentTest.testDropCourse Coverage Results" MODIFIED="1676906874010" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$MailManagementTest.ic" NAME="MailManagementTest Coverage Results" MODIFIED="1677874536803" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$InstructorTest_testDelistCourse.ic" NAME="InstructorTest.testDelistCourse Coverage Results" MODIFIED="1677918767445" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$UserTest_login.ic" NAME="UserTest.login Coverage Results" MODIFIED="1678082683586" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT1.ic" NAME="adminMenuTest.adminMenuOPT1 Coverage Results" MODIFIED="1678087330278" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$studentMenuTest.ic" NAME="studentMenuTest Coverage Results" MODIFIED="1678100055700" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$InstructorTest_testUploadGrades.ic" NAME="InstructorTest.testUploadGrades Coverage Results" MODIFIED="1678004547091" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT4Ex.ic" NAME="adminMenuTest.adminMenuOPT4Ex Coverage Results" MODIFIED="1678089082028" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT1Ex.ic" NAME="adminMenuTest.adminMenuOPT1Ex Coverage Results" MODIFIED="1678087515651" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

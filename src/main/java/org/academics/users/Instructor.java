@@ -42,7 +42,6 @@ public class Instructor extends User {
      */
 
     public void floatCourse() throws SQLException {
-
             ResultSet approvedCourses = dbInstructor.fetchApprovedCourses();
             String successMessage = "List of courses approved by Senate";
             String failureMessage = "No courses have been approved by Senate yet";
@@ -132,13 +131,13 @@ public class Instructor extends User {
         String courseCode = Utils.getInput("Enter the course code");
         String session = Utils.getInput("Enter the session (YYYY-Semester)");
         if (!dbInstructor.isCourseInstructor(courseCode, session, this.instructor_id)) {
-            System.out.println("You are not authorized to add grades for this course");
+            System.out.println("You are not authorized to get student list for this course");
             return;
         }
         String[] extraHeaders = new String[]{"grade"};
         ResultSet studentsList = dbInstructor.fetchStudentsList(courseCode, session);
         Utils.exportCSV(studentsList, courseCode + "_" + session, extraHeaders);
-        System.out.println("Please Enter the grades for the students in the CSV file");
+        System.out.println("Student list exported successfully");
     }
 
 
@@ -169,7 +168,8 @@ public class Instructor extends User {
         String path = Utils.getInput("Enter the path to the CSV file");
 
         // Upload the grades from the CSV file to the database
-        dbInstructor.uploadGrades(path, courseCode, session);
+        int count=dbInstructor.uploadGrades(path, courseCode, session);
+        System.out.println("Grades uploaded successfully for "+count+" students");
     }
 
 

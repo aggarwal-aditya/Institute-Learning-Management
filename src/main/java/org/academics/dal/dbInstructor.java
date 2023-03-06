@@ -175,7 +175,7 @@ public class dbInstructor {
      * @throws SQLException if a database access error occurs
      * @throws IOException  if an I/O error occurs while reading the CSV file
      */
-    public static void uploadGrades(String filePath, String course_code, String semester) throws SQLException, IOException {
+    public static int uploadGrades(String filePath, String course_code, String semester) throws SQLException, IOException {
 
         // Prepare an SQL statement to update course enrollments with grades
         PreparedStatement uploadGrades = conn.prepareStatement("UPDATE course_enrollments SET grade = ? WHERE enrollment_id = ? AND course_code = ? AND semester = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -185,9 +185,11 @@ public class dbInstructor {
         try {reader = new CSVReader(new FileReader(filePath));
         }catch (FileNotFoundException e) {
             System.out.println("File not found");
-            return;
+            return 0;
         }
         String[] line;
+
+        int count = 0;
 
         // Loop through each row in the CSV file
         reader.readNext(); // Skip the first line
@@ -203,11 +205,13 @@ public class dbInstructor {
             // Execute the SQL statement to update the course enrollment with the grade
             uploadGrades.executeUpdate();
 
+            count+=uploadGrades.getUpdateCount();
             // Check if any rows were updated by the SQL statement
             if (uploadGrades.getUpdateCount() == 0) {
                 System.out.printf("Error uploading grades for enrollment ID %s (StudentID %s) (No Course Enrollment Record Found)\n" ,line[0], line[1]);
             }
         }
+        return count;
     }
 
     /**

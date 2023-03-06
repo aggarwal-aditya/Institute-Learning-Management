@@ -39,10 +39,10 @@ public class JDBCPostgreSQLConnectionTest {
     @Test
     public void testConnectionNotNullAfterMultipleGetConnectionCalls() throws SQLException {
         Connection connection1 = jdbcPostgreSQLConnection.getConnection();
+        connection1.close();
         Connection connection2 = jdbcPostgreSQLConnection.getConnection();
         assertNotNull(connection1);
         assertNotNull(connection2);
-        connection1.close();
         connection2.close();
     }
 

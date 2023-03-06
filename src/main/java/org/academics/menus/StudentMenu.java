@@ -3,7 +3,7 @@ package org.academics.menus;
 import org.academics.users.Student;
 import org.academics.utility.Utils;
 
-public class studentMenu {
+public class StudentMenu {
     public static void studentMenu(Student student) {
         System.out.println("1. Register for a course");
         System.out.println("2. Drop a course");
@@ -17,13 +17,7 @@ public class studentMenu {
 
         switch (choice) {
             case 1 -> {
-                try {
-                    student.registerCourse();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("Unable to register for course at the moment. Please try again later.");
-                    studentMenu(student);
-                }
+                student.registerCourse();
                 studentMenu(student);
             }
             case 2 -> {
@@ -66,14 +60,15 @@ public class studentMenu {
             case 6 -> {
                 try {
                     student.viewProfile();
-                    studentMenu(student);
                 } catch (Exception e) {
                     System.out.println("Unable to fetch profile at the moment. Please try again later.");
-                    studentMenu(student);
                 }
+                studentMenu(student);
             }
-            case 7 -> mainMenu.mainMenu();
-            default -> System.out.println("Invalid choice");
+            case 7 -> {
+                System.out.println("Logging out...");
+                MainMenu.mainMenu();
+            }
         }
     }
 }

@@ -1,11 +1,9 @@
 package org.academics.users;
 
-import org.academics.dal.JDBCPostgreSQLConnection;
 import org.academics.dal.dbUser;
 import org.academics.utility.MailManagement;
 import org.academics.utility.Utils;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -62,7 +60,6 @@ public class User {
         // Request email and password input from the user
         String email_id = Utils.getInput("Enter your username(email):");
         String password = Utils.getInput("Enter your password:");
-
         // Validate the credentials with the database and get the user's role
         String role = dbUser.validateCredentials(email_id, password);
 
@@ -105,8 +102,7 @@ public class User {
         mailManagement.sendMail(subject, message, toEmails);
 
         // Prompt the user to enter the OTP sent to their email address
-        System.out.println("Enter the OTP sent on your email to reset your password :");
-        int enteredOTP = scanner.nextInt();
+        int enteredOTP = Integer.parseInt(Utils.getInput("Enter the OTP sent on your email to reset your password :"));
 
         // If the entered OTP is valid, prompt the user to enter their new password and update it in the database
         if (otp == enteredOTP) {
@@ -145,14 +141,8 @@ public class User {
 
         // Prompt user for choice
         int choice = Utils.getUserChoice(2);
-        switch (choice) {
-            case 1:
-                editProfile();
-                break;
-            case 2:
-                break;
-            default:
-                System.out.println("Invalid choice. Redirecting to Main Menu");
+        if (choice == 1) {
+            editProfile();
         }
     }
 
@@ -172,7 +162,7 @@ public class User {
 
         // Perform the selected action based on the user's choice
         switch (choice) {
-            case 1:
+            case 1 -> {
                 // Prompt the user to enter their new phone number and attempt to update it in the database
                 String newPhoneNumber = Utils.getInput("Enter your new phone number:");
                 if (dbUser.updatePhone(this, newPhoneNumber)) {
@@ -180,8 +170,8 @@ public class User {
                 } else {
                     System.out.println("Unable to update phone number. Please try again later.");
                 }
-                break;
-            case 2:
+            }
+            case 2 -> {
                 // Prompt the user to enter their new password and attempt to update it in the database
                 String newPassword = Utils.getInput("Enter your new password:");
                 if (dbUser.changePassword(this, newPassword)) {
@@ -189,13 +179,10 @@ public class User {
                 } else {
                     System.out.println("Unable to update password. Please try again later.");
                 }
-                break;
-            case 3:
-                // Go back to the main menu
-                break;
-            default:
-                // Display an error message if an invalid choice is selected
-                System.out.println("Invalid choice. Redirecting to Main Menu");
+            }
+            default -> {
+            }
+            // Go back to the main menu
         }
     }
 

@@ -85,16 +85,12 @@ public class Admin extends User {
         }
     }
 
-    public void generateTranscript() {
-        try {
+    public void generateTranscript() throws SQLException {
             String enrollment_id = Utils.getInput("Enter the student's enrollment id:");
             PreparedStatement getTranscript = conn.prepareStatement("SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.semester,course_enrollments.grade FROM course_enrollments JOIN course_catalog ON course_enrollments.course_code=course_catalog.course_code JOIN students ON course_enrollments.student_id = students.student_id WHERE course_enrollments.student_id = ?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             getTranscript.setString(1, enrollment_id);
             ResultSet resultSet = getTranscript.executeQuery();
             Utils.exportTxt(resultSet, enrollment_id + "_transcript", "Your CGPA is " + computeGPA(enrollment_id));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     public boolean checkGraduationStatus() throws SQLException {

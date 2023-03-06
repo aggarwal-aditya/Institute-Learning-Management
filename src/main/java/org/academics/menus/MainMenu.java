@@ -6,7 +6,7 @@ import org.academics.users.Student;
 import org.academics.users.User;
 import org.academics.utility.Utils;
 
-public class mainMenu {
+public class MainMenu {
     public static void mainMenu() {
 
         System.out.println("Welcome to ILM (Institute Learning Management)");
@@ -29,7 +29,7 @@ public class mainMenu {
                 switch (user.userRole) {
                     case "student" -> {
                         Student student = new Student(user);
-                        studentMenu.studentMenu(student);
+                        StudentMenu.studentMenu(student);
                     }
                     case "instructor" -> {
                         Instructor instructor = new Instructor(user);
@@ -37,7 +37,7 @@ public class mainMenu {
                     }
                     case "admin" -> {
                         Admin admin = new Admin();
-                        adminMenu.adminMenu(admin);
+                        AdminMenu.adminMenu(admin);
                     }
                 }
             }
@@ -47,7 +47,6 @@ public class mainMenu {
                         System.out.println("Password reset successful. Please login again.");
                 } catch (Exception e) {
                     System.out.println("Unable to reset password at the moment. Please try again later.");
-                    mainMenu();
                 }
                 mainMenu();
             }
@@ -55,7 +54,6 @@ public class mainMenu {
                 System.out.println("Thank you for using ILM");
                 return;
             }
-            default -> System.out.println("Invalid choice");
         }
     }
 }

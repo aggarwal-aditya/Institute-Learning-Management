@@ -31,7 +31,7 @@ public class Student extends User {
     /**
      * Fetches the available courses for registration and checks for eligibility requirements before enrolling student into the course
      */
-    public void registerCourse() {
+    public void registerCourse(){
 
         try {
             // Get the current session
