@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MainMenu.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'org.academics' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.academics.menus</a> &gt; <span class="el_source">MainMenu.java</span></div><h1>MainMenu.java</h1><pre class="source lang-java linenums">package org.academics.menus;
+
+import org.academics.users.Admin;
+import org.academics.users.Instructor;
+import org.academics.users.Student;
+import org.academics.users.User;
+import org.academics.utility.Utils;
+
+<span class="nc" id="L9">public class MainMenu {</span>
+    public static void mainMenu() {
+
+<span class="fc" id="L12">        System.out.println(&quot;Welcome to ILM (Institute Learning Management)&quot;);</span>
+<span class="fc" id="L13">        System.out.println(&quot;Please select your role to login:&quot;);</span>
+<span class="fc" id="L14">        System.out.println(&quot;1. Login&quot;);</span>
+<span class="fc" id="L15">        System.out.println(&quot;2. Reset Your Password (Use this only if you have forgotten your password)&quot;);</span>
+<span class="fc" id="L16">        System.out.println(&quot;3. Exit&quot;);</span>
+<span class="fc" id="L17">        System.out.println(&quot;Enter your choice:&quot;);</span>
+<span class="fc" id="L18">        int userChoice = Utils.getUserChoice(3);</span>
+<span class="fc" id="L19">        User user = new User();</span>
+<span class="fc bfc" id="L20" title="All 4 branches covered.">        switch (userChoice) {</span>
+            case 1 -&gt; {
+                try {
+<span class="fc bfc" id="L23" title="All 2 branches covered.">                    if (!user.login()) {</span>
+<span class="fc" id="L24">                        mainMenu();</span>
+                    }
+<span class="nc" id="L26">                } catch (Exception e) {</span>
+//                    System.out.println(&quot;Unable to login at the moment. Please try again later.&quot;);
+//                    mainMenu();
+<span class="fc" id="L29">                }</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">                if(user.userRole!=null) {</span>
+<span class="pc bpc" id="L31" title="1 of 4 branches missed.">                    switch (user.userRole) {</span>
+                        case &quot;student&quot; -&gt; {
+<span class="fc" id="L33">                            Student student = new Student(user);</span>
+<span class="fc" id="L34">                            StudentMenu.studentMenu(student);</span>
+<span class="fc" id="L35">                        }</span>
+                        case &quot;instructor&quot; -&gt; {
+<span class="fc" id="L37">                            Instructor instructor = new Instructor(user);</span>
+<span class="fc" id="L38">                            InstructorMenu.instructorMenu(instructor);</span>
+<span class="fc" id="L39">                        }</span>
+                        case &quot;admin&quot; -&gt; {
+<span class="fc" id="L41">                            Admin admin = new Admin();</span>
+<span class="fc" id="L42">                            AdminMenu.adminMenu(admin);</span>
+                        }
+<span class="fc" id="L44">                    }</span>
+                }
+            }
+            case 2 -&gt; {
+                try {
+<span class="fc bfc" id="L49" title="All 2 branches covered.">                    if (user.resetPassword())</span>
+<span class="fc" id="L50">                        System.out.println(&quot;Password reset successful. Please login again.&quot;);</span>
+<span class="nc" id="L51">                } catch (Exception e) {</span>
+//                    System.out.println(&quot;Unable to reset password at the moment. Please try again later.&quot;);
+<span class="fc" id="L53">                }</span>
+<span class="fc" id="L54">                mainMenu();</span>
+<span class="fc" id="L55">            }</span>
+            case 3 -&gt; {
+<span class="fc" id="L57">                System.out.println(&quot;Thank you for using ILM&quot;);</span>
+<span class="fc" id="L58">                return;</span>
+            }
+        }
+<span class="fc" id="L61">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

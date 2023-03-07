@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Admin.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'org.academics' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.academics.users</a> &gt; <span class="el_source">Admin.java</span></div><h1>Admin.java</h1><pre class="source lang-java linenums">package org.academics.users;
+
+import org.academics.dal.JDBCPostgreSQLConnection;
+import org.academics.dal.dbAdmin;
+import org.academics.utility.CurrentDate;
+import org.academics.utility.Utils;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Scanner;
+
+public class Admin extends User {
+<span class="fc" id="L16">    Scanner scanner = new Scanner(System.in);</span>
+<span class="fc" id="L17">    JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();</span>
+<span class="fc" id="L18">    Connection conn = jdbc.getConnection();</span>
+
+<span class="fc" id="L20">    public Admin() {</span>
+<span class="fc" id="L21">    }</span>
+
+    public void updateCourseCatalog() throws SQLException {
+<span class="fc" id="L24">        String courseCode = Utils.getInput(&quot;Enter the course code&quot;);</span>
+<span class="fc" id="L25">        String courseName = Utils.getInput(&quot;Enter the course name&quot;);</span>
+        //take input for credit structure which is 5 integers, L T P S C
+<span class="fc" id="L27">        double L = Double.parseDouble(Utils.getInput(&quot;Enter the number of lecture hours&quot;));</span>
+<span class="fc" id="L28">        double T = Double.parseDouble(Utils.getInput(&quot;Enter the number of tutorial hours&quot;));</span>
+<span class="fc" id="L29">        double P = Double.parseDouble(Utils.getInput(&quot;Enter the number of practical hours&quot;));</span>
+<span class="fc" id="L30">        double S = Double.parseDouble(Utils.getInput(&quot;Enter the number of self study hours&quot;));</span>
+<span class="fc" id="L31">        double C = Double.parseDouble(Utils.getInput(&quot;Enter the number of credits&quot;));</span>
+<span class="fc" id="L32">        ArrayList&lt;String&gt; preRequisites = specialPrivileges.getPreRequisites();</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        if (dbAdmin.updateCourseCatalog(courseCode, courseName, L, T, P, S, C, preRequisites)) {</span>
+<span class="fc" id="L34">            System.out.println(&quot;Course added successfully&quot;);</span>
+        } else {
+<span class="fc" id="L36">            System.out.println(&quot;Course could not be added&quot;);</span>
+        }
+<span class="fc" id="L38">    }</span>
+
+    public void addSemesterTimeline() throws SQLException {
+<span class="fc" id="L41">        String semester = Utils.getInput(&quot;Enter the semester:(YYYY-Semester)&quot;);</span>
+<span class="fc" id="L42">        String year = semester.substring(0, 4);</span>
+<span class="fc" id="L43">        String sem = semester.substring(5);</span>
+<span class="fc" id="L44">        String start_date = Utils.getInput(&quot;Enter the start date:(YYYY-MM-DD)&quot;);</span>
+<span class="fc" id="L45">        String end_date = Utils.getInput(&quot;Enter the end date:(YYYY-MM-DD)&quot;);</span>
+<span class="fc" id="L46">        String grade_submission_date = Utils.getInput(&quot;Enter the grade submission date:(YYYY-MM-DD)&quot;);</span>
+<span class="fc" id="L47">        String grade_release_date = Utils.getInput(&quot;Enter the grade release/submission end date:(YYYY-MM-DD)&quot;);</span>
+<span class="fc" id="L48">        String course_add_drop_start_date = Utils.getInput(&quot;Enter the course add/drop start date:(YYYY-MM-DD)&quot;);</span>
+<span class="fc" id="L49">        String course_add_drop_end_date = Utils.getInput(&quot;Enter the course add/drop end date:(YYYY-MM-DD)&quot;);</span>
+<span class="fc" id="L50">        String course_float_start_date = Utils.getInput(&quot;Enter the course float start date:(YYYY-MM-DD)&quot;);</span>
+<span class="fc" id="L51">        String course_float_end_date = Utils.getInput(&quot;Enter the course float end date:(YYYY-MM-DD)&quot;);</span>
+<span class="fc" id="L52">        dbAdmin.addSemesterTimeline(year, sem, start_date, end_date, grade_submission_date, grade_release_date, course_float_start_date, course_float_end_date, course_add_drop_start_date, course_add_drop_end_date);</span>
+<span class="fc" id="L53">        System.out.println(&quot;Semester timeline added successfully&quot;);</span>
+<span class="fc" id="L54">    }</span>
+
+    public void changeSystemSettings() {
+<span class="fc" id="L57">        System.out.println(&quot;1.Change System Time &amp; Date&quot;);</span>
+<span class="fc" id="L58">        System.out.println(&quot;2.Go Back to main menu&quot;);</span>
+<span class="fc" id="L59">        int choice = Utils.getUserChoice(2);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        switch (choice) {</span>
+            case 1:
+<span class="fc" id="L62">                CurrentDate currentDate = CurrentDate.getInstance();</span>
+<span class="fc" id="L63">                int year = Integer.parseInt(Utils.getInput(&quot;Enter the year:&quot;));</span>
+<span class="fc" id="L64">                int month = Integer.parseInt(Utils.getInput(&quot;Enter the month:&quot;));</span>
+<span class="fc" id="L65">                int day = Integer.parseInt(Utils.getInput(&quot;Enter the day:&quot;));</span>
+<span class="fc" id="L66">                currentDate.overwriteCurrentDate(year, month, day);</span>
+<span class="fc" id="L67">                System.out.println(&quot;System date changed successfully&quot;);</span>
+<span class="fc" id="L68">                break;</span>
+            case 2:
+                break;
+        }
+<span class="fc" id="L72">    }</span>
+
+    private BigDecimal computeGPA(String enrollment_id) throws SQLException{
+<span class="fc" id="L75">            CallableStatement calculateCGPA = conn.prepareCall(&quot;{? = call calculate_cgpa(?)}&quot;);</span>
+<span class="fc" id="L76">            calculateCGPA.registerOutParameter(1, Types.NUMERIC);</span>
+<span class="fc" id="L77">            calculateCGPA.setString(2, enrollment_id);</span>
+<span class="fc" id="L78">            calculateCGPA.execute();</span>
+<span class="fc" id="L79">            return calculateCGPA.getBigDecimal(1).setScale(2, RoundingMode.HALF_UP);</span>
+    }
+
+    public void generateTranscript() throws SQLException {
+<span class="fc" id="L83">        String enrollment_id = Utils.getInput(&quot;Enter the student's enrollment id:&quot;);</span>
+<span class="fc" id="L84">        PreparedStatement getTranscript = conn.prepareStatement(&quot;SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.semester,course_enrollments.grade FROM course_enrollments JOIN course_catalog ON course_enrollments.course_code=course_catalog.course_code JOIN students ON course_enrollments.student_id = students.student_id WHERE course_enrollments.student_id = ?&quot;, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);</span>
+<span class="fc" id="L85">        getTranscript.setString(1, enrollment_id);</span>
+<span class="fc" id="L86">        ResultSet resultSet = getTranscript.executeQuery();</span>
+<span class="fc" id="L87">        Utils.exportTxt(resultSet, enrollment_id + &quot;_transcript&quot;, &quot;Your CGPA is &quot; + computeGPA(enrollment_id));</span>
+<span class="fc" id="L88">        System.out.println(&quot;Transcript generated successfully&quot;);</span>
+<span class="fc" id="L89">    }</span>
+
+    public boolean checkGraduationStatus() throws SQLException {
+<span class="fc" id="L92">        final double coreCreditsRequired = 71.5;</span>
+<span class="fc" id="L93">        final double projectCreditsRequired = 9;</span>
+<span class="fc" id="L94">        final double internshipCreditsRequired = 3.5;</span>
+<span class="fc" id="L95">        final double openElectiveCreditsRequired = 6;</span>
+<span class="fc" id="L96">        final double scienceMathCreditsRequired = 30;</span>
+<span class="fc" id="L97">        final double humanitiesCreditsRequired = 21;</span>
+<span class="fc" id="L98">        final double extraCurricularCreditsRequired = 4;</span>
+<span class="fc" id="L99">        final double minCreditsRequired = 145;</span>
+        //declare const double
+
+
+<span class="fc" id="L103">        String enrollmentID = Utils.getInput(&quot;Enter the student's enrollment id:&quot;);</span>
+<span class="fc" id="L104">        ResultSet studentCourses = dbAdmin.getStudentCourses(enrollmentID);</span>
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">        if (computeGPA(enrollmentID).compareTo(new BigDecimal(&quot;5.0&quot;)) &lt; 0) {</span>
+<span class="nc" id="L106">            System.out.println(&quot;CGPA is less than 5.0. Student cannot graduate&quot;);</span>
+<span class="nc" id="L107">            return false;</span>
+        }
+        //check if core and programme_elective credits are completed
+<span class="fc" id="L110">        double coreCredits = 0;</span>
+<span class="fc" id="L111">        double projectCredits = 0;</span>
+<span class="fc" id="L112">        double internshipCredits = 0;</span>
+<span class="fc" id="L113">        double openElectiveCredits = 0;</span>
+<span class="fc" id="L114">        double scienceMathCredits = 0;</span>
+<span class="fc" id="L115">        double humanitiesCredits = 0;</span>
+<span class="fc" id="L116">        double extraCurricularCredits = 0;</span>
+
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">        while (studentCourses.next()) {</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">            if (!Objects.equals(studentCourses.getString(&quot;grade&quot;), &quot;F&quot;)) {</span>
+<span class="nc bnc" id="L120" title="All 4 branches missed.">                if (studentCourses.getString(&quot;course_type&quot;).equals(&quot;core&quot;) || studentCourses.getString(&quot;course_type&quot;).equals(&quot;programme_elective&quot;)) {</span>
+<span class="nc" id="L121">                    coreCredits += studentCourses.getInt(&quot;credits&quot;);</span>
+                }
+<span class="nc bnc" id="L123" title="All 2 branches missed.">                if (studentCourses.getString(&quot;course_type&quot;).equals(&quot;project&quot;)) {</span>
+<span class="nc" id="L124">                    projectCredits += studentCourses.getInt(&quot;credits&quot;);</span>
+                }
+<span class="nc bnc" id="L126" title="All 2 branches missed.">                if (studentCourses.getString(&quot;course_type&quot;).equals(&quot;internship&quot;)) {</span>
+<span class="nc" id="L127">                    internshipCredits += studentCourses.getInt(&quot;credits&quot;);</span>
+                }
+<span class="nc bnc" id="L129" title="All 2 branches missed.">                if (studentCourses.getString(&quot;course_type&quot;).equals(&quot;open_elective&quot;)) {</span>
+<span class="nc" id="L130">                    openElectiveCredits += studentCourses.getInt(&quot;credits&quot;);</span>
+                }
+<span class="nc bnc" id="L132" title="All 2 branches missed.">                if (studentCourses.getString(&quot;course_type&quot;).equals(&quot;science_math&quot;)) {</span>
+<span class="nc" id="L133">                    scienceMathCredits += studentCourses.getInt(&quot;credits&quot;);</span>
+                }
+<span class="nc bnc" id="L135" title="All 2 branches missed.">                if (studentCourses.getString(&quot;course_type&quot;).equals(&quot;humanities&quot;)) {</span>
+<span class="nc" id="L136">                    humanitiesCredits += studentCourses.getInt(&quot;credits&quot;);</span>
+                }
+<span class="nc bnc" id="L138" title="All 2 branches missed.">                if (studentCourses.getString(&quot;course_type&quot;).equals(&quot;extra_curricular&quot;)) {</span>
+<span class="nc" id="L139">                    extraCurricularCredits += studentCourses.getInt(&quot;credits&quot;);</span>
+                }
+            }
+        }
+<span class="fc" id="L143">        double totalCredits = coreCredits + projectCredits + internshipCredits + openElectiveCredits + scienceMathCredits + humanitiesCredits + extraCurricularCredits;</span>
+<span class="pc bpc" id="L144" title="13 of 14 branches missed.">        if (coreCredits &lt; coreCreditsRequired || projectCredits &lt; projectCreditsRequired || internshipCredits &lt; internshipCreditsRequired || scienceMathCredits &lt; scienceMathCreditsRequired || humanitiesCredits &lt; humanitiesCreditsRequired || extraCurricularCredits &lt; extraCurricularCreditsRequired|| totalCredits &lt; minCreditsRequired) {</span>
+<span class="fc" id="L145">            System.out.println(&quot;Student cannot graduate&quot;);</span>
+<span class="fc" id="L146">            return false;</span>
+        }
+<span class="nc" id="L148">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

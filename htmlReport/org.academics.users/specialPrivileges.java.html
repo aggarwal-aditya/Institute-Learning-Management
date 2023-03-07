@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>specialPrivileges.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'org.academics' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.academics.users</a> &gt; <span class="el_source">specialPrivileges.java</span></div><h1>specialPrivileges.java</h1><pre class="source lang-java linenums">package org.academics.users;
+
+import org.academics.dal.dbInstructor;
+import org.academics.dal.dbUtils;
+import org.academics.utility.Utils;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Objects;
+
+/**
+ * This class contains methods that are only accessible to the admin and instructor
+ */
+<span class="nc" id="L15">public class specialPrivileges {</span>
+
+    /**
+     * Displays menu to view grades of a course or a student and prints grades table
+     *
+     * @throws SQLException If there's an error in the SQL operation
+     */
+    public static void viewStudentGrades() throws SQLException {
+<span class="nc" id="L23">        System.out.println(&quot;1. Select a course to view grades&quot;);</span>
+<span class="nc" id="L24">        System.out.println(&quot;2. Search a student to view grades&quot;);</span>
+<span class="nc" id="L25">        System.out.println(&quot;3. Go back to main menu&quot;);</span>
+
+        // Get user's choice
+<span class="nc" id="L28">        int choice = Utils.getUserChoice(3);</span>
+
+<span class="nc bnc" id="L30" title="All 4 branches missed.">        switch (choice) {</span>
+            case 1: {
+<span class="nc" id="L32">                String course_code = Utils.getInput(&quot;Enter the course code&quot;);</span>
+<span class="nc" id="L33">                String session = Utils.getInput(&quot;Enter the session (YYYY-Semester)&quot;);</span>
+
+                // Get grades of the course
+<span class="nc" id="L36">                ResultSet courseGrades = dbInstructor.fetchCourseGrades(course_code, session);</span>
+
+<span class="nc" id="L38">                String successMessage = &quot;Please Find the Grades for the Course&quot;;</span>
+<span class="nc" id="L39">                String failureMessage = &quot;No grades found for the course/ No Course found with the Course Code and Session&quot;;</span>
+
+                // Print grades table
+<span class="nc" id="L42">                Utils.printTable(courseGrades, new String[]{&quot;Course Code&quot;, &quot;Course Name&quot;, &quot;Semester&quot;, &quot;Student ID&quot;, &quot;Student Name&quot;, &quot;Grade&quot;}, successMessage, failureMessage);</span>
+<span class="nc" id="L43">                break;</span>
+            }
+            case 2: {
+<span class="nc" id="L46">                String studentID = Utils.getInput(&quot;Enter the student's Enrollment ID&quot;);</span>
+
+                // Get grades of the student
+<span class="nc" id="L49">                ResultSet studentGrades = dbInstructor.fetchStudentGrades(studentID);</span>
+
+<span class="nc" id="L51">                String successMessage = &quot;Please Find the Grades for the Student&quot;;</span>
+<span class="nc" id="L52">                String failureMessage = &quot;No grades found for the student/ No Student found with the Enrollment ID&quot;;</span>
+
+                // Print grades table
+<span class="nc" id="L55">                Utils.printTable(studentGrades, new String[]{&quot;Course Code&quot;, &quot;Course Name&quot;, &quot;Semester&quot;, &quot;Student ID&quot;, &quot;Student Name&quot;, &quot;Grade&quot;}, successMessage, failureMessage);</span>
+<span class="nc" id="L56">                break;</span>
+            }
+            case 3:
+<span class="nc" id="L59">                break;</span>
+            default:
+<span class="nc" id="L61">                System.out.println(&quot;Invalid choice. Redirecting to main menu&quot;);</span>
+                break;
+        }
+<span class="nc" id="L64">    }</span>
+
+    public static void viewDepartmentIDs() throws SQLException {
+<span class="fc" id="L67">        ResultSet departmentID = dbUtils.getDepartmentIDs();</span>
+<span class="fc" id="L68">        String successMessage = &quot;Please Find the Department ID&quot;;</span>
+<span class="fc" id="L69">        String failureMessage = &quot;No Department ID found&quot;;</span>
+<span class="fc" id="L70">        Utils.printTable(departmentID, new String[]{&quot;Department ID&quot;, &quot;Department Name&quot;}, successMessage, failureMessage);</span>
+
+<span class="fc" id="L72">    }</span>
+
+    public static ArrayList&lt;String&gt; getPreRequisites() {
+<span class="fc" id="L75">        ArrayList&lt;String&gt; preRequisites = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L76">        StringBuilder pre = new StringBuilder();</span>
+        String choice;
+        do {
+<span class="fc" id="L79">            String code = Utils.getInput(&quot;Enter the course code of the prerequisite&quot;);</span>
+<span class="fc" id="L80">            String grade = Utils.getInput(&quot;Enter the minimum grade requirement for the prerequisite (Enter 'E' if no minimum grade requirement)&quot;);</span>
+<span class="fc" id="L81">            pre.append(code).append(&quot;(&quot;).append(grade).append(&quot;)&quot;).append(&quot;|&quot;);</span>
+<span class="fc" id="L82">            choice = Utils.getInput(&quot;Are there any alternatives to the prerequisite? (Y/N)&quot;);</span>
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">            if (Objects.equals(choice, &quot;Y&quot;)) {</span>
+                do {
+<span class="nc" id="L85">                    code = Utils.getInput(&quot;Enter the course code of the alternative&quot;);</span>
+<span class="nc" id="L86">                    grade = Utils.getInput(&quot;Enter the minimum grade requirement for the alternative (Enter 'E' if no minimum grade requirement)&quot;);</span>
+<span class="nc" id="L87">                    pre.append(code).append(&quot;(&quot;).append(grade).append(&quot;)&quot;).append(&quot;|&quot;);</span>
+<span class="nc" id="L88">                    choice = Utils.getInput(&quot;Are there any alternatives to the prerequisite? (Y/N)&quot;);</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">                } while (Objects.equals(choice, &quot;Y&quot;));</span>
+            }
+<span class="fc" id="L91">            choice = Utils.getInput(&quot;Do you want to add additional prerequisites? (Y/N)&quot;);</span>
+<span class="fc" id="L92">            preRequisites.add(String.valueOf(pre));</span>
+<span class="fc" id="L93">            pre = new StringBuilder();</span>
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        } while (Objects.equals(choice, &quot;Y&quot;));</span>
+<span class="fc" id="L95">        return preRequisites;</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

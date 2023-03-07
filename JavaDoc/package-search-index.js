@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.academics.dal"},{"l":"org.academics.menus"},{"l":"org.academics.users"},{"l":"org.academics.utility"}];updateSearchResults();

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'org.academics' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.academics.users</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package org.academics.users;
+
+import org.academics.dal.dbUser;
+import org.academics.utility.MailManagement;
+import org.academics.utility.Utils;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Scanner;
+
+/**
+ * A class to represent a user.
+ */
+
+public class User {
+    public String userRole;
+    public String email_id;
+<span class="fc" id="L18">    Scanner scanner = new Scanner(System.in);</span>
+
+    /**
+     * Constructs a new User object with null user role and email ID.
+     */
+<span class="fc" id="L23">    public User() {</span>
+<span class="fc" id="L24">        this.userRole = null;</span>
+<span class="fc" id="L25">        this.email_id = null;</span>
+<span class="fc" id="L26">    }</span>
+
+    /**
+     * Constructs a new User object with the given user role and email ID.
+     *
+     * @param userRole The user's role.
+     * @param email_id The user's email ID.
+     */
+<span class="fc" id="L34">    public User(String userRole, String email_id) {</span>
+<span class="fc" id="L35">        this.userRole = userRole;</span>
+<span class="fc" id="L36">        this.email_id = email_id;</span>
+<span class="fc" id="L37">    }</span>
+
+
+    /**
+     * Set the user role and email ID.
+     *
+     * @param userRole The user's role.
+     * @param email_id The user's email ID.
+     */
+    public void setUserDetails(String userRole, String email_id) {
+<span class="fc" id="L47">        this.userRole = userRole;</span>
+<span class="fc" id="L48">        this.email_id = email_id;</span>
+<span class="fc" id="L49">    }</span>
+
+
+    /**
+     * Authenticates a user by requesting their email and password, validating the credentials
+     * with the database, and setting the user details if the credentials are valid.
+     *
+     * @return true if the credentials are valid and the user details are set, false otherwise.
+     * @throws SQLException if there is an error accessing the database.
+     */
+    public boolean login() throws SQLException {
+        // Request email and password input from the user
+<span class="fc" id="L61">        String email_id = Utils.getInput(&quot;Enter your username(email):&quot;);</span>
+<span class="fc" id="L62">        String password = Utils.getInput(&quot;Enter your password:&quot;);</span>
+        // Validate the credentials with the database and get the user's role
+<span class="fc" id="L64">        String role = dbUser.validateCredentials(email_id, password);</span>
+
+        // If the role is not null, the credentials are valid
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (role != null) {</span>
+            // Set the user details with the user's role and email ID
+<span class="fc" id="L69">            this.setUserDetails(role, email_id);</span>
+<span class="fc" id="L70">            System.out.println(&quot;Welcome &quot; + this.email_id);</span>
+<span class="fc" id="L71">            return true;</span>
+        } else {
+            // If the role is null, the credentials are invalid
+<span class="fc" id="L74">            System.out.println(&quot;Invalid credentials. Redirecting to Main Menu&quot;);</span>
+<span class="fc" id="L75">            return false;</span>
+        }
+    }
+
+
+    /**
+     * Resets the user's password by generating and sending an OTP to their email address.
+     *
+     * @return true if the password was reset successfully, false otherwise.
+     * @throws SQLException if an error occurs while accessing the database.
+     */
+    public boolean resetPassword() throws SQLException {
+        // Prompt the user to enter their username (email address)
+<span class="fc" id="L88">        String email_id = Utils.getInput(&quot;Enter your username(email):&quot;);</span>
+
+        // Check if the username exists in the database
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (!dbUser.validateCredentials(email_id)) {</span>
+<span class="fc" id="L92">            System.out.println(&quot;Username not registered with ILM. Contact Admin for new Account Creation.&quot;);</span>
+<span class="fc" id="L93">            return false;</span>
+        }
+
+        // Generate a random OTP and send it to the user's email address
+<span class="fc" id="L97">        int otp = Utils.generateOTP();</span>
+<span class="fc" id="L98">        MailManagement mailManagement = new MailManagement();</span>
+<span class="fc" id="L99">        String[] toEmails = {email_id};</span>
+<span class="fc" id="L100">        String subject = &quot;Reset Password&quot;;</span>
+<span class="fc" id="L101">        String message = &quot;Your OTP to reset your ILM password is: &quot; + otp;</span>
+<span class="fc" id="L102">        mailManagement.sendMail(subject, message, toEmails);</span>
+
+        // Prompt the user to enter the OTP sent to their email address
+<span class="fc" id="L105">        int enteredOTP = Integer.parseInt(Utils.getInput(&quot;Enter the OTP sent on your email to reset your password :&quot;));</span>
+
+        // If the entered OTP is valid, prompt the user to enter their new password and update it in the database
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (otp == enteredOTP) {</span>
+<span class="fc" id="L109">            String newPassword = Utils.getInput(&quot;Enter your new password:&quot;);</span>
+<span class="fc" id="L110">            this.email_id = email_id;</span>
+<span class="fc" id="L111">            dbUser.changePassword(this, newPassword);</span>
+<span class="fc" id="L112">        } else {</span>
+            // If the entered OTP is invalid, display an error message and return false
+<span class="fc" id="L114">            System.out.println(&quot;Invalid OTP. Redirecting to Main Menu&quot;);</span>
+<span class="fc" id="L115">            return false;</span>
+        }
+        // Return true if the password was reset successfully
+<span class="fc" id="L118">        return true;</span>
+    }
+
+    /**
+     * This method displays the user's profile details and prompts the user to either edit their profile or go back to the main menu.
+     *
+     * @throws SQLException if there is an error accessing the database
+     */
+    public void viewProfile() throws SQLException {
+<span class="fc" id="L127">        System.out.printf(&quot;Hi %s !\n&quot;, this.email_id);</span>
+<span class="fc" id="L128">        ResultSet profileDetails = dbUser.getProfileDetails(this);</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        while (profileDetails.next()) {</span>
+<span class="fc" id="L130">            System.out.printf(&quot;ID: %s\n&quot;, profileDetails.getString(1));</span>
+<span class="fc" id="L131">            System.out.printf(&quot;Name: %s\n&quot;, profileDetails.getString(2));</span>
+<span class="fc" id="L132">            System.out.printf(&quot;Phone Number: %s\n&quot;, profileDetails.getString(3));</span>
+<span class="fc" id="L133">            System.out.printf(&quot;Department: %s\n&quot;, profileDetails.getString(4));</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">            if (this.userRole.equals(&quot;student&quot;)) {</span>
+<span class="fc" id="L135">                System.out.printf(&quot;Batch: %s\n&quot;, profileDetails.getString(5));</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">            } else if (this.userRole.equals(&quot;instructor&quot;)) {</span>
+<span class="fc" id="L137">                System.out.printf(&quot;Date of Joining: %s\n&quot;, profileDetails.getString(5));</span>
+            }
+        }
+<span class="fc" id="L140">        System.out.println(&quot;Press 1 to Edit your profile&quot;);</span>
+<span class="fc" id="L141">        System.out.println(&quot;Press 2 to go back to Main Menu&quot;);</span>
+
+        // Prompt user for choice
+<span class="fc" id="L144">        int choice = Utils.getUserChoice(2);</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        if (choice == 1) {</span>
+<span class="fc" id="L146">            editProfile();</span>
+        }
+<span class="fc" id="L148">    }</span>
+
+    /**
+     * Displays the menu for editing user profile and performs the selected action.
+     *
+     * @throws SQLException if an error occurs while accessing the database.
+     */
+    public void editProfile() throws SQLException {
+        // Display the menu options for editing user profile
+<span class="fc" id="L157">        System.out.println(&quot;1. Update Phone Number&quot;);</span>
+<span class="fc" id="L158">        System.out.println(&quot;2. Update Password&quot;);</span>
+<span class="fc" id="L159">        System.out.println(&quot;3. Go back to Main Menu&quot;);</span>
+
+        // Get the user's choice from the menu options
+<span class="fc" id="L162">        int choice = Utils.getUserChoice(3);</span>
+
+        // Perform the selected action based on the user's choice
+<span class="fc bfc" id="L165" title="All 3 branches covered.">        switch (choice) {</span>
+            case 1 -&gt; {
+                // Prompt the user to enter their new phone number and attempt to update it in the database
+<span class="fc" id="L168">                String newPhoneNumber = Utils.getInput(&quot;Enter your new phone number:&quot;);</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">                if (dbUser.updatePhone(this, newPhoneNumber)) {</span>
+<span class="fc" id="L170">                    System.out.println(&quot;Phone number updated successfully&quot;);</span>
+                } else {
+<span class="fc" id="L172">                    System.out.println(&quot;Unable to update phone number. Please try again later.&quot;);</span>
+                }
+<span class="fc" id="L174">            }</span>
+            case 2 -&gt; {
+                // Prompt the user to enter their new password and attempt to update it in the database
+<span class="fc" id="L177">                String newPassword = Utils.getInput(&quot;Enter your new password:&quot;);</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">                if (dbUser.changePassword(this, newPassword)) {</span>
+<span class="fc" id="L179">                    System.out.println(&quot;Password updated successfully&quot;);</span>
+                } else {
+<span class="fc" id="L181">                    System.out.println(&quot;Unable to update password. Please try again later.&quot;);</span>
+                }
+<span class="fc" id="L183">            }</span>
+            default -&gt; {
+            }
+        }
+<span class="fc" id="L187">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

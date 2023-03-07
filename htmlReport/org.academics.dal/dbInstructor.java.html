@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>dbInstructor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'org.academics' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.academics.dal</a> &gt; <span class="el_source">dbInstructor.java</span></div><h1>dbInstructor.java</h1><pre class="source lang-java linenums">package org.academics.dal;
+
+import com.opencsv.CSVReader;
+import org.academics.users.User;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This class provides methods to fetch data from the database pertaining to instructor.
+ */
+<span class="nc" id="L19">public class dbInstructor {</span>
+<span class="fc" id="L20">    private static final JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();</span>
+<span class="fc" id="L21">    private static final Connection conn = jdbc.getConnection();</span>
+
+
+    /**
+     * This method fetches the instructor ID of the instructor with the given email ID.
+     *
+     * @param user the user whose instructor ID is to be fetched
+     * @return the instructor ID of the instructor with the given email ID
+     * @throws SQLException if there is an error with database access
+     */
+    public static int fetchInstructorID(User user) throws SQLException {
+<span class="fc" id="L32">        PreparedStatement getInstructorId = conn.prepareStatement(&quot;SELECT instructor_id FROM instructors WHERE email_id = ?&quot;);</span>
+<span class="fc" id="L33">        getInstructorId.setString(1, user.email_id);</span>
+<span class="fc" id="L34">        ResultSet resultSet = getInstructorId.executeQuery();</span>
+<span class="fc" id="L35">        resultSet.next();</span>
+<span class="fc" id="L36">        return resultSet.getInt(&quot;instructor_id&quot;);</span>
+
+
+    }
+
+
+    /**
+     * Fetches all the courses taught by the instructor with the given ID from the database.
+     *
+     * @param instructorID The ID of the instructor whose courses are to be fetched.
+     * @return The ResultSet object containing the courses taught by the instructor.
+     * @throws SQLException If an error occurs while executing the SQL query.
+     */
+    public static ResultSet fetchCourses(int instructorID) throws SQLException {
+        // Creating a prepared statement to fetch courses taught by the instructor with the given ID
+<span class="fc" id="L51">        PreparedStatement fetchCourses = conn.prepareStatement(&quot;SELECT course_offerings.course_code,course_offerings.semester,course_offerings.qualify,course_offerings.enrollment_count FROM course_offerings WHERE instructor_id = ?&quot;, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);</span>
+        // Setting the instructor_id parameter in the PreparedStatement
+<span class="fc" id="L53">        fetchCourses.setInt(1, instructorID);</span>
+        // Executing the query and returning the ResultSet
+<span class="fc" id="L55">        return fetchCourses.executeQuery();</span>
+    }
+
+    /**
+     * This method fetches all the approved courses from the course catalog.
+     *
+     * @return a ResultSet containing the approved courses
+     * @throws SQLException if there is an error with the SQL query
+     */
+    public static ResultSet fetchApprovedCourses() throws SQLException {
+        // Prepare the SQL statement to fetch the approved courses
+<span class="fc" id="L66">        PreparedStatement approvedCourses = conn.prepareStatement(&quot;SELECT course_catalog.course_code,course_catalog.course_name, prerequisite FROM course_catalog&quot;, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);</span>
+        // Execute the SQL query and return the result set
+<span class="fc" id="L68">        return approvedCourses.executeQuery();</span>
+    }
+
+
+    /**
+     * This method checks if a course with the given course code is approved by the Senate.
+     *
+     * @param course_code the code of the course to be checked
+     * @return true if the course is approved, false otherwise
+     * @throws SQLException if there is an error with the SQL query
+     */
+    public static boolean checkCourseApproval(String course_code) throws SQLException {
+        // Prepare the SQL statement to validate the course
+<span class="fc" id="L81">        PreparedStatement validateCourse = conn.prepareStatement(&quot;SELECT course_code FROM course_catalog WHERE course_code = ?&quot;, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);</span>
+        // Set the course code parameter in the prepared statement
+<span class="fc" id="L83">        validateCourse.setString(1, course_code);</span>
+        // Execute the SQL query and return true if the result set is not empty
+<span class="fc" id="L85">        return validateCourse.executeQuery().next();</span>
+    }
+
+    /**
+     * Fetches the grades of students in a particular course and session.
+     *
+     * @param course_code the course code of the course to fetch grades for
+     * @param session     the session to fetch grades for
+     * @return a ResultSet containing the course code, course name, semester, student ID, name, and grade for all students in the course and session
+     * @throws SQLException if an error occurs while executing the SQL query
+     */
+    public static ResultSet fetchCourseGrades(String course_code, String session) throws SQLException {
+<span class="fc" id="L97">        PreparedStatement getGrades = conn.prepareStatement(&quot;SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.semester, course_enrollments.student_id, students.name, course_enrollments.grade FROM course_enrollments JOIN course_catalog ON course_enrollments.course_code=course_catalog.course_code JOIN students ON course_enrollments.student_id = students.student_id WHERE course_enrollments.course_code = ? AND course_enrollments.semester = ?&quot;, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);</span>
+<span class="fc" id="L98">        getGrades.setString(1, course_code);</span>
+<span class="fc" id="L99">        getGrades.setString(2, session);</span>
+<span class="fc" id="L100">        return getGrades.executeQuery();</span>
+    }
+
+    /**
+     * Returns a ResultSet of grades for a given student.
+     *
+     * @param studentID ID of the student whose grades are to be fetched
+     * @return ResultSet of grades for the student
+     * @throws SQLException if there is an error in executing the SQL query
+     */
+    public static ResultSet fetchStudentGrades(String studentID) throws SQLException {
+<span class="fc" id="L111">        PreparedStatement getGrades = conn.prepareStatement(&quot;SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.semester, course_enrollments.student_id, students.name, course_enrollments.grade FROM course_enrollments JOIN course_catalog ON course_enrollments.course_code=course_catalog.course_code JOIN students ON course_enrollments.student_id = students.student_id WHERE course_enrollments.student_id = ?&quot;, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);</span>
+<span class="fc" id="L112">        getGrades.setString(1, studentID);</span>
+        // Executing the query and returning the ResultSet
+<span class="fc" id="L114">        return getGrades.executeQuery();</span>
+    }
+
+    /**
+     * Checks whether a course with the given course code, semester, belongs to a given instructor ID
+     *
+     * @param course_code  the course code to check
+     * @param semester     the semester to check
+     * @param instructorID the instructor ID to check
+     * @return true if the course exists in the course_offerings table, false otherwise
+     * @throws SQLException if an error occurs while executing the SQL query
+     */
+    public static boolean isCourseInstructor(String course_code, String semester, int instructorID) throws SQLException {
+<span class="fc" id="L127">        PreparedStatement validateCourse = conn.prepareStatement(&quot;SELECT * FROM course_offerings WHERE course_code = ? AND semester = ? AND instructor_id = ?&quot;, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);</span>
+<span class="fc" id="L128">        validateCourse.setString(1, course_code);</span>
+<span class="fc" id="L129">        validateCourse.setString(2, semester);</span>
+<span class="fc" id="L130">        validateCourse.setInt(3, instructorID);</span>
+<span class="fc" id="L131">        return validateCourse.executeQuery().next();</span>
+    }
+
+    /**
+     * Checks if the course has already been floated in the given semester
+     *
+     * @param course_code The code of the course to check
+     * @param semester    The semester to check
+     * @return A string message indicating if the course is already floated or null if it is not floated yet
+     * @throws SQLException If there is an error executing the SQL query
+     */
+    public static String isCourseFloated(String course_code, String semester) throws SQLException {
+<span class="fc" id="L143">        PreparedStatement isCourseFloated = conn.prepareStatement(&quot;SELECT instructors.name FROM course_offerings JOIN instructors  on course_offerings.instructor_id = instructors.instructor_id WHERE course_offerings.course_code = ? AND course_offerings.semester = ?&quot;, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);</span>
+        ResultSet resultSet;
+<span class="fc" id="L145">        isCourseFloated.setString(1, course_code);</span>
+<span class="fc" id="L146">        isCourseFloated.setString(2, semester);</span>
+<span class="fc" id="L147">        resultSet = isCourseFloated.executeQuery();</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">        if (resultSet.next()) {</span>
+<span class="fc" id="L149">            return &quot;The course is already floated by Dr.&quot; + resultSet.getString(1);</span>
+        }
+<span class="fc" id="L151">        return null;</span>
+    }
+
+
+    /**
+     * Delete a course from the list of courses offered by an instructor
+     *
+     * @param course_code  course code of the course to be deleted
+     * @param semester     semester in which the course is offered
+     * @param instructorID ID of the instructor
+     * @return true if the course is deleted, false otherwise
+     * @throws SQLException if there's an error executing the SQL statement
+     */
+    public static boolean delistCourse(String course_code, String semester, int instructorID) throws SQLException {
+<span class="fc" id="L165">        PreparedStatement delistCourse = conn.prepareStatement(&quot;DELETE FROM course_offerings WHERE course_code = ? AND semester = ? AND instructor_id = ?&quot;, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);</span>
+<span class="fc" id="L166">        delistCourse.setString(1, course_code);</span>
+<span class="fc" id="L167">        delistCourse.setString(2, semester);</span>
+<span class="fc" id="L168">        delistCourse.setInt(3, instructorID);</span>
+<span class="fc" id="L169">        delistCourse.executeUpdate();</span>
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">        return (delistCourse.getUpdateCount() &gt; 0);</span>
+    }
+
+    /**
+     * Uploads grades for students in a course and semester from a CSV file.
+     *
+     * @param filePath    the path to the CSV file
+     * @param course_code the course code for which to upload the grades
+     * @param semester    the semester for which to upload the grades
+     * @throws SQLException if a database access error occurs
+     * @throws IOException  if an I/O error occurs while reading the CSV file
+     */
+    public static int uploadGrades(String filePath, String course_code, String semester) throws SQLException, IOException {
+
+        // Prepare an SQL statement to update course enrollments with grades
+<span class="fc" id="L185">        PreparedStatement uploadGrades = conn.prepareStatement(&quot;UPDATE course_enrollments SET grade = ? WHERE enrollment_id = ? AND course_code = ? AND semester = ?&quot;, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);</span>
+
+<span class="fc" id="L187">        CSVReader reader = null;</span>
+        // Read the CSV file using a CSVReader
+        try {
+<span class="fc" id="L190">            reader = new CSVReader(new FileReader(filePath));</span>
+<span class="fc" id="L191">        } catch (FileNotFoundException e) {</span>
+<span class="fc" id="L192">            System.out.println(&quot;File not found&quot;);</span>
+<span class="fc" id="L193">            return 0;</span>
+<span class="fc" id="L194">        }</span>
+        String[] line;
+
+<span class="fc" id="L197">        int count = 0;</span>
+
+        // Loop through each row in the CSV file
+<span class="fc" id="L200">        reader.readNext(); // Skip the first line</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">        while ((line = reader.readNext()) != null) {</span>
+
+            // Set the parameters for the SQL statement
+<span class="fc" id="L204">            uploadGrades.setString(1, line[3]); // set the grade</span>
+<span class="fc" id="L205">            uploadGrades.setInt(2, Integer.parseInt((line[0]))); // set the student_id</span>
+<span class="fc" id="L206">            uploadGrades.setString(3, course_code); // set the course_code</span>
+<span class="fc" id="L207">            uploadGrades.setString(4, semester); // set the semester</span>
+
+
+            // Execute the SQL statement to update the course enrollment with the grade
+<span class="fc" id="L211">            uploadGrades.executeUpdate();</span>
+
+<span class="fc" id="L213">            count += uploadGrades.getUpdateCount();</span>
+            // Check if any rows were updated by the SQL statement
+<span class="fc bfc" id="L215" title="All 2 branches covered.">            if (uploadGrades.getUpdateCount() == 0) {</span>
+<span class="fc" id="L216">                System.out.printf(&quot;Error uploading grades for enrollment ID %s (StudentID %s) (No Course Enrollment Record Found)\n&quot;, line[0], line[1]);</span>
+            }
+        }
+<span class="fc" id="L219">        return count;</span>
+    }
+
+    /**
+     * Fetches a result set of all students enrolled in a given course and semester.
+     *
+     * @param course_code the course code to fetch students for
+     * @param semester    the semester to fetch students for
+     * @return a {@link java.sql.ResultSet} containing the enrollment ID, student ID, and name of each enrolled student
+     * @throws java.sql.SQLException if a database error occurs
+     */
+    public static ResultSet fetchStudentsList(String course_code, String semester) throws SQLException {
+<span class="fc" id="L231">        PreparedStatement getEnrolledStudents = conn.prepareStatement(&quot;SELECT course_enrollments.enrollment_id, course_enrollments.student_id, students.name FROM course_enrollments JOIN students on course_enrollments.student_id = students.student_id WHERE course_code = ? AND semester = ? ORDER BY course_enrollments.student_id ASC&quot;);</span>
+<span class="fc" id="L232">        getEnrolledStudents.setString(1, course_code);</span>
+<span class="fc" id="L233">        getEnrolledStudents.setString(2, semester);</span>
+<span class="fc" id="L234">        return getEnrolledStudents.executeQuery();</span>
+    }
+
+
+    /**
+     * Adds a new course offering in the database.
+     *
+     * @param course_code     the code of the course to float
+     * @param semester        the semester of the course offering
+     * @param instructorID    the ID of the instructor for the course
+     * @param enrollmentCount the enrollment count for the course offering
+     * @param qualify         the qualification score required for the course offering
+     * @param preRequisites   the prerequisites for the course offering
+     * @return true if the course offering was successfully floated, false otherwise
+     * @throws SQLException if a database access error occurs
+     */
+    public static boolean floatCourse(String course_code, String semester, int instructorID, int enrollmentCount, double qualify, ArrayList&lt;String&gt; preRequisites) throws SQLException {
+<span class="fc" id="L251">        PreparedStatement floatCourse = conn.prepareStatement(&quot;INSERT INTO course_offerings (course_code, semester, instructor_id, enrollment_count, qualify, prerequisite) VALUES (?, ?, ?, ?, ?, ?)&quot;);</span>
+<span class="fc" id="L252">        floatCourse.setString(1, course_code);</span>
+<span class="fc" id="L253">        floatCourse.setString(2, semester);</span>
+<span class="fc" id="L254">        floatCourse.setInt(3, instructorID);</span>
+<span class="fc" id="L255">        floatCourse.setInt(4, enrollmentCount);</span>
+<span class="fc" id="L256">        floatCourse.setDouble(5, qualify);</span>
+<span class="fc" id="L257">        floatCourse.setArray(6, conn.createArrayOf(&quot;text&quot;, preRequisites.toArray()));</span>
+<span class="fc" id="L258">        floatCourse.executeUpdate();</span>
+<span class="pc bpc" id="L259" title="1 of 2 branches missed.">        return (floatCourse.getUpdateCount() &gt; 0);</span>
+    }
+
+
+    /**
+     * Updates course mappings in the database for a given course code, semester, and other parameters.
+     *
+     * @param course_code   The code of the course being mapped.
+     * @param semester      The semester for which the course is being mapped.
+     * @param departmentIds A list of department IDs to map the course to.
+     * @param batches       A list of batches to map the course to.
+     * @param courseTypes   A list of course types to map the course to.
+     * @throws SQLException If an error occurs while executing the SQL statement.
+     */
+    public static void updateCourseMapping(String course_code, String semester, List&lt;Integer&gt; departmentIds, List&lt;Integer&gt; batches, List&lt;String&gt; courseTypes) throws SQLException {
+<span class="fc" id="L274">        PreparedStatement updateCourseMapping = conn.prepareStatement(&quot;INSERT INTO course_mappings (course_code, semester, department_id, batch, course_type) VALUES (?, ?, ?, ?,?)&quot;);</span>
+<span class="fc bfc" id="L275" title="All 2 branches covered.">        for (int i = 0; i &lt; departmentIds.size(); i++) {</span>
+<span class="fc" id="L276">            updateCourseMapping.setString(1, course_code);</span>
+<span class="fc" id="L277">            updateCourseMapping.setString(2, semester);</span>
+<span class="fc" id="L278">            updateCourseMapping.setInt(3, departmentIds.get(i));</span>
+<span class="fc" id="L279">            updateCourseMapping.setInt(4, batches.get(i));</span>
+<span class="fc" id="L280">            updateCourseMapping.setString(5, courseTypes.get(i));</span>
+<span class="fc" id="L281">            updateCourseMapping.executeUpdate();</span>
+        }
+<span class="fc" id="L283">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

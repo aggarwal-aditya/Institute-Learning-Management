@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>dbUser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'org.academics' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.academics.dal</a> &gt; <span class="el_source">dbUser.java</span></div><h1>dbUser.java</h1><pre class="source lang-java linenums">package org.academics.dal;
+
+import org.academics.users.User;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+/**
+ * A class to handle database operations related to users
+ */
+<span class="nc" id="L13">public class dbUser {</span>
+
+<span class="fc" id="L15">    private static final JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();</span>
+<span class="fc" id="L16">    private static final Connection conn = jdbc.getConnection();</span>
+
+    /**
+     * This method validates user's email_id and password against the records in the database.
+     *
+     * @param email_id the user's email_id to be validated
+     * @param password the user's password to be validated
+     * @return String the user's role if credentials are valid, else null
+     * @throws SQLException if a database access error occurs
+     */
+    public static String validateCredentials(String email_id, String password) throws SQLException {
+        // Here, a prepared statement is created to retrieve the user's details from the database
+<span class="fc" id="L28">        PreparedStatement userDetails = conn.prepareStatement(&quot;SELECT * FROM users WHERE email_id = ? AND password = ?&quot;);</span>
+<span class="fc" id="L29">        userDetails.setString(1, email_id);</span>
+<span class="fc" id="L30">        userDetails.setString(2, password);</span>
+
+        // If the retrieved details exist, the user's role is returned
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        if (userDetails.executeQuery().next()) {</span>
+            // Here, a prepared statement is created to retrieve the user's role from the database
+<span class="fc" id="L35">            PreparedStatement statementRole = conn.prepareStatement(&quot;SELECT role FROM users WHERE email_id = ?&quot;);</span>
+<span class="fc" id="L36">            statementRole.setString(1, email_id);</span>
+<span class="fc" id="L37">            ResultSet resultSet = statementRole.executeQuery();</span>
+<span class="fc" id="L38">            resultSet.next();</span>
+<span class="fc" id="L39">            return resultSet.getString(1);</span>
+        }
+        // If the retrieved details don't exist, null is returned
+<span class="fc" id="L42">        return null;</span>
+    }
+
+    /**
+     * Validates user credentials based on the email id provided.
+     *
+     * @param email_id The email id of the user.
+     * @return true if the user's details are found in the database, false otherwise.
+     * @throws SQLException if an error occurs while accessing the database.
+     */
+    public static boolean validateCredentials(String email_id) throws SQLException {
+        // Here, a prepared statement is created to retrieve the user's details from the database
+<span class="fc" id="L54">        PreparedStatement userDetails = conn.prepareStatement(&quot;SELECT * FROM users WHERE email_id = ?&quot;);</span>
+<span class="fc" id="L55">        userDetails.setString(1, email_id);</span>
+<span class="fc" id="L56">        return userDetails.executeQuery().next();</span>
+    }
+
+    /**
+     * Retrieves user's profile details from the database.
+     *
+     * @param user a User object representing the user whose profile details are to be retrieved
+     * @return a ResultSet object containing the user's profile details
+     * @throws SQLException if there is an error while accessing the database
+     */
+    public static ResultSet getProfileDetails(User user) throws SQLException {
+<span class="fc" id="L67">        PreparedStatement userDetails = null;</span>
+        // Depending on the user's role, different SQL queries are executed
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (user.userRole.equals(&quot;student&quot;)) {</span>
+<span class="fc" id="L70">            userDetails = conn.prepareStatement(&quot;SELECT student_id,students.name,phone_number,d.name,batch FROM students JOIN departments d on students.department_id = d.id WHERE email_id = ?&quot;);</span>
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        } else if (user.userRole.equals(&quot;instructor&quot;)) {</span>
+<span class="fc" id="L72">            userDetails = conn.prepareStatement(&quot;SELECT instructor_id,instructors.name,phone_number,d.name,date_of_joining FROM instructors JOIN departments d on instructors.department_id = d.id WHERE email_id = ?&quot;);</span>
+        }
+        // Setting the email_id parameter in the PreparedStatement
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        assert userDetails != null;</span>
+<span class="fc" id="L76">        userDetails.setString(1, user.email_id);</span>
+        // Executing the query and returning the ResultSet
+<span class="fc" id="L78">        return userDetails.executeQuery();</span>
+    }
+
+    /**
+     * Updates the phone number of the given user in the database
+     * depending on the user's role.
+     *
+     * @param user  The User object representing the user whose phone number is to be updated.
+     * @param phone The new phone number to be set.
+     * @return true if the phone number was updated successfully, false otherwise.
+     * @throws SQLException if there is an error executing the SQL query.
+     */
+    public static boolean updatePhone(User user, String phone) throws SQLException {
+<span class="fc" id="L91">        PreparedStatement userDetails = null;</span>
+        // Depending on the user's role, different SQL queries are executed
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        if (user.userRole.equals(&quot;student&quot;)) {</span>
+<span class="fc" id="L94">            userDetails = conn.prepareStatement(&quot;UPDATE students SET phone_number = ? WHERE email_id = ?&quot;);</span>
+        } else {
+<span class="fc" id="L96">            userDetails = conn.prepareStatement(&quot;UPDATE instructors SET phone_number = ? WHERE email_id = ?&quot;);</span>
+        }
+        // Setting the email_id parameter in the PreparedStatement
+<span class="fc" id="L99">        userDetails.setString(1, phone);</span>
+<span class="fc" id="L100">        userDetails.setString(2, user.email_id);</span>
+        // Executing the query and returning the ResultSet
+<span class="fc" id="L102">        userDetails.execute();</span>
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">        return userDetails.getUpdateCount() &gt; 0;</span>
+    }
+
+    /**
+     * Changes the password of the given user in the database.
+     *
+     * @param user     the User whose password will be changed.
+     * @param password the new password to be set.
+     * @return a boolean indicating whether the password was successfully changed or not.
+     * @throws SQLException if there is an error while updating the user's password in the database.
+     */
+    public static boolean changePassword(User user, String password) throws SQLException {
+<span class="fc" id="L115">        PreparedStatement userDetails = conn.prepareStatement(&quot;UPDATE users SET password = ? WHERE email_id = ?&quot;);</span>
+<span class="fc" id="L116">        userDetails.setString(1, password);</span>
+<span class="fc" id="L117">        userDetails.setString(2, user.email_id);</span>
+<span class="fc" id="L118">        userDetails.executeUpdate();</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">        return userDetails.getUpdateCount() &gt; 0;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

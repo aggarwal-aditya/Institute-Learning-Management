@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 
+/**
+ * This class contains methods that are only accessible to the admin
+ */
 public class Admin extends User {
     Scanner scanner = new Scanner(System.in);
     JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();

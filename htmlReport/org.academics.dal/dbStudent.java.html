@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>dbStudent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'org.academics' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.academics.dal</a> &gt; <span class="el_source">dbStudent.java</span></div><h1>dbStudent.java</h1><pre class="source lang-java linenums">package org.academics.dal;
+
+import java.math.RoundingMode;
+import java.sql.*;
+
+/**
+ * A database access class for managing student actions.
+ */
+<span class="nc" id="L9">public class dbStudent {</span>
+
+<span class="fc" id="L11">    private static final JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();</span>
+<span class="fc" id="L12">    private static final Connection conn = jdbc.getConnection();</span>
+
+    /**
+     * Computes the grade point average (GPA) for a given student using a stored procedure in the database.
+     *
+     * @param studentID the ID of the student whose GPA is to be computed
+     * @return the computed GPA value, rounded to two decimal places
+     * @throws SQLException if an error occurs while interacting with the database
+     */
+    public static double computeGPA(String studentID) throws SQLException {
+        // Prepare a CallableStatement to call the stored procedure calculate_cgpa
+<span class="fc" id="L23">        CallableStatement calculateCGPA = conn.prepareCall(&quot;{? = call calculate_cgpa(?)}&quot;);</span>
+
+        // Register an output parameter with index 1 of type NUMERIC to receive the computed GPA value
+<span class="fc" id="L26">        calculateCGPA.registerOutParameter(1, Types.NUMERIC);</span>
+
+        // Set the studentID parameter as the second input parameter to the stored procedure
+<span class="fc" id="L29">        calculateCGPA.setString(2, studentID);</span>
+
+        // Execute the stored procedure
+<span class="fc" id="L32">        calculateCGPA.execute();</span>
+
+        // Get the computed GPA value from the output parameter with index 1,
+        // round it to two decimal places using the HALF_UP rounding mode,
+        // and convert it to a double value
+<span class="fc" id="L37">        return calculateCGPA.getBigDecimal(1).setScale(2, RoundingMode.HALF_UP).doubleValue();</span>
+    }
+
+    /**
+     * Fetches the grades of a given student for all courses taken until a given semester, using a prepared statement.
+     *
+     * @param studentID the ID of the student whose grades are to be fetched
+     * @param tillSem   the semester until which the grades are to be fetched
+     * @return a ResultSet object containing the fetched grades
+     * @throws SQLException if an error occurs while interacting with the database
+     */
+    public static ResultSet fetchGrades(String studentID, String tillSem) throws SQLException {
+        // Prepare a PreparedStatement to fetch the grades of a student until a given semester
+<span class="fc" id="L50">        PreparedStatement getRegisteredCourses = conn.prepareStatement(&quot;SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.grade &quot; + &quot;FROM course_catalog JOIN course_enrollments ON course_catalog.course_code = course_enrollments.course_code &quot; + &quot;WHERE course_enrollments.student_id =? AND course_enrollments.semester&lt;=?;&quot;, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);</span>
+
+        // Set the studentID parameter as the first input parameter to the prepared statement
+<span class="fc" id="L53">        getRegisteredCourses.setString(1, studentID);</span>
+
+        // Set the tillSem parameter as the second input parameter to the prepared statement
+<span class="fc" id="L56">        getRegisteredCourses.setString(2, tillSem);</span>
+
+        // Execute the prepared statement and return the ResultSet object containing the fetched grades
+<span class="fc" id="L59">        return getRegisteredCourses.executeQuery();</span>
+    }
+
+    /**
+     * Returns a ResultSet object that contains the course codes, course names, and grades for the courses
+     * that a particular student has enrolled in up to the current semester.
+     *
+     * @param studentID the ID of the student whose enrolled courses are to be fetched
+     * @param semester  the current semester
+     * @return a ResultSet object that contains the course codes, course names, and grades for the courses
+     * that the student has enrolled in
+     * @throws SQLException if there is an error executing the SQL query
+     */
+    public static ResultSet fetchCourses(String studentID, String semester) throws SQLException {
+        // Prepare a PreparedStatement to fetch the grades of a student until a given semester
+<span class="fc" id="L74">        PreparedStatement getRegisteredCourses = conn.prepareStatement(&quot;SELECT course_catalog.course_code, course_catalog.course_name, course_enrollments.grade &quot; + &quot;FROM course_catalog JOIN course_enrollments ON course_catalog.course_code = course_enrollments.course_code &quot; + &quot;WHERE course_enrollments.student_id =? AND course_enrollments.semester=?;&quot;, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);</span>
+
+        // Set the studentID parameter as the first input parameter to the prepared statement
+<span class="fc" id="L77">        getRegisteredCourses.setString(1, studentID);</span>
+
+        // Set the current semester as the second input parameter to the prepared statement
+<span class="fc" id="L80">        getRegisteredCourses.setString(2, semester);</span>
+
+        // Execute the prepared statement and return the ResultSet object containing the fetched grades
+<span class="fc" id="L83">        return getRegisteredCourses.executeQuery();</span>
+    }
+
+    /**
+     * Drops a course from a student's schedule for the current semester.
+     *
+     * @param studentID   the ID of the student whose schedule should be updated
+     * @param course_code the code of the course to be dropped
+     * @param semester    the semester in which the course is being dropped
+     * @return the number of rows affected by the update (should be 1 if the drop was successful)
+     * @throws SQLException if an error occurs while interacting with the database
+     */
+    public static int dropCourse(String studentID, String course_code, String semester) throws SQLException {
+        // Prepare a PreparedStatement to delete the enrollment record for the given student and course in the current semester
+<span class="fc" id="L97">        PreparedStatement dropCourse = conn.prepareStatement(&quot;DELETE FROM course_enrollments WHERE student_id=? AND course_code=? AND semester=?;&quot;);</span>
+
+        // Set the studentID parameter as the first input parameter to the prepared statement
+<span class="fc" id="L100">        dropCourse.setString(1, studentID);</span>
+
+        // Set the courseCode parameter as the second input parameter to the prepared statement
+<span class="fc" id="L103">        dropCourse.setString(2, course_code);</span>
+
+        // Set the semester as the third input parameter to the prepared statement
+<span class="fc" id="L106">        dropCourse.setString(3, semester);</span>
+
+        // Execute the prepared statement and return the number of rows affected by the delete operation
+<span class="fc" id="L109">        return dropCourse.executeUpdate();</span>
+    }
+
+    /**
+     * This method retrieves the list of available courses for a given semester
+     *
+     * @param semester The semester for which the available courses are to be fetched
+     * @return A ResultSet object containing the available courses for the given semester
+     * @throws SQLException if there is an error executing the SQL statement
+     */
+    public static ResultSet fetchCoursesForRegistration(String semester) throws SQLException {
+        // Prepare a PreparedStatement to fetch the available courses for a given semester
+<span class="fc" id="L121">        PreparedStatement getAvailableCourses = conn.prepareStatement(&quot;SELECT course_offerings.course_code, course_catalog.course_name,instructors.name FROM course_offerings JOIN course_catalog ON course_offerings.course_code = course_catalog.course_code JOIN instructors ON course_offerings.instructor_id = instructors.instructor_id WHERE course_offerings.semester =?;&quot;, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);</span>
+
+        // Set the semester parameter as the first input parameter to the prepared statement
+<span class="fc" id="L124">        getAvailableCourses.setString(1, semester);</span>
+
+        // Execute the prepared statement and return the ResultSet object containing the available courses
+<span class="fc" id="L127">        return getAvailableCourses.executeQuery();</span>
+    }
+
+    /**
+     * This method fetches the minimum CGPA required to qualify for a particular course in a given semester
+     *
+     * @param course_code The course code of the course
+     * @param semester    The semester in which the course is being offered
+     * @return The minimum CGPA required to qualify for the course
+     * @throws SQLException If there is an error while executing the SQL query
+     */
+    public static double fetchMinCGPA(String course_code, String semester) throws SQLException {
+        // Prepare a PreparedStatement to fetch the minimum CGPA required to qualify for the course
+<span class="fc" id="L140">        PreparedStatement minCGPA = conn.prepareStatement(&quot;SELECT qualify from course_offerings WHERE course_code =? AND semester =?;&quot;);</span>
+
+        // Set the course_code parameter as the first input parameter to the prepared statement
+<span class="fc" id="L143">        minCGPA.setString(1, course_code);</span>
+
+        // Set the semester parameter as the second input parameter to the prepared statement
+<span class="fc" id="L146">        minCGPA.setString(2, semester);</span>
+
+        // Execute the prepared statement and return the minimum CGPA as a double
+<span class="fc" id="L149">        ResultSet minCGPAResult = minCGPA.executeQuery();</span>
+<span class="fc" id="L150">        minCGPAResult.next();</span>
+<span class="fc" id="L151">        return minCGPAResult.getDouble(1);</span>
+    }
+
+    /**
+     * Returns the prerequisites for a given course in a given semester.
+     *
+     * @param course_code the code of the course for which prerequisites are to be retrieved
+     * @param semester    the semester for which the prerequisites are to be retrieved
+     * @return a ResultSet object containing the prerequisites of the given course in the given semester
+     * @throws SQLException if there is an error while accessing the database
+     */
+    public static ResultSet getCoursePrerequisite(String course_code, String semester) throws SQLException {
+        // Prepare a PreparedStatement to retrieve the prerequisites of a given course for a given semester
+<span class="fc" id="L164">        PreparedStatement getPrerequisite = conn.prepareStatement(&quot;SELECT prerequisite from course_offerings WHERE course_code =? AND semester=? UNION SELECT prerequisite from course_catalog WHERE course_code =?;&quot;);</span>
+
+        // Set the parameters of the PreparedStatement
+<span class="fc" id="L167">        getPrerequisite.setString(1, course_code);</span>
+<span class="fc" id="L168">        getPrerequisite.setString(2, semester);</span>
+<span class="fc" id="L169">        getPrerequisite.setString(3, course_code);</span>
+
+        // Execute the PreparedStatement and return the ResultSet object containing the prerequisites
+<span class="fc" id="L172">        return getPrerequisite.executeQuery();</span>
+    }
+
+    /**
+     * Enrolls a student in a course for a given semester after performing credit limit and already enrolled checks.
+     *
+     * @param studentID   the ID of the student to enroll
+     * @param course_code the code of the course to enroll in
+     * @param semester    the semester to enroll in
+     * @return true if the student was enrolled successfully, false otherwise
+     */
+    public static boolean enrollCourse(String studentID, String course_code, String semester) {
+        try {
+<span class="fc" id="L185">            PreparedStatement enrolCourse = conn.prepareStatement(&quot;INSERT INTO course_enrollments (course_code, semester, student_id) VALUES(?,?,?);&quot;);</span>
+<span class="fc" id="L186">            enrolCourse.setString(1, course_code);</span>
+<span class="fc" id="L187">            enrolCourse.setString(2, semester);</span>
+<span class="fc" id="L188">            enrolCourse.setString(3, studentID);</span>
+<span class="fc" id="L189">            enrolCourse.execute();</span>
+<span class="fc" id="L190">            System.out.println(&quot;You have successfully registered for &quot; + course_code);</span>
+<span class="fc" id="L191">            return true;</span>
+<span class="fc" id="L192">        } catch (SQLException ex) {</span>
+            // Loop through the possible SQL exceptions and print the corresponding error message
+<span class="fc bfc" id="L194" title="All 2 branches covered.">            for (Throwable e : ex) {</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">                if (e.getMessage().contains(&quot;The student is already enrolled in the course&quot;)) {</span>
+<span class="fc" id="L196">                    System.out.println(&quot;You have already registered for this course&quot;);</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">                } else if (e.getMessage().contains(&quot;The student has already completed the course earlier&quot;)) {</span>
+<span class="fc" id="L198">                    System.out.println(&quot;You have already completed this course&quot;);</span>
+<span class="pc bpc" id="L199" title="1 of 2 branches missed.">                } else if (e.getMessage().contains(&quot;The student will exceed the credit limit for this semester&quot;)) {</span>
+<span class="fc" id="L200">                    System.out.println(&quot;You will exceed the credit limit for this semester&quot;);</span>
+                }
+<span class="fc" id="L202">            }</span>
+        }
+<span class="fc" id="L204">        return false;</span>
+    }
+
+    /**
+     * Checks if a given course is being offered in the given semester.
+     *
+     * @param course_code the code for the course being checked
+     * @param semester    the semester in which the course is being checked for availability
+     * @return a boolean indicating whether the course is being offered in the given semester
+     * @throws SQLException if there is an error executing the SQL query
+     */
+    public static boolean checkEnrollmentAvailability(String course_code, String semester) throws SQLException {
+        // Prepare a PreparedStatement to check if a given course is being offered in the given semester
+<span class="fc" id="L217">        PreparedStatement checkCourse = conn.prepareStatement(&quot;SELECT course_code FROM course_offerings WHERE course_code =? AND semester =?;&quot;);</span>
+
+        // Set the course_code parameter as the first input parameter to the prepared statement
+<span class="fc" id="L220">        checkCourse.setString(1, course_code);</span>
+
+        // Set the semester parameter as the second input parameter to the prepared statement
+<span class="fc" id="L223">        checkCourse.setString(2, semester);</span>
+
+        // Execute the prepared statement and return a boolean indicating whether the course is being offered in the given semester
+<span class="fc" id="L226">        ResultSet checkCourseResult = checkCourse.executeQuery();</span>
+<span class="fc" id="L227">        return checkCourseResult.next();</span>
+    }
+
+
+    /**
+     * This method checks the eligibility of a student for the given prerequisites by verifying the grades
+     * of the required courses. It returns a boolean value indicating whether the student meets the prerequisites
+     * or not.
+     *
+     * @param prerequisites An array of prerequisites required for a course
+     * @param studentID     The ID of the student whose eligibility is being checked
+     * @return A boolean value indicating whether the student meets the prerequisites or not
+     * @throws SQLException If there is an error while querying the database
+     */
+    public static boolean checkPreRequisitesEligibility(String[] prerequisites, String studentID) throws SQLException {
+        // Loop through all the prerequisites
+<span class="fc bfc" id="L243" title="All 2 branches covered.">        for (String prerequisite : prerequisites) {</span>
+<span class="fc" id="L244">            boolean check = false;</span>
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">            if (prerequisite != null) {</span>
+                // Split the prerequisite options by the delimiter '|'
+<span class="fc" id="L247">                String[] prerequisiteOptions = prerequisite.split(&quot;\\|&quot;);</span>
+                // Loop through all the options
+<span class="fc bfc" id="L249" title="All 2 branches covered.">                for (String prerequisiteOption : prerequisiteOptions) {</span>
+                    // If the option is an empty string, skip to the next option
+<span class="fc bfc" id="L251" title="All 2 branches covered.">                    if (prerequisiteOption.equals(&quot;&quot;)) {</span>
+<span class="fc" id="L252">                        continue;</span>
+                    }
+                    // Extract the course code and minimum grade required from the option
+<span class="fc" id="L255">                    String prerequisiteCode = prerequisiteOption.substring(0, prerequisiteOption.indexOf(&quot;(&quot;));</span>
+<span class="fc" id="L256">                    String minGrade = prerequisiteOption.substring(prerequisiteOption.indexOf(&quot;(&quot;) + 1, prerequisiteOption.indexOf(&quot;)&quot;));</span>
+//              System.out.println(prerequisiteCode + &quot; &quot; + minGrade);//Debug
+                    // Query the database to get the grade of the required course for the student
+<span class="fc" id="L259">                    PreparedStatement checkPrerequisites = conn.prepareStatement(&quot;SELECT grade FROM course_enrollments WHERE course_code =? AND student_id =?&quot;);</span>
+<span class="fc" id="L260">                    checkPrerequisites.setString(1, prerequisiteCode);</span>
+<span class="fc" id="L261">                    checkPrerequisites.setString(2, studentID);</span>
+<span class="fc" id="L262">                    ResultSet checkPrerequisitesResult = checkPrerequisites.executeQuery();</span>
+                    // If the student has not taken the required course, skip to the next option
+<span class="fc bfc" id="L264" title="All 2 branches covered.">                    if (!checkPrerequisitesResult.next()) {</span>
+<span class="fc" id="L265">                        continue;</span>
+                    }
+//                    // If the student has failed the required course or has not yet received a grade, skip to the next option
+//                    if (checkPrerequisitesResult.getString(&quot;grade&quot;).equals(&quot;F&quot;) || checkPrerequisitesResult.getString(&quot;grade&quot;).equals(&quot;NA&quot;)) {
+//                        continue;
+//                    }
+                    // If the student has not met the minimum grade required, skip to the next option
+<span class="fc bfc" id="L272" title="All 2 branches covered.">                    if (minGrade.compareTo(checkPrerequisitesResult.getString(&quot;grade&quot;)) &lt;0) {</span>
+<span class="fc" id="L273">                        continue;</span>
+                    }
+                    // If the student has met all the requirements for the option, set the check variable to true and break the loop
+<span class="fc" id="L276">                    check = true;</span>
+<span class="fc" id="L277">                    break;</span>
+                }
+                // If the student has not met the requirements for any option, return false
+<span class="fc bfc" id="L280" title="All 2 branches covered.">                if (!check) {</span>
+<span class="fc" id="L281">                    return false;</span>
+                }
+            }
+        }
+        // If the student has met the requirements for all prerequisites, return true
+<span class="fc" id="L286">        return true;</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

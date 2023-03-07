@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CurrentDate.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'org.academics' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.academics.utility</a> &gt; <span class="el_source">CurrentDate.java</span></div><h1>CurrentDate.java</h1><pre class="source lang-java linenums">package org.academics.utility;
+
+import java.time.LocalDate;
+
+
+/**
+ * This class is used to manage academic calendar
+ */
+
+public class CurrentDate {
+<span class="fc" id="L11">    private static CurrentDate instance = null;</span>
+    private LocalDate currentDate;
+
+    /**
+     * Private constructor to create an instance of CurrentDate with the current date.
+     */
+<span class="fc" id="L17">    private CurrentDate() {</span>
+<span class="fc" id="L18">        currentDate = LocalDate.now();</span>
+<span class="fc" id="L19">    }</span>
+
+    /**
+     * Returns an instance of CurrentDate.
+     *
+     * @return an instance of CurrentDate.
+     */
+    public static CurrentDate getInstance() {
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        if (instance == null) {</span>
+<span class="fc" id="L28">            instance = new CurrentDate();</span>
+        }
+<span class="fc" id="L30">        return instance;</span>
+    }
+
+    /**
+     * Returns the current date.
+     *
+     * @return the current date.
+     */
+    public LocalDate getCurrentDate() {
+<span class="fc" id="L39">        return currentDate;</span>
+    }
+
+    /**
+     * Overwrites the current date with a new date.
+     *
+     * @param year  the year of the new date.
+     * @param month the month of the new date.
+     * @param day   the day of the new date.
+     */
+    public void overwriteCurrentDate(int year, int month, int day) {
+<span class="fc" id="L50">        currentDate = LocalDate.of(year, month, day);</span>
+<span class="fc" id="L51">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

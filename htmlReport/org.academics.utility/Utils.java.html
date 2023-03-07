@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Utils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'org.academics' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.academics.utility</a> &gt; <span class="el_source">Utils.java</span></div><h1>Utils.java</h1><pre class="source lang-java linenums">package org.academics.utility;
+
+
+import dnl.utils.text.table.TextTable;
+import org.academics.dal.dbUtils;
+
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+
+/**
+ * This class is used to provide utility functions.
+ */
+public class Utils {
+
+    private Utils() {
+        //Private constructor to hide the implicit public one
+    }
+
+    /**
+     * Generates a one-time password (OTP) that is a 6-digit integer between 100000 and 999999.
+     *
+     * @return The generated OTP.
+     */
+    public static int generateOTP() {
+        // Math.random() generates a random double between 0.0 and 1.0.
+        // We multiply it by 900000 to get a random double between 0.0 and 900000.0.
+        // We add 100000 to get a random double between 100000.0 and 1000000.0.
+        // Finally, we cast it to an int to get a 6-digit integer between 100000 and 999999.
+<span class="fc" id="L38">        return (int) (Math.random() * 900000) + 100000;</span>
+    }
+
+
+    /**
+     * Prompts the user to enter a valid integer choice between 1 and maxChoice (inclusive).
+     *
+     * @param maxChoice The maximum valid choice.
+     * @return The user's valid integer choice.
+     */
+    public static int getUserChoice(int maxChoice) {
+<span class="fc" id="L49">        Scanner scanner = new Scanner(System.in);</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        while (!scanner.hasNextInt()) {</span>
+<span class="fc" id="L51">            System.out.println(&quot;Invalid choice&quot;);</span>
+<span class="fc" id="L52">            System.out.println(&quot;Enter your choice:&quot;);</span>
+<span class="fc" id="L53">            scanner.next();</span>
+        }
+<span class="fc" id="L55">        int choice = scanner.nextInt();</span>
+<span class="pc bpc" id="L56" title="1 of 4 branches missed.">        while (choice &lt; 1 || choice &gt; maxChoice) {</span>
+<span class="fc" id="L57">            System.out.println(&quot;Invalid choice&quot;);</span>
+<span class="fc" id="L58">            System.out.println(&quot;Enter your choice:&quot;);</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">            while (!scanner.hasNextInt()) {</span>
+<span class="fc" id="L60">                System.out.println(&quot;Invalid choice&quot;);</span>
+<span class="fc" id="L61">                System.out.println(&quot;Enter your choice:&quot;);</span>
+<span class="fc" id="L62">                scanner.next();</span>
+            }
+<span class="fc" id="L64">            choice = scanner.nextInt();</span>
+        }
+<span class="fc" id="L66">        return choice;</span>
+    }
+
+
+    /**
+     * Prompts the user to enter a non-empty string input and returns it.
+     *
+     * @param message the prompt message to display to the user
+     * @return the non-empty string input entered by the user
+     */
+    public static String getInput(String message) {
+<span class="fc" id="L77">        Scanner scanner = new Scanner(System.in);</span>
+<span class="fc" id="L78">        System.out.print(message + &quot; &quot;);</span>
+<span class="fc" id="L79">        String input = scanner.nextLine().trim(); // Read the input as a full line and trim any leading/trailing whitespace</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        while (input.isEmpty()) { // Check if the input is empty</span>
+<span class="fc" id="L81">            System.out.print(&quot;Invalid input. &quot; + message + &quot; &quot;); // Print an error message</span>
+<span class="fc" id="L82">            input = scanner.nextLine().trim(); // Read the input again</span>
+        }
+<span class="fc" id="L84">        return input;</span>
+    }
+
+
+    /**
+     * Returns the current academic session, based on the current date.
+     *
+     * @return the current academic session in the format &quot;YYYY-SEM&quot;, or null if no session is found.
+     * @throws SQLException if an error occurs while accessing the database
+     */
+    public static String getCurrentSession() throws SQLException {
+        // Get the current date
+<span class="fc" id="L96">        LocalDate currentDate = CurrentDate.getInstance().getCurrentDate();</span>
+<span class="fc" id="L97">        ResultSet resultSet = dbUtils.getCurrentSession(currentDate);</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        if (resultSet.next()) {</span>
+<span class="fc" id="L99">            return resultSet.getString(1) + &quot;-&quot; + resultSet.getString(2);</span>
+        } else {
+<span class="fc" id="L101">            return null;</span>
+        }
+    }
+
+
+    /**
+     * Validates if the current date falls within the start and end date of an event of a given event type and session.
+     *
+     * @param eventType the type of the event to validate
+     * @param session   the academic session in which the event is taking place
+     * @return true if the current date is within the event start and end date, false otherwise
+     * @throws SQLException if an error occurs while accessing the database
+     */
+    public static boolean validateEventTime(String eventType, String session) throws SQLException {
+<span class="fc" id="L115">        LocalDate currentDate = CurrentDate.getInstance().getCurrentDate();</span>
+<span class="fc" id="L116">        int year = Integer.parseInt(session.substring(0, 4));</span>
+<span class="fc" id="L117">        int semester = Integer.parseInt(session.substring(5));</span>
+<span class="fc" id="L118">        eventType = &quot; &quot; + eventType;</span>
+<span class="fc" id="L119">        ResultSet eventDetails = dbUtils.validateEventTime(eventType, year, semester, currentDate);</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        while (eventDetails.next()) {</span>
+<span class="pc bpc" id="L121" title="3 of 4 branches missed.">            if (currentDate.isAfter(eventDetails.getDate(1).toLocalDate()) &amp;&amp; currentDate.isBefore(eventDetails.getDate(2).toLocalDate())) {</span>
+<span class="nc" id="L122">                return true;</span>
+            }
+        }
+<span class="fc" id="L125">        return false;</span>
+    }
+
+
+    /**
+     * Exports the result set to a text file with the given filename and a custom message.
+     * The text file will contain a table with the columns &quot;Course Code&quot;, &quot;Course Name&quot;, &quot;Semester&quot;, and &quot;Grade&quot;.
+     * The file will be downloaded to the default Downloads folder of the current user on the operating system.
+     * If the operating system is not recognized, the user will be prompted to enter the path to download the file.
+     *
+     * @param resultSet the result set to be exported
+     * @param fileName  the name of the file to be downloaded
+     * @param message   the message to be included in the file
+     */
+    public static void exportTxt(ResultSet resultSet, String fileName, String message) {
+        try {
+<span class="fc" id="L141">            String os = System.getProperty(&quot;os.name&quot;).toLowerCase();</span>
+<span class="fc" id="L142">            String username = System.getProperty(&quot;user.name&quot;);</span>
+<span class="fc" id="L143">            String downloadPath = null;</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">            if (os.contains(&quot;mac&quot;)) {</span>
+<span class="nc" id="L145">                downloadPath = &quot;/Users/&quot; + username + &quot;/Downloads/&quot; + fileName + &quot;.txt&quot;;</span>
+<span class="pc bpc" id="L146" title="3 of 6 branches missed.">            } else if (os.contains(&quot;nix&quot;) || os.contains(&quot;nux&quot;) || os.contains(&quot;aix&quot;)) {</span>
+<span class="nc" id="L147">                downloadPath = &quot;/home/&quot; + username + &quot;/Downloads/&quot; + fileName + &quot;.txt&quot;;</span>
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">            } else if (os.contains(&quot;win&quot;)) {</span>
+<span class="fc" id="L149">                downloadPath = &quot;C:\\Users\\&quot; + username + &quot;\\Downloads\\&quot; + fileName + &quot;.txt&quot;;</span>
+            }
+<span class="fc" id="L151">            System.out.println(&quot;Downloading file to &quot; + downloadPath);</span>
+<span class="fc" id="L152">            OutputStream outputStream = new FileOutputStream(downloadPath);</span>
+<span class="fc" id="L153">            System.setOut(new PrintStream(outputStream));</span>
+<span class="fc" id="L154">            printTable(resultSet, new String[]{&quot;Course Code&quot;, &quot;Course Name&quot;, &quot;Semester&quot;, &quot;Grade&quot;}, message, &quot;&quot;);</span>
+<span class="fc" id="L155">            System.setIn(System.in);</span>
+<span class="fc" id="L156">            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));</span>
+<span class="fc" id="L157">            System.out.println(&quot;File downloaded successfully!&quot;);</span>
+<span class="nc" id="L158">        } catch (Exception e) {</span>
+<span class="nc" id="L159">            System.err.println(e.getMessage());</span>
+        } finally {
+<span class="fc" id="L161">            System.setIn(System.in);</span>
+<span class="fc" id="L162">            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));</span>
+        }
+<span class="fc" id="L164">    }</span>
+
+
+    /**
+     * Exports the contents of a ResultSet object to a CSV file.
+     *
+     * @param resultSet            the ResultSet object to be exported
+     * @param fileName             the name of the CSV file to be created
+     * @param p_extraColumnHeaders an array of additional column headers to include in the CSV file
+     */
+    public static void exportCSV(ResultSet resultSet, String fileName, String[] p_extraColumnHeaders) {
+        try {
+<span class="fc" id="L176">            String os = System.getProperty(&quot;os.name&quot;).toLowerCase();</span>
+<span class="fc" id="L177">            String username = System.getProperty(&quot;user.name&quot;);</span>
+<span class="fc" id="L178">            String downloadPath = null;</span>
+<span class="pc bpc" id="L179" title="1 of 2 branches missed.">            if (os.contains(&quot;mac&quot;)) {</span>
+<span class="nc" id="L180">                downloadPath = &quot;/Users/&quot; + username + &quot;/Downloads/&quot; + fileName + &quot;.csv&quot;;</span>
+<span class="pc bpc" id="L181" title="3 of 6 branches missed.">            } else if (os.contains(&quot;nix&quot;) || os.contains(&quot;nux&quot;) || os.contains(&quot;aix&quot;)) {</span>
+<span class="nc" id="L182">                downloadPath = &quot;/home/&quot; + username + &quot;/Downloads/&quot; + fileName + &quot;.csv&quot;;</span>
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">            } else if (os.contains(&quot;win&quot;)) {</span>
+<span class="fc" id="L184">                downloadPath = &quot;C:\\Users\\&quot; + username + &quot;\\Downloads\\&quot; + fileName + &quot;.csv&quot;;</span>
+            }
+<span class="fc" id="L186">            System.out.println(&quot;Downloading file to &quot; + downloadPath);</span>
+<span class="fc" id="L187">            java.io.FileWriter fw = new java.io.FileWriter(downloadPath);</span>
+<span class="fc" id="L188">            java.io.BufferedWriter bw = new java.io.BufferedWriter(fw);</span>
+<span class="fc" id="L189">            java.io.PrintWriter pw = new java.io.PrintWriter(bw);</span>
+<span class="fc" id="L190">            java.sql.ResultSetMetaData rsmd = resultSet.getMetaData();</span>
+<span class="fc" id="L191">            int columnsNumber = rsmd.getColumnCount();</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">            for (int i = 1; i &lt;= columnsNumber; i++) {</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">                if (i &gt; 1) pw.print(&quot;,&quot;);</span>
+<span class="fc" id="L194">                String columnValue = rsmd.getColumnName(i);</span>
+<span class="fc" id="L195">                pw.print(columnValue);</span>
+            }
+<span class="fc bfc" id="L197" title="All 2 branches covered.">            for (String extraHeader : p_extraColumnHeaders) {</span>
+<span class="fc" id="L198">                pw.print(&quot;,&quot;);</span>
+<span class="fc" id="L199">                pw.print(extraHeader);</span>
+            }
+<span class="fc" id="L201">            pw.println();</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">            while (resultSet.next()) {</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">                for (int i = 1; i &lt;= columnsNumber; i++) {</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">                    if (i &gt; 1) pw.print(&quot;,&quot;);</span>
+<span class="fc" id="L205">                    String columnValue = resultSet.getString(i);</span>
+<span class="fc" id="L206">                    pw.print(columnValue);</span>
+                }
+<span class="fc" id="L208">                pw.println();</span>
+            }
+<span class="fc" id="L210">            pw.flush();</span>
+<span class="fc" id="L211">            pw.close();</span>
+<span class="fc" id="L212">            bw.close();</span>
+<span class="fc" id="L213">            fw.close();</span>
+<span class="nc" id="L214">        } catch (Exception e) {</span>
+<span class="nc" id="L215">            System.err.println(e.getMessage());</span>
+<span class="fc" id="L216">        }</span>
+<span class="fc" id="L217">    }</span>
+
+    /**
+     * Prints a table of results fetched from a ResultSet object.
+     *
+     * @param resultSet      the ResultSet object containing the results to print
+     * @param columnNames    an array of column names to be used as table headers
+     * @param successMessage the message to print if the results are successfully fetched
+     * @param failureMessage the message to print if the ResultSet object is empty
+     * @throws SQLException if a database access error occurs
+     */
+    public static void printTable(ResultSet resultSet, String[] columnNames, String successMessage, String failureMessage) throws SQLException {
+<span class="fc" id="L229">        resultSet.beforeFirst();</span>
+<span class="fc bfc" id="L230" title="All 2 branches covered.">        if (!resultSet.next()) {</span>
+<span class="fc" id="L231">            System.out.println(failureMessage);</span>
+<span class="fc" id="L232">            return;</span>
+        }
+<span class="fc" id="L234">        Object[][] data = getData(resultSet, columnNames.length);</span>
+<span class="fc" id="L235">        TextTable courseTable = new TextTable(columnNames, data);</span>
+<span class="fc" id="L236">        System.out.println(successMessage);</span>
+<span class="fc" id="L237">        courseTable.printTable();</span>
+<span class="fc" id="L238">    }</span>
+
+
+    /**
+     * Converts the result set into a 2D array of objects.
+     *
+     * @param resultSet  the result set to be converted
+     * @param numColumns the number of columns in the result set
+     * @return a 2D array of objects representing the data in the result set
+     * @throws SQLException if there is an error accessing the result set
+     */
+    private static Object[][] getData(ResultSet resultSet, int numColumns) throws SQLException {
+<span class="fc" id="L250">        List&lt;Object[]&gt; data = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L251">        resultSet.beforeFirst();</span>
+<span class="fc bfc" id="L252" title="All 2 branches covered.">        while (resultSet.next()) {</span>
+<span class="fc" id="L253">            Object[] rowData = new Object[numColumns];</span>
+<span class="fc bfc" id="L254" title="All 2 branches covered.">            for (int i = 1; i &lt;= numColumns; i++) {</span>
+<span class="fc" id="L255">                rowData[i - 1] = resultSet.getString(i);</span>
+            }
+<span class="fc" id="L257">            data.add(rowData);</span>
+<span class="fc" id="L258">        }</span>
+<span class="fc" id="L259">        return data.toArray(new Object[0][]);</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

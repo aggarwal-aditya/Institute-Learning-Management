@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Student.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Tests in 'org.academics' Coverage Results</a> &gt; <a href="index.source.html" class="el_package">org.academics.users</a> &gt; <span class="el_source">Student.java</span></div><h1>Student.java</h1><pre class="source lang-java linenums">package org.academics.users;
+
+
+import org.academics.dal.dbStudent;
+import org.academics.utility.Utils;
+
+import java.sql.Array;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+
+/**
+ * This class contains methods that are only accessible to the student
+ */
+public class Student extends User {
+
+    String studentID;
+
+    /**
+     * Constructor for Student class
+     *
+     * @param user User object
+     */
+    public Student(User user) {
+<span class="fc" id="L25">        super(user.userRole, user.email_id);</span>
+<span class="fc" id="L26">        this.studentID = user.email_id.substring(0, user.email_id.indexOf(&quot;@&quot;)).toUpperCase();</span>
+<span class="fc" id="L27">    }</span>
+
+    /**
+     * Fetches the available courses for registration and checks for eligibility requirements before enrolling student into the course
+     */
+    public void registerCourse() {
+
+        try {
+            // Get the current session
+<span class="fc" id="L36">            String session = Utils.getCurrentSession();</span>
+
+            // Get the available courses for registration in the current session
+<span class="fc" id="L39">            ResultSet availableCourses = dbStudent.fetchCoursesForRegistration(session);</span>
+            // Set the success and failure messages for printing available courses
+<span class="fc" id="L41">            String successMessage = &quot;The Following Courses are available for registration in &quot; + session + &quot; session&quot;;</span>
+<span class="fc" id="L42">            String failureMessage = &quot;No Courses are available for registration in &quot; + session + &quot; session&quot;;</span>
+            // Print the available courses along with the success/failure message
+<span class="fc" id="L44">            Utils.printTable(availableCourses, new String[]{&quot;Course Code&quot;, &quot;Course Name&quot;, &quot;Instructor&quot;}, successMessage, failureMessage);</span>
+<span class="fc" id="L45">            availableCourses.beforeFirst();</span>
+            // Return if no courses are available for registration
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">            if (!availableCourses.next()) {</span>
+<span class="fc" id="L48">                return;</span>
+            }
+            // Get the course code from user
+<span class="nc" id="L51">            String course_code = Utils.getInput(&quot;\nEnter the course code of the course you want to register. Press -1 to go back&quot;);</span>
+            // Return if the user presses -1
+<span class="nc bnc" id="L53" title="All 2 branches missed.">            if (course_code.equals(&quot;-1&quot;)) {</span>
+<span class="nc" id="L54">                return;</span>
+            }
+            // Check if the selected course is available for registration
+<span class="nc bnc" id="L57" title="All 2 branches missed.">            if (!dbStudent.checkEnrollmentAvailability(course_code, session)) {</span>
+<span class="nc" id="L58">                System.out.println(&quot;Course not available for registration. Please Choose the course code from the list&quot;);</span>
+<span class="nc" id="L59">                return;</span>
+            }
+            // Check if the student meets the minimum CGPA requirement for the selected course
+<span class="nc bnc" id="L62" title="All 2 branches missed.">            if (dbStudent.computeGPA(this.email_id.substring(0, this.email_id.indexOf(&quot;@&quot;)).toUpperCase()) &lt; dbStudent.fetchMinCGPA(course_code, session)) {</span>
+<span class="nc" id="L63">                System.out.println(&quot;You do not meet the minimum CGPA requirement for this course&quot;);</span>
+<span class="nc" id="L64">                return;</span>
+            }
+            // Get the prerequisites for the selected course
+<span class="nc" id="L67">            ResultSet preRequisites = dbStudent.getCoursePrerequisite(course_code, session);</span>
+<span class="nc" id="L68">            String[] prerequisites = extractPrerequisites(preRequisites);</span>
+            // Check if the student meets the prerequisites for the selected course
+<span class="nc bnc" id="L70" title="All 2 branches missed.">            if (!dbStudent.checkPreRequisitesEligibility(prerequisites, this.studentID)) {</span>
+<span class="nc" id="L71">                System.out.println(&quot;You do not meet the prerequisites for this course&quot;);</span>
+<span class="nc" id="L72">                return;</span>
+            }
+            // Enroll the student into the selected course if all eligibility criteria are met
+<span class="nc bnc" id="L75" title="All 2 branches missed.">            if (dbStudent.enrollCourse(this.studentID, course_code, session)) {</span>
+<span class="nc" id="L76">                System.out.println(&quot;Course Registered Successfully&quot;);</span>
+            }
+<span class="fc" id="L78">        } catch (Exception e) {</span>
+<span class="fc" id="L79">            System.err.println(&quot;Message: &quot; + e.getMessage());</span>
+<span class="nc" id="L80">        }</span>
+<span class="fc" id="L81">    }</span>
+
+    /**
+     * Allows a student to drop a course that they are currently enrolled in. If the drop period has ended,
+     * the method will return without doing anything.
+     *
+     * @throws SQLException if there is an error executing the SQL query
+     */
+    public void dropCourse() throws SQLException {
+        // Check if the current time falls within the course add/drop period
+<span class="fc" id="L91">        String session = Utils.getCurrentSession();</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        if (session == null) {</span>
+<span class="fc" id="L93">            System.out.println(&quot;No session is currently active&quot;);</span>
+<span class="fc" id="L94">            return;</span>
+        }
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (!Utils.validateEventTime(&quot;course_add_drop&quot;, session)) {</span>
+<span class="fc" id="L97">            System.out.println(&quot;You are not allowed to drop courses now&quot;);</span>
+<span class="fc" id="L98">            return;</span>
+        }
+
+        // Prompt the user to enter the course code of the course they want to drop
+<span class="fc" id="L102">        String course_code = Utils.getInput(&quot;Enter the course code of the course you want to drop. Press -1 to go back&quot;);</span>
+
+        // If the user enters -1, return without doing anything
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (course_code.equals(&quot;-1&quot;)) {</span>
+<span class="fc" id="L106">            return;</span>
+        }
+
+        // Attempt to drop the course for the current student in the database
+<span class="fc" id="L110">        int countDropped = dbStudent.dropCourse(this.studentID, course_code, Utils.getCurrentSession());</span>
+
+        // If no rows were affected, the student is not registered for the course
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (countDropped == 0) {</span>
+<span class="fc" id="L114">            System.out.println(&quot;You are not registered for this course&quot;);</span>
+        }
+        // Otherwise, the course was successfully dropped
+        else {
+<span class="fc" id="L118">            System.out.println(&quot;You have successfully dropped the course&quot;);</span>
+        }
+<span class="fc" id="L120">    }</span>
+
+    /**
+     * Displays the courses that the current student is registered for in the current semester, if any.
+     *
+     * @throws SQLException if an error occurs while interacting with the database
+     */
+    public void viewCourses() throws SQLException {
+        // Fetch the courses that the current student is registered for in the current semester
+<span class="fc" id="L129">        ResultSet fetchCourses = dbStudent.fetchCourses(this.studentID, Utils.getCurrentSession());</span>
+
+        // Define success and failure messages to be displayed after the table of courses is printed
+<span class="fc" id="L132">        String successMessage = &quot;Please find the list of courses you are registered for in the current semester&quot;;</span>
+<span class="fc" id="L133">        String failureMessage = &quot;You are not registered for any courses in the current semester&quot;;</span>
+
+        // Print a table of the fetched courses, with headers &quot;Course Code&quot; and &quot;Course Name&quot;,
+        // and either the success message or the failure message, depending on whether any courses were fetched
+<span class="fc" id="L137">        Utils.printTable(fetchCourses, new String[]{&quot;Course Code&quot;, &quot;Course Name&quot;}, successMessage, failureMessage);</span>
+<span class="fc" id="L138">    }</span>
+
+
+    /**
+     * Displays the grades of the current student for all courses taken until the current semester, if any.
+     *
+     * @throws SQLException if an error occurs while interacting with the database
+     */
+    public void viewGrades() throws SQLException {
+        // Fetch the grades of the current student for all courses taken until the current semester
+<span class="fc" id="L148">        ResultSet fetchGrades = dbStudent.fetchGrades(this.studentID, Utils.getCurrentSession());</span>
+
+        // Define success and failure messages to be displayed after the table of grades is printed
+<span class="fc" id="L151">        String successMessage = &quot;Please find your grades for the courses you have taken so far&quot;;</span>
+<span class="fc" id="L152">        String failureMessage = &quot;You have not completed/registered any courses&quot;;</span>
+
+        // Print a table of the fetched grades, with headers &quot;Course Code&quot;, &quot;Course Name&quot;, and &quot;Grade&quot;,
+        // and either the success message or the failure message, depending on whether any grades were fetched
+<span class="fc" id="L156">        Utils.printTable(fetchGrades, new String[]{&quot;Course Code&quot;, &quot;Course Name&quot;, &quot;Grade&quot;}, successMessage, failureMessage);</span>
+<span class="fc" id="L157">    }</span>
+
+
+    /**
+     * Prints the current student's CGPA to the console.
+     *
+     * @throws SQLException if there is an error in the database query.
+     */
+    public void printGPA() throws SQLException {
+<span class="fc" id="L166">        System.out.println(&quot;Your CGPA is: &quot; + dbStudent.computeGPA(this.studentID));</span>
+<span class="fc" id="L167">    }</span>
+
+    /**
+     * This method extracts the prerequisites from the result set returned by a SQL query. It returns a string
+     * array containing the prerequisites. If there are no prerequisites, it returns null.
+     *
+     * @param preRequisites The ResultSet containing the prerequisites
+     * @return A string array containing the prerequisites, or null if there are no prerequisites
+     * @throws SQLException If there is an error while processing the ResultSet
+     */
+    private String[] extractPrerequisites(ResultSet preRequisites) throws SQLException {
+<span class="nc" id="L178">        String[] prerequisites = null;</span>
+        // Iterate through each row in the ResultSet
+<span class="nc bnc" id="L180" title="All 2 branches missed.">        while (preRequisites.next()) {</span>
+            // Get the prerequisites array from the first column of the row
+<span class="nc" id="L182">            Array prerequisitesResultArray = preRequisites.getArray(1);</span>
+
+            // If the prerequisites array is null, skip to the next row
+<span class="nc bnc" id="L185" title="All 2 branches missed.">            if (prerequisitesResultArray == null) {</span>
+<span class="nc" id="L186">                continue;</span>
+            }
+
+            // Convert the array to a string array
+<span class="nc" id="L190">            prerequisites = (String[]) prerequisitesResultArray.getArray();</span>
+
+            // Stop processing rows after the first non-null array is found
+<span class="nc" id="L193">            break;</span>
+        }
+        // Return the prerequisites array
+<span class="nc" id="L196">        return prerequisites;</span>
+    }
+
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

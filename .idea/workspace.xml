@@ -3,17 +3,16 @@
   <component name="AnalysisUIOptions">
     <option name="ANALYZE_TEST_SOURCES" value="false" />
     <option name="ANALYZE_INJECTED_CODE" value="false" />
+    <option name="SCOPE_TYPE" value="8" />
+    <option name="CUSTOM_SCOPE_NAME" value="Docs" />
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Progress on Testing-3">
+    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Progress on Testing-4">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/specialPrivileges.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/specialPrivileges.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/users/StudentTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/StudentTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/users/specialPrivilegesTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/specialPrivilegesTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Admin.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +75,9 @@
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="NamedScopeManager">
+    <scope name="Docs" pattern="" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -610,7 +612,7 @@
       <workItem from="1677081071334" duration="12784000" />
       <workItem from="1677833141172" duration="24675000" />
       <workItem from="1677903842305" duration="162000" />
-      <workItem from="1677907880299" duration="96508000" />
+      <workItem from="1677907880299" duration="97044000" />
     </task>
     <task id="LOCAL-00001" summary="Fix DB Configuration">
       <created>1674704914591</created>
@@ -808,7 +810,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678190621269</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Progress on Testing-4">
+      <created>1678194925159</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1678194925159</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -829,7 +838,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Changes in Login Method" />
     <MESSAGE value="Fix error Handling" />
     <MESSAGE value="Progress on Menus" />
     <MESSAGE value="Work on Student &amp; Teacher Menu Choices" />
@@ -854,14 +862,15 @@
     <MESSAGE value="Progress on Testing" />
     <MESSAGE value="Progress on Testing-2" />
     <MESSAGE value="Progress on Testing-3" />
-    <option name="LAST_COMMIT_MESSAGE" value="Progress on Testing-3" />
+    <MESSAGE value="Progress on Testing-4" />
+    <option name="LAST_COMMIT_MESSAGE" value="Progress on Testing-4" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/academics/users/Admin.java</url>
-          <line>23</line>
+          <line>26</line>
           <option name="timeStamp" value="12" />
         </line-breakpoint>
       </breakpoints>
