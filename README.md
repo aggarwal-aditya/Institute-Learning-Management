@@ -32,5 +32,13 @@ Steps to run the program:
    
 2. Navigate to the root folder
 3. Build Using Gradle
+```
+    ./gradlew clean build -x test
+   ```
+   
+4. Run Using Gradle
+```
+./gradlew run --console=plain
+```
 
 
