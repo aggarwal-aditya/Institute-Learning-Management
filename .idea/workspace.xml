@@ -8,24 +8,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Progress on Testing-2">
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/StudentTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/specialPrivilegesTest.java" afterDir="false" />
+    <list default="true" id="dbb874c0-51e8-4cb2-81e7-b4d870f5c064" name="Changes" comment="Progress on Testing-3">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbStudent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbStudent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/dal/dbUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/menus/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/menus/MainMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Admin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Instructor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/dal/dbStudentTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/dal/dbStudentTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/dal/dbUserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/dal/dbUserTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/menus/mainMenuTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/menus/mainMenuTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/users/AdminTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/AdminTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/users/InstructorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/InstructorTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/users/UserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/UserTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/utility/UtilsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/utility/UtilsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/Student.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/academics/users/specialPrivileges.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/academics/users/specialPrivileges.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/users/StudentTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/StudentTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/academics/users/specialPrivilegesTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/academics/users/specialPrivilegesTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,7 +181,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="InstructorTest.floatCourse_T3" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="StudentTest" type="GradleRunConfiguration" factoryName="Gradle">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -206,105 +194,16 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;org.academics.users.InstructorTest.floatCourse_T3&quot;" />
+            <option value="&quot;org.academics.users.StudentTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="InstructorTest.floatCourse_T4" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;org.academics.users.InstructorTest.floatCourse_T4&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="InstructorTest.floatCourse_T5" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;org.academics.users.InstructorTest.floatCourse_T5&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="InstructorTest.floatCourse_T6" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;org.academics.users.InstructorTest.floatCourse_T6&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="StudentTest.testviewCourses" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;org.academics.users.StudentTest.testviewCourses&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <EXTENSION ID="com.intellij.execution.ExternalSystemRunConfigurationJavaExtension">
+        <extension name="coverage" runner="jacoco" />
+      </EXTENSION>
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
@@ -490,10 +389,152 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="specialPrivilegesTest" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;org.academics.users.specialPrivilegesTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <EXTENSION ID="com.intellij.execution.ExternalSystemRunConfigurationJavaExtension">
+        <extension name="coverage" runner="jacoco" />
+      </EXTENSION>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="specialPrivilegesTest.getPreRequisites_T1" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;org.academics.users.specialPrivilegesTest.getPreRequisites_T1&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="specialPrivilegesTest.getPreRequisites_T2" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;org.academics.users.specialPrivilegesTest.getPreRequisites_T2&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="specialPrivilegesTest.viewStudentGrades_T1" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;org.academics.users.specialPrivilegesTest.viewStudentGrades_T1&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="specialPrivilegesTest.viewStudentGrades_T2" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;org.academics.users.specialPrivilegesTest.viewStudentGrades_T2&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="specialPrivilegesTest.viewStudentGrades_T3" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;org.academics.users.specialPrivilegesTest.viewStudentGrades_T3&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Application.Main" />
       <item itemvalue="Database Script.initTest.sql" />
       <item itemvalue="Gradle.InstructorTest" />
+      <item itemvalue="Gradle.StudentTest" />
       <item itemvalue="Gradle.StudentTest.testviewGrades" />
       <item itemvalue="Gradle.Tests in 'org.academics'" />
       <item itemvalue="Gradle.Tests in 'org.academics.dal'" />
@@ -501,19 +542,20 @@
       <item itemvalue="Gradle.Tests in 'org.academics.users'" />
       <item itemvalue="Gradle.Tests in 'org.academics.utility'" />
       <item itemvalue="Gradle.UserTest" />
-      <item itemvalue="Gradle.InstructorTest.floatCourse_T3" />
-      <item itemvalue="Gradle.InstructorTest.floatCourse_T4" />
-      <item itemvalue="Gradle.InstructorTest.floatCourse_T5" />
-      <item itemvalue="Gradle.InstructorTest.floatCourse_T6" />
-      <item itemvalue="Gradle.StudentTest.testviewCourses" />
+      <item itemvalue="Gradle.specialPrivilegesTest" />
+      <item itemvalue="Gradle.specialPrivilegesTest.getPreRequisites_T1" />
+      <item itemvalue="Gradle.specialPrivilegesTest.getPreRequisites_T2" />
+      <item itemvalue="Gradle.specialPrivilegesTest.viewStudentGrades_T1" />
+      <item itemvalue="Gradle.specialPrivilegesTest.viewStudentGrades_T2" />
+      <item itemvalue="Gradle.specialPrivilegesTest.viewStudentGrades_T3" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.StudentTest.testviewCourses" />
-        <item itemvalue="Gradle.InstructorTest.floatCourse_T6" />
-        <item itemvalue="Gradle.InstructorTest.floatCourse_T5" />
-        <item itemvalue="Gradle.InstructorTest.floatCourse_T4" />
-        <item itemvalue="Gradle.InstructorTest.floatCourse_T3" />
+        <item itemvalue="Gradle.specialPrivilegesTest.getPreRequisites_T2" />
+        <item itemvalue="Gradle.specialPrivilegesTest.getPreRequisites_T1" />
+        <item itemvalue="Gradle.specialPrivilegesTest.viewStudentGrades_T3" />
+        <item itemvalue="Gradle.specialPrivilegesTest.viewStudentGrades_T2" />
+        <item itemvalue="Gradle.specialPrivilegesTest.viewStudentGrades_T1" />
       </list>
     </recent_temporary>
   </component>
@@ -568,7 +610,7 @@
       <workItem from="1677081071334" duration="12784000" />
       <workItem from="1677833141172" duration="24675000" />
       <workItem from="1677903842305" duration="162000" />
-      <workItem from="1677907880299" duration="91745000" />
+      <workItem from="1677907880299" duration="96508000" />
     </task>
     <task id="LOCAL-00001" summary="Fix DB Configuration">
       <created>1674704914591</created>
@@ -759,7 +801,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678128673566</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Progress on Testing-3">
+      <created>1678190621269</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1678190621269</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -780,7 +829,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add recursive style menus" />
     <MESSAGE value="Changes in Login Method" />
     <MESSAGE value="Fix error Handling" />
     <MESSAGE value="Progress on Menus" />
@@ -805,7 +853,8 @@
     <MESSAGE value="Testing Progress" />
     <MESSAGE value="Progress on Testing" />
     <MESSAGE value="Progress on Testing-2" />
-    <option name="LAST_COMMIT_MESSAGE" value="Progress on Testing-2" />
+    <MESSAGE value="Progress on Testing-3" />
+    <option name="LAST_COMMIT_MESSAGE" value="Progress on Testing-3" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -848,6 +897,7 @@
     <SUITE FILE_PATH="coverage/ilm$mainMenuTest_mainMenuOPT2.ic" NAME="mainMenuTest.mainMenuOPT2 Coverage Results" MODIFIED="1678094680536" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$studentMenuTest_testRegisterForCourseSuccess.ic" NAME="studentMenuTest.testRegisterForCourseSuccess Coverage Results" MODIFIED="1678080997298" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UserTest_editProfile.ic" NAME="UserTest.editProfile Coverage Results" MODIFIED="1678132408499" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$specialPrivilegesTest_viewStudentGrades_T3.ic" NAME="specialPrivilegesTest.viewStudentGrades_T3 Coverage Results" MODIFIED="1678193509325" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$AdminTest_testgenerateTranscripts.ic" NAME="AdminTest.testgenerateTranscripts Coverage Results" MODIFIED="1678129151644" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$AdminTest_testCheckGraduationStatus_GpaBelow5_ReturnsFalse.ic" NAME="AdminTest.testCheckGraduationStatus_GpaBelow5_ReturnsFalse Coverage Results" MODIFIED="1678130160585" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$StudentTest_testviewGrades.exec" NAME="StudentTest.testviewGrades Coverage Results" MODIFIED="1678189505292" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="jacoco" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
@@ -863,8 +913,9 @@
     <SUITE FILE_PATH="coverage/ilm$mainMenuTest.ic" NAME="mainMenuTest Coverage Results" MODIFIED="1678183289145" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$studentMenuTest_testStudentMenu.ic" NAME="studentMenuTest.testStudentMenu Coverage Results" MODIFIED="1678081372646" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$dbUtilsTest.ic" NAME="dbUtilsTest Coverage Results" MODIFIED="1678126124968" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$specialPrivilegesTest_viewStudentGrades_T2.ic" NAME="specialPrivilegesTest.viewStudentGrades_T2 Coverage Results" MODIFIED="1678193438930" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$dbUserTest_testValidateCredentialsByEmail.ic" NAME="dbUserTest.testValidateCredentialsByEmail Coverage Results" MODIFIED="1678102016277" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$Tests_in__org_academics_.exec" NAME="Tests in 'org.academics' Coverage Results" MODIFIED="1678189543745" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="jacoco" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$Tests_in__org_academics_.exec" NAME="Tests in 'org.academics' Coverage Results" MODIFIED="1678194457504" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="jacoco" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$StudentTest_testViewGrades.ic" NAME="StudentTest.testViewGrades Coverage Results" MODIFIED="1676886637509" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_testValidInput.ic" NAME="UtilsTest.testValidInput Coverage Results" MODIFIED="1676831974327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$Tests_in__org_academics_menus_.exec" NAME="Tests in 'org.academics.menus' Coverage Results" MODIFIED="1678184011496" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="jacoco" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
@@ -890,10 +941,13 @@
       <FILTER>org.academics.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/ilm$UserTest_testChangePassword.ic" NAME="UserTest.testChangePassword Coverage Results" MODIFIED="1676863211251" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$specialPrivilegesTest.exec" NAME="specialPrivilegesTest Coverage Results" MODIFIED="1678194414529" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="jacoco" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$StudentTest_testviewGrades.ic" NAME="StudentTest.testviewGrades Coverage Results" MODIFIED="1678178371999" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$specialPrivilegesTest_getPreRequisites_T1.ic" NAME="specialPrivilegesTest.getPreRequisites_T1 Coverage Results" MODIFIED="1678193933044" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_testFormatOutput.ic" NAME="UtilsTest.testFormatOutput Coverage Results" MODIFIED="1676875357838" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$InstructorTest.ic" NAME="InstructorTest Coverage Results" MODIFIED="1678185943829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$InstructorTest_downloadAndExportStudentList.ic" NAME="InstructorTest.downloadAndExportStudentList Coverage Results" MODIFIED="1678021637834" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$StudentTest_testRegisterCourse_T1.ic" NAME="StudentTest.testRegisterCourse_T1 Coverage Results" MODIFIED="1678189927953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$InstructorTest_floatCourse.ic" NAME="InstructorTest.floatCourse Coverage Results" MODIFIED="1678186528958" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$dbInstructorTest_testFetchCourses.ic" NAME="dbInstructorTest.testFetchCourses Coverage Results" MODIFIED="1678115575019" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UserTest.exec" NAME="UserTest Coverage Results" MODIFIED="1678176159377" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="jacoco" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
@@ -903,6 +957,7 @@
     <SUITE FILE_PATH="coverage/ilm$specialPrivilegesTest_testGetPreRequisites.ic" NAME="specialPrivilegesTest.testGetPreRequisites Coverage Results" MODIFIED="1678170291870" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$dbInstructorTest_testFetchInstructorID.ic" NAME="dbInstructorTest.testFetchInstructorID Coverage Results" MODIFIED="1678115493554" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_printTable.ic" NAME="UtilsTest.printTable Coverage Results" MODIFIED="1677899970664" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$StudentTest_testRegisterCourse_T9.ic" NAME="StudentTest.testRegisterCourse_T9 Coverage Results" MODIFIED="1678192303581" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$InstructorTest.exec" NAME="InstructorTest Coverage Results" MODIFIED="1678188901637" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="jacoco" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPTdefault.ic" NAME="adminMenuTest.adminMenuOPTdefault Coverage Results" MODIFIED="1678089775302" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_validateEventTime.ic" NAME="UtilsTest.validateEventTime Coverage Results" MODIFIED="1677902557111" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
@@ -917,7 +972,7 @@
     <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT2Ex.ic" NAME="adminMenuTest.adminMenuOPT2Ex Coverage Results" MODIFIED="1678087648539" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$StudentTest_testNonViewGrades.ic" NAME="StudentTest.testNonViewGrades Coverage Results" MODIFIED="1676884629823" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$AdminTest_testCheckGraduationStatus_Failed.ic" NAME="AdminTest.testCheckGraduationStatus_Failed Coverage Results" MODIFIED="1678130349239" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$Tests_in__org_academics_users_.exec" NAME="Tests in 'org.academics.users' Coverage Results" MODIFIED="1678188951059" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="jacoco" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$Tests_in__org_academics_users_.exec" NAME="Tests in 'org.academics.users' Coverage Results" MODIFIED="1678192404226" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="jacoco" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$CurrentDateTest.ic" NAME="CurrentDateTest Coverage Results" MODIFIED="1677874502790" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT2.ic" NAME="adminMenuTest.adminMenuOPT2 Coverage Results" MODIFIED="1678087633857" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$adminMenuTest_adminMenuOPT3Ex.ic" NAME="adminMenuTest.adminMenuOPT3Ex Coverage Results" MODIFIED="1678088883364" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
@@ -925,14 +980,16 @@
     <SUITE FILE_PATH="coverage/ilm$StudentTest_testNonExistentStudentComputeGPA.ic" NAME="StudentTest.testNonExistentStudentComputeGPA Coverage Results" MODIFIED="1676887173478" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UtilsTest_testInvalidInput.ic" NAME="UtilsTest.testInvalidInput Coverage Results" MODIFIED="1676835983021" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$StudentTest.ic" NAME="StudentTest Coverage Results" MODIFIED="1678176091406" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$specialPrivilegesTest_viewStudentGrades_T1.ic" NAME="specialPrivilegesTest.viewStudentGrades_T1 Coverage Results" MODIFIED="1678193353944" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UserTest_resetPassword.ic" NAME="UserTest.resetPassword Coverage Results" MODIFIED="1678160073281" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$StudentTest_testDropCourseAdditional.ic" NAME="StudentTest.testDropCourseAdditional Coverage Results" MODIFIED="1678163972546" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$adminMenuTest.ic" NAME="adminMenuTest Coverage Results" MODIFIED="1678089924886" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$InstructorTest_testNonExistentInstructor.ic" NAME="InstructorTest.testNonExistentInstructor Coverage Results" MODIFIED="1676873894946" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/ilm$StudentTest.exec" NAME="StudentTest Coverage Results" MODIFIED="1678176255483" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="jacoco" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$StudentTest.exec" NAME="StudentTest Coverage Results" MODIFIED="1678192366154" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="jacoco" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$UserTest_login.ic" NAME="UserTest.login Coverage Results" MODIFIED="1678082683586" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$studentMenuTest.ic" NAME="studentMenuTest Coverage Results" MODIFIED="1678100055700" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$InstructorTest_testUploadGrades.ic" NAME="InstructorTest.testUploadGrades Coverage Results" MODIFIED="1678004547091" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ilm$specialPrivilegesTest_getPreRequisites_T2.ic" NAME="specialPrivilegesTest.getPreRequisites_T2 Coverage Results" MODIFIED="1678194227342" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ilm$Tests_in__org_academics_dal_.exec" NAME="Tests in 'org.academics.dal' Coverage Results" MODIFIED="1678184021865" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="jacoco" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

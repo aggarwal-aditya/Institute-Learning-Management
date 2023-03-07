@@ -193,7 +193,6 @@ public class Student extends User {
             // Stop processing rows after the first non-null array is found
             break;
         }
-        // Return the prerequisites array
         return prerequisites;
     }
 

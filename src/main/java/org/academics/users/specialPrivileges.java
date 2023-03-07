@@ -29,7 +29,7 @@ public class specialPrivileges {
 
         switch (choice) {
             case 1: {
-                String course_code = Utils.getInput("Enter the course code");
+                String course_code = Utils.getInput("Enter the course code: ");
                 String session = Utils.getInput("Enter the session (YYYY-Semester)");
 
                 // Get grades of the course
@@ -43,7 +43,7 @@ public class specialPrivileges {
                 break;
             }
             case 2: {
-                String studentID = Utils.getInput("Enter the student's Enrollment ID");
+                String studentID = Utils.getInput("Enter the student's Enrollment ID: ");
 
                 // Get grades of the student
                 ResultSet studentGrades = dbInstructor.fetchStudentGrades(studentID);
@@ -56,9 +56,6 @@ public class specialPrivileges {
                 break;
             }
             case 3:
-                break;
-            default:
-                System.out.println("Invalid choice. Redirecting to main menu");
                 break;
         }
     }

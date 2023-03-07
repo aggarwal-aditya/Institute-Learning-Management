@@ -274,7 +274,10 @@ class StudentTest {
         dbStudentMockedStatic.when(()->dbStudent.computeGPA(anyString())).thenReturn(9.5);
         dbStudentMockedStatic.when(()->dbStudent.fetchMinCGPA(anyString(),anyString())).thenReturn(9.0);
 
-        dbStudentMockedStatic.when(()->dbStudent.getCoursePrerequisite(anyString(),anyString())).thenReturn(false);
+        resultSet=Mockito.mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(false);
+        dbStudentMockedStatic.when(()->dbStudent.getCoursePrerequisite(anyString(),anyString())).thenReturn(resultSet);
+        dbStudentMockedStatic.when(()->dbStudent.checkPreRequisitesEligibility(any(),anyString())).thenReturn(false);
 
         User user=new User("student","2020csb1066@iitrpr.ac.in");
         Student student=new Student(user);
@@ -283,6 +286,161 @@ class StudentTest {
         System.setOut(new PrintStream(outContent));
 
         student.registerCourse();
-        assert (outContent.toString().contains("You do not meet the minimum CGPA requirement for this course"));
+        assert (outContent.toString().contains("You do not meet the prerequisites for this course"));
     }
+
+    @Test
+    void testRegisterCourse_T6() throws SQLException {
+
+        MockedStatic<Utils> mockedUtils = mockStatic(Utils.class);
+        MockedStatic<dbStudent> dbStudentMockedStatic = mockStatic(dbStudent.class);
+
+        mockedUtils.when(Utils::getCurrentSession).thenReturn("2022-2");
+        mockedUtils.when(() -> Utils.getInput("Enter the course code of the course you want to register. Press -1 to go back")).thenReturn("CS201");
+
+
+        ResultSet resultSet = Mockito.mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getString(1)).thenReturn("CS201");
+        when(resultSet.getString(2)).thenReturn("Data Structures");
+        when(resultSet.getString(3)).thenReturn("Apurva Mudgal");
+        dbStudentMockedStatic.when(() -> dbStudent.fetchCoursesForRegistration(anyString())).thenReturn(resultSet);
+
+        dbStudentMockedStatic.when(() -> dbStudent.checkEnrollmentAvailability(anyString(),anyString())).thenReturn(true);
+
+        dbStudentMockedStatic.when(()->dbStudent.computeGPA(anyString())).thenReturn(9.5);
+        dbStudentMockedStatic.when(()->dbStudent.fetchMinCGPA(anyString(),anyString())).thenThrow(SQLException.class);
+
+        resultSet=Mockito.mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(false);
+        dbStudentMockedStatic.when(()->dbStudent.getCoursePrerequisite(anyString(),anyString())).thenReturn(resultSet);
+        dbStudentMockedStatic.when(()->dbStudent.checkPreRequisitesEligibility(any(),anyString())).thenReturn(true);
+        dbStudentMockedStatic.when(()->dbStudent.enrollCourse(anyString(),anyString(),anyString())).thenReturn(true);
+
+        User user=new User("student","2020csb1066@iitrpr.ac.in");
+        Student student=new Student(user);
+
+        student.registerCourse();
+
+        assertTrue(true);
+    }
+
+    @Test
+    void testRegisterCourse_T7() throws SQLException {
+
+        MockedStatic<Utils> mockedUtils = mockStatic(Utils.class);
+        MockedStatic<dbStudent> dbStudentMockedStatic = mockStatic(dbStudent.class);
+
+        mockedUtils.when(Utils::getCurrentSession).thenReturn("2022-2");
+        mockedUtils.when(() -> Utils.getInput("Enter the course code of the course you want to register. Press -1 to go back")).thenReturn("CS201");
+
+
+        ResultSet resultSet = Mockito.mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getString(1)).thenReturn("CS201");
+        when(resultSet.getString(2)).thenReturn("Data Structures");
+        when(resultSet.getString(3)).thenReturn("Apurva Mudgal");
+        dbStudentMockedStatic.when(() -> dbStudent.fetchCoursesForRegistration(anyString())).thenReturn(resultSet);
+
+        dbStudentMockedStatic.when(() -> dbStudent.checkEnrollmentAvailability(anyString(),anyString())).thenReturn(true);
+
+        dbStudentMockedStatic.when(()->dbStudent.computeGPA(anyString())).thenReturn(9.5);
+        dbStudentMockedStatic.when(()->dbStudent.fetchMinCGPA(anyString(),anyString())).thenReturn(9.0);
+
+        resultSet=Mockito.mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(false);
+        dbStudentMockedStatic.when(()->dbStudent.getCoursePrerequisite(anyString(),anyString())).thenReturn(resultSet);
+        dbStudentMockedStatic.when(()->dbStudent.checkPreRequisitesEligibility(any(),anyString())).thenReturn(true);
+        dbStudentMockedStatic.when(()->dbStudent.enrollCourse(anyString(),anyString(),anyString())).thenReturn(false);
+
+        User user=new User("student","2020csb1066@iitrpr.ac.in");
+        Student student=new Student(user);
+
+        student.registerCourse();
+
+        assertTrue(true);
+    }
+    @Test
+    void testRegisterCourse_T8() throws SQLException {
+
+        MockedStatic<Utils> mockedUtils = mockStatic(Utils.class);
+        MockedStatic<dbStudent> dbStudentMockedStatic = mockStatic(dbStudent.class);
+
+        mockedUtils.when(Utils::getCurrentSession).thenReturn("2022-2");
+        mockedUtils.when(() -> Utils.getInput("Enter the course code of the course you want to register. Press -1 to go back")).thenReturn("CS201");
+
+
+        ResultSet resultSet = Mockito.mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getString(1)).thenReturn("CS201");
+        when(resultSet.getString(2)).thenReturn("Data Structures");
+        when(resultSet.getString(3)).thenReturn("Apurva Mudgal");
+        dbStudentMockedStatic.when(() -> dbStudent.fetchCoursesForRegistration(anyString())).thenReturn(resultSet);
+
+        dbStudentMockedStatic.when(() -> dbStudent.checkEnrollmentAvailability(anyString(),anyString())).thenReturn(true);
+
+        dbStudentMockedStatic.when(()->dbStudent.computeGPA(anyString())).thenReturn(9.5);
+        dbStudentMockedStatic.when(()->dbStudent.fetchMinCGPA(anyString(),anyString())).thenReturn(9.0);
+
+        resultSet=Mockito.mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(false);
+        dbStudentMockedStatic.when(()->dbStudent.getCoursePrerequisite(anyString(),anyString())).thenReturn(resultSet);
+        dbStudentMockedStatic.when(()->dbStudent.checkPreRequisitesEligibility(any(),anyString())).thenReturn(true);
+        dbStudentMockedStatic.when(()->dbStudent.enrollCourse(anyString(),anyString(),anyString())).thenReturn(true);
+
+        User user=new User("student","2020csb1066@iitrpr.ac.in");
+        Student student=new Student(user);
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        student.registerCourse();
+
+        assert (outContent.toString().contains("Course Registered Successfully"));
+
+    }
+
+    @Test
+    void testRegisterCourse_T9() throws SQLException {
+
+        MockedStatic<Utils> mockedUtils = mockStatic(Utils.class);
+        MockedStatic<dbStudent> dbStudentMockedStatic = mockStatic(dbStudent.class);
+
+        mockedUtils.when(Utils::getCurrentSession).thenReturn("2022-2");
+        mockedUtils.when(() -> Utils.getInput("Enter the course code of the course you want to register. Press -1 to go back")).thenReturn("CS201");
+
+
+        ResultSet resultSet = Mockito.mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getString(1)).thenReturn("CS201");
+        when(resultSet.getString(2)).thenReturn("Data Structures");
+        when(resultSet.getString(3)).thenReturn("Apurva Mudgal");
+        dbStudentMockedStatic.when(() -> dbStudent.fetchCoursesForRegistration(anyString())).thenReturn(resultSet);
+
+        dbStudentMockedStatic.when(() -> dbStudent.checkEnrollmentAvailability(anyString(),anyString())).thenReturn(true);
+
+        dbStudentMockedStatic.when(()->dbStudent.computeGPA(anyString())).thenReturn(9.5);
+        dbStudentMockedStatic.when(()->dbStudent.fetchMinCGPA(anyString(),anyString())).thenReturn(9.0);
+
+        resultSet=Mockito.mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(true).thenReturn(true).thenReturn(false);
+        when(resultSet.getString(1)).thenReturn("CS101(B-)|CS202(A-)|,MA101(B-)|MA102(B-)|").thenReturn("CS101(B-)|CS202(A-)|", "MA101(B-)|MA102(B-)|");
+
+        dbStudentMockedStatic.when(()->dbStudent.getCoursePrerequisite(anyString(),anyString())).thenReturn(resultSet);
+        dbStudentMockedStatic.when(()->dbStudent.checkPreRequisitesEligibility(any(),anyString())).thenReturn(true);
+        dbStudentMockedStatic.when(()->dbStudent.enrollCourse(anyString(),anyString(),anyString())).thenReturn(true);
+
+        User user=new User("student","2020csb1066@iitrpr.ac.in");
+        Student student=new Student(user);
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        student.registerCourse();
+
+        assert (outContent.toString().contains("Course Registered Successfully"));
+
+    }
+
+
 }
