@@ -75,12 +75,6 @@ public class JDBCPostgreSQLConnection {
      * @return JDBC Connection object.
      */
     public Connection getConnection() {
-        //if connection is closed, reopen it
-        try {
-            if (conn.isClosed())
-                instance = new JDBCPostgreSQLConnection();
-        } catch (SQLException ignored) {
-        }
         return conn;
     }
 }
