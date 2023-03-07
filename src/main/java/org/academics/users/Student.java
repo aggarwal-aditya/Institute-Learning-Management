@@ -48,7 +48,8 @@ public class Student extends User {
                 return;
             }
             // Get the course code from user
-            String course_code = Utils.getInput("\nEnter the course code of the course you want to register. Press -1 to go back");
+            System.out.println();
+            String course_code = Utils.getInput("Enter the course code of the course you want to register. Press -1 to go back");
             // Return if the user presses -1
             if (course_code.equals("-1")) {
                 return;

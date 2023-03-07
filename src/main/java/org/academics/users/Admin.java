@@ -64,24 +64,19 @@ public class Admin extends User {
                 int month = Integer.parseInt(Utils.getInput("Enter the month:"));
                 int day = Integer.parseInt(Utils.getInput("Enter the day:"));
                 currentDate.overwriteCurrentDate(year, month, day);
-                System.out.println("System time and date changed successfully");
+                System.out.println("System date changed successfully");
                 break;
             case 2:
                 break;
         }
     }
 
-    private BigDecimal computeGPA(String enrollment_id) {
-        try {
+    private BigDecimal computeGPA(String enrollment_id) throws SQLException{
             CallableStatement calculateCGPA = conn.prepareCall("{? = call calculate_cgpa(?)}");
             calculateCGPA.registerOutParameter(1, Types.NUMERIC);
             calculateCGPA.setString(2, enrollment_id);
             calculateCGPA.execute();
             return calculateCGPA.getBigDecimal(1).setScale(2, RoundingMode.HALF_UP);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
     }
 
     public void generateTranscript() throws SQLException {
@@ -90,6 +85,7 @@ public class Admin extends User {
         getTranscript.setString(1, enrollment_id);
         ResultSet resultSet = getTranscript.executeQuery();
         Utils.exportTxt(resultSet, enrollment_id + "_transcript", "Your CGPA is " + computeGPA(enrollment_id));
+        System.out.println("Transcript generated successfully");
     }
 
     public boolean checkGraduationStatus() throws SQLException {
@@ -144,15 +140,10 @@ public class Admin extends User {
                 }
             }
         }
-        if (coreCredits < coreCreditsRequired || projectCredits < projectCreditsRequired || internshipCredits < internshipCreditsRequired || scienceMathCredits < scienceMathCreditsRequired || humanitiesCredits < humanitiesCreditsRequired || extraCurricularCredits < extraCurricularCreditsRequired) {
+        double totalCredits = coreCredits + projectCredits + internshipCredits + openElectiveCredits + scienceMathCredits + humanitiesCredits + extraCurricularCredits;
+        if (coreCredits < coreCreditsRequired || projectCredits < projectCreditsRequired || internshipCredits < internshipCreditsRequired || scienceMathCredits < scienceMathCreditsRequired || humanitiesCredits < humanitiesCreditsRequired || extraCurricularCredits < extraCurricularCreditsRequired|| totalCredits < minCreditsRequired) {
             System.out.println("Student cannot graduate");
             return false;
-        }
-        if (openElectiveCredits < openElectiveCreditsRequired) {
-            if (coreCredits + projectCredits + internshipCredits + scienceMathCredits + humanitiesCredits + extraCurricularCredits + openElectiveCredits < minCreditsRequired) {
-                System.out.println("Student cannot graduate");
-                return false;
-            }
         }
         return true;
     }

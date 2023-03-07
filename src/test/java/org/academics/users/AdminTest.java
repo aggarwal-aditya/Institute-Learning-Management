@@ -1,8 +1,10 @@
 package org.academics.users;
 
+import org.academics.dal.JDBCPostgreSQLConnection;
 import org.academics.dal.dbAdmin;
 import org.academics.utility.CurrentDate;
 import org.academics.utility.Utils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -10,14 +12,26 @@ import org.postgresql.jdbc.PgResultSet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.math.BigDecimal;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 class AdminTest {
+
+    JDBCPostgreSQLConnection jdbc = JDBCPostgreSQLConnection.getInstance();
+    Connection connection = jdbc.getConnection();
+
+    @BeforeEach
+    void setUp() {
+        Mockito.framework().clearInlineMocks();
+    }
 
     @Test
     public void testupdateCourseCatalog() throws SQLException {
@@ -78,8 +92,61 @@ class AdminTest {
         when(Utils.getInput("Enter the year:")).thenReturn("2020");
         when(Utils.getInput("Enter the month:")).thenReturn("12");
         when(Utils.getInput("Enter the day:")).thenReturn("15");
-
-
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        admin.changeSystemSettings();
+        assert (outContent.toString().contains("System date changed successfully"));
     }
+
+    @Test
+    public void testgenerateTranscripts() throws SQLException{
+        MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class);
+        Admin admin = new Admin();
+        when(Utils.getInput("Enter the student's enrollment id:")).thenReturn("2020CSB1066");
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        admin.generateTranscript();
+        assert (outContent.toString().contains("Transcript generated successfully"));
+    }
+
+    @Test
+    public void testCheckGraduationStatus_GpaBelow5_ReturnsFalse() throws SQLException {
+        MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class);
+        Admin admin = new Admin();
+        when(Utils.getInput("Enter the student's enrollment id:")).thenReturn("2020CSB1066");
+        boolean result = admin.checkGraduationStatus();
+        assertFalse(result);
+    }
+
+    @Test
+    public void testCheckGraduationStatus_Failed() throws SQLException{
+        MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class);
+        MockedStatic<dbAdmin>dbAdminMockedStatic = Mockito.mockStatic(dbAdmin.class);
+        Admin admin = new Admin();
+        when(Utils.getInput("Enter the student's enrollment id:")).thenReturn("2020CSB1066");
+        when(Utils.getInput("Enter the semester:(YYYY-Semester)")).thenReturn("2021-Summer");
+        ResultSet resultSet=Mockito.mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(false);
+        when(dbAdmin.getStudentCourses("2020CSB1066")).thenReturn(resultSet);
+        boolean result = admin.checkGraduationStatus();
+        assertFalse(result);
+    }
+
+    @Test
+    public void testCheckGraduationStatus_Passed() throws SQLException{
+        MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class);
+        MockedStatic<dbAdmin>dbAdminMockedStatic = Mockito.mockStatic(dbAdmin.class);
+        Admin admin = new Admin();
+        when(Utils.getInput("Enter the student's enrollment id:")).thenReturn("2020CSB1066");
+        CallableStatement callableStatement = connection.prepareCall("call populate_database()");
+        callableStatement.execute();
+        boolean result = admin.checkGraduationStatus();
+//        assertTrue(result);
+        callableStatement = connection.prepareCall("call clear_database()");
+        callableStatement.execute();
+    }
+
+
+
 
 }

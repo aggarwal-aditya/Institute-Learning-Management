@@ -20,24 +20,27 @@ public class MainMenu {
         switch (userChoice) {
             case 1 -> {
                 try {
-                    if (!user.login())
-                        return;
+                    if (!user.login()) {
+                        mainMenu();
+                    }
                 } catch (Exception e) {
-                    System.out.println("Unable to login at the moment. Please try again later.");
-                    mainMenu();
+//                    System.out.println("Unable to login at the moment. Please try again later.");
+//                    mainMenu();
                 }
-                switch (user.userRole) {
-                    case "student" -> {
-                        Student student = new Student(user);
-                        StudentMenu.studentMenu(student);
-                    }
-                    case "instructor" -> {
-                        Instructor instructor = new Instructor(user);
-                        InstructorMenu.instructorMenu(instructor);
-                    }
-                    case "admin" -> {
-                        Admin admin = new Admin();
-                        AdminMenu.adminMenu(admin);
+                if(user.userRole!=null) {
+                    switch (user.userRole) {
+                        case "student" -> {
+                            Student student = new Student(user);
+                            StudentMenu.studentMenu(student);
+                        }
+                        case "instructor" -> {
+                            Instructor instructor = new Instructor(user);
+                            InstructorMenu.instructorMenu(instructor);
+                        }
+                        case "admin" -> {
+                            Admin admin = new Admin();
+                            AdminMenu.adminMenu(admin);
+                        }
                     }
                 }
             }
@@ -46,7 +49,7 @@ public class MainMenu {
                     if (user.resetPassword())
                         System.out.println("Password reset successful. Please login again.");
                 } catch (Exception e) {
-                    System.out.println("Unable to reset password at the moment. Please try again later.");
+//                    System.out.println("Unable to reset password at the moment. Please try again later.");
                 }
                 mainMenu();
             }

@@ -10,8 +10,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class dbStudentTest {
 
@@ -24,14 +23,16 @@ class dbStudentTest {
 
     @BeforeEach
     void setUp() throws SQLException {
-        CallableStatement callableStatement = connection.prepareCall("call populate_database()");
+        CallableStatement callableStatement = connection.prepareCall("call clear_database()");
+        callableStatement.execute();
+        callableStatement = connection.prepareCall("call populate_database()");
         callableStatement.execute();
     }
 
     @AfterEach
     void tearDown() throws SQLException {
-        CallableStatement callableStatement = connection.prepareCall("call clear_database()");
-        callableStatement.execute();
+//        CallableStatement callableStatement = connection.prepareCall("call clear_database()");
+//        callableStatement.execute();
     }
 
     @Test
@@ -94,10 +95,14 @@ class dbStudentTest {
     @Test
     public void testEnrollCourse() throws SQLException {
         boolean result = dbStudent.enrollCourse("2020CSB1066", "CS201", "2022-2");
-        Assertions.assertFalse(result);
+        assertFalse(result);
+        result = dbStudent.enrollCourse("2020CSB1066", "CS202", "2022-2");
+        assertFalse(result);
         dbStudent.dropCourse(STUDENT_ID, "CS201", CURRENT_SEMESTER);
         result = dbStudent.enrollCourse("2020CSB1066", "CS201", "2022-2");
         Assertions.assertTrue(result);
+        result = dbStudent.enrollCourse("2020CSB1066", "CS203", "2022-2");
+        assertFalse(result);
     }
 
     @Test
@@ -105,7 +110,51 @@ class dbStudentTest {
         boolean result = dbStudent.checkEnrollmentAvailability("CS201", "2022-2");
         Assertions.assertTrue(result);
         result = dbStudent.checkEnrollmentAvailability("CS201", "2022-1");
-        Assertions.assertFalse(result);
+        assertFalse(result);
+    }
+
+    @Test
+    void testCheckPreRequisitesEligibility() throws SQLException {
+        // Initialize prerequisites array with test data
+        String[] prerequisites = {
+                "CS101(B)|CS203(B-)|",
+                "CS102(A)|",
+                "CS201(C)|CS202(D)|"
+        };
+        // Test with a student who has not taken any required course
+        assertFalse(dbStudent.checkPreRequisitesEligibility(prerequisites, "2020CSB1066"));
+        prerequisites = new String[]{
+                "CS201(B)|",
+                "CS202(A-)|",
+        };
+        assertTrue(dbStudent.checkPreRequisitesEligibility(prerequisites, "2020CSB1066"));
+        prerequisites = new String[]{
+                "CS202(A)|CS201(A-)|",
+                "CS202(A-)|"
+        };
+        assertTrue(dbStudent.checkPreRequisitesEligibility(prerequisites, "2020CSB1066"));
+prerequisites = new String[]{
+                "CS201(A-)",
+                "CS203(A-)|CS204(A-)|"
+        };
+        assertFalse(dbStudent.checkPreRequisitesEligibility(prerequisites, "2020CSB1066"));
+        prerequisites = new String[]{
+                "",
+                "CS201(A-)",
+                "CS203(A-)|CS204(A-)|"
+        };
+        assertFalse(dbStudent.checkPreRequisitesEligibility(prerequisites, "2020CSB1066"));
+        prerequisites = new String[]{
+                "|",
+                "CS201(A-)",
+                "CS203(A-)|CS204(A-)|"
+        };
+        assertFalse(dbStudent.checkPreRequisitesEligibility(prerequisites, "2020CSB1066"));
+        prerequisites = new String[]{
+                "CS201(A-)",
+                "CS203(A-)|CS204(A-)|CS200(E)|"
+        };
+        assertFalse(dbStudent.checkPreRequisitesEligibility(prerequisites, "2020CSB1066"));
     }
 
 

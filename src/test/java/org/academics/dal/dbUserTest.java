@@ -19,7 +19,9 @@ class dbUserTest {
 
     @BeforeEach
     void setUp() throws SQLException {
-        CallableStatement callableStatement = connection.prepareCall("call populate_database()");
+        CallableStatement callableStatement = connection.prepareCall("call clear_database()");
+        callableStatement.execute();
+        callableStatement = connection.prepareCall("call populate_database()");
         callableStatement.execute();
     }
 

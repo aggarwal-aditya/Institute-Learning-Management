@@ -194,17 +194,10 @@ public class dbStudent {
             for (Throwable e : ex) {
                 if (e.getMessage().contains("The student is already enrolled in the course")) {
                     System.out.println("You have already registered for this course");
-                    return false;
                 } else if (e.getMessage().contains("The student has already completed the course earlier")) {
                     System.out.println("You have already completed this course");
-                    return false;
                 } else if (e.getMessage().contains("The student will exceed the credit limit for this semester")) {
                     System.out.println("You will exceed the credit limit for this semester");
-                    return false;
-                } else {
-                    System.err.println("Message: " + e.getMessage());
-                    System.out.println("An error occurred while registering for the course");
-                    return false;
                 }
             }
         }
@@ -271,12 +264,12 @@ public class dbStudent {
                     if (!checkPrerequisitesResult.next()) {
                         continue;
                     }
-                    // If the student has failed the required course or has not yet received a grade, skip to the next option
-                    if (checkPrerequisitesResult.getString("grade").equals("F") || checkPrerequisitesResult.getString("grade").equals("NA")) {
-                        continue;
-                    }
+//                    // If the student has failed the required course or has not yet received a grade, skip to the next option
+//                    if (checkPrerequisitesResult.getString("grade").equals("F") || checkPrerequisitesResult.getString("grade").equals("NA")) {
+//                        continue;
+//                    }
                     // If the student has not met the minimum grade required, skip to the next option
-                    if (minGrade.compareTo(checkPrerequisitesResult.getString("grade")) > 0) {
+                    if (minGrade.compareTo(checkPrerequisitesResult.getString("grade")) <0) {
                         continue;
                     }
                     // If the student has met all the requirements for the option, set the check variable to true and break the loop

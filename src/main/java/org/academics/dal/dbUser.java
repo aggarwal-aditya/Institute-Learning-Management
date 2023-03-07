@@ -92,11 +92,10 @@ public class dbUser {
         // Depending on the user's role, different SQL queries are executed
         if (user.userRole.equals("student")) {
             userDetails = conn.prepareStatement("UPDATE students SET phone_number = ? WHERE email_id = ?");
-        } else if (user.userRole.equals("instructor")) {
+        } else {
             userDetails = conn.prepareStatement("UPDATE instructors SET phone_number = ? WHERE email_id = ?");
         }
         // Setting the email_id parameter in the PreparedStatement
-        assert userDetails != null;
         userDetails.setString(1, phone);
         userDetails.setString(2, user.email_id);
         // Executing the query and returning the ResultSet

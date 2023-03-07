@@ -107,6 +107,7 @@ public class User {
         // If the entered OTP is valid, prompt the user to enter their new password and update it in the database
         if (otp == enteredOTP) {
             String newPassword = Utils.getInput("Enter your new password:");
+            this.email_id = email_id;
             dbUser.changePassword(this, newPassword);
         } else {
             // If the entered OTP is invalid, display an error message and return false
@@ -182,7 +183,6 @@ public class User {
             }
             default -> {
             }
-            // Go back to the main menu
         }
     }
 

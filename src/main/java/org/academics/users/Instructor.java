@@ -11,11 +11,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
+import static java.lang.System.exit;
+
 /**
  * This class contains methods that are only accessible to the instructor
  */
 public class Instructor extends User {
-    private final int instructor_id;
+    private int instructor_id;
     Scanner scanner = new Scanner(System.in);
 
     /**
@@ -28,7 +30,7 @@ public class Instructor extends User {
         try {
             this.instructor_id = dbInstructor.fetchInstructorID(this);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Unable to fetch instructor ID");
         }
     }
 
@@ -62,8 +64,7 @@ public class Instructor extends User {
             return;
         }
 
-        System.out.print("Enter the minimum CGPA requirement for the course ");
-        double qualify = scanner.nextDouble();
+        double qualify = Double.parseDouble(Utils.getInput("Enter the minimum CGPA requirement for the course: "));
 
         String choice = Utils.getInput("Do you want to add additional prerequisites? (Y/N)");
         //Make a 2d array of prerequisites
@@ -77,17 +78,14 @@ public class Instructor extends User {
         List<Integer> batches = new ArrayList<>();
         List<String> courseTypes = new ArrayList<>();
         specialPrivileges.viewDepartmentIDs();
-        System.out.println("Enter department ID (press -1 to stop entering):");
-        int departmentId = scanner.nextInt();
+        int departmentId = Integer.parseInt(Utils.getInput("Enter department ID (press -1 to stop entering):"));
         while (departmentId != -1) {
-            System.out.println("Enter batch:");
-            int batch = scanner.nextInt();
+            int batch = Integer.parseInt(Utils.getInput("Enter batch:"));
             String courseType = Utils.getInput("Enter course type (core, humanities, programme_elective, science_math, open_elective, internship, project, extra_curricular):");
             departmentIds.add(departmentId);
             batches.add(batch);
             courseTypes.add(courseType);
-            System.out.println("Enter department ID (press -1 to stop entering):");
-            departmentId = scanner.nextInt();
+            departmentId = Integer.parseInt(Utils.getInput("Enter department ID (press -1 to stop entering):"));
         }
         if (dbInstructor.floatCourse(course_code, session, this.instructor_id, 0, qualify, preRequisites)) {
             System.out.println("Course floated successfully");
