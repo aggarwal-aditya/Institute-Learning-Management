@@ -2,9 +2,9 @@ Unit Test Plan
 ==============
 
 Introduction
-------------
 
-This document outlines the unit test plan for the Institute Learning Management System. The purpose of this document is to provide an overview of the unit testing strategy, approach, and procedures to be followed during the testing phase of the project. This test plan will use Jacoco and Mockito for code coverage and mocking, respectively. Mockito, as advised has only been used for mock objects. Interactions with database are simulated using a test databse.
+------------
+This document outlines the unit test plan for the Institute Learning Management System. The purpose of this document is to provide an overview of the unit testing strategy, approach, and procedures to be followed during the testing phase of the project. Thw tests will use JUnit Jupiter as the testing framework, Jacoco for code coverage, and Mockito for mocking. Mockito, as advised will only been used for mock objects. Interactions with the database will be simulated using a test database.
 
 
 Scope
@@ -55,4 +55,4 @@ Components Tested:
 Conclusion
 ----------
 
-This unit test plan outlines the testing approach, strategies, and procedures to be followed during the testing phase of the project. The goal is to ensure that each component is functioning as expected and that any issues or defects are identified and fixed before moving on to integration testing. Jacoco will be used to measure the code coverage of the unit tests, and Mockito will be used to create mock objects for any dependencies that the code being tested relies on.
+This unit test plan outlines the testing approach, strategies, and procedures to be followed during the testing phase of the project. The goal is to ensure that each component is functioning as expected and that any issues or defects are identified and fixed before moving on to integration testing. Jacoco will be used to measure the code coverage of the unit tests, JUnit Jupiter as the testing framework, and Mockito will be used to create mock objects for any dependencies that the code being tested relies on.
